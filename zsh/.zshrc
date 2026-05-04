@@ -15,7 +15,6 @@ source "${ZSH_PRIORITIES_CONF}"
 # Load each zsh conf in ${ZSH_CONFS}
 for zsh_conf in ${ZSH_CONFS}; do
   source "${ZSH_CONFS_DIR}/${zsh_conf}"
-  echo "${ZSH_CONFS_DIR}/${zsh_conf} loaded."
 done
 
 
