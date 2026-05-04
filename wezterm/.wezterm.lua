@@ -5,22 +5,21 @@ if wezterm.config_builder then
   config = wezterm.config_builder()
 end
 
--- MSYS2のzshをデフォルトシェルに設定
-config.default_prog = { 'C:\\msys64\\usr\\bin\\zsh.exe', '-l' }
+-- windows環境でMSYS2のzshを使用する設定
+if wezterm.target_triple == "x86_64-pc-windows-msvc" then
+    -- MSYS2のzshをデフォルトシェルに設定
+    config.default_prog = { 'C:\\msys64\\usr\\bin\\zsh.exe', '-l' }
+end
+
+
 
 -- 環境変数の設定
 config.set_environment_variables = {
-  MSYSTEM = 'MINGW64',
-  MSYS2_PATH_TYPE = 'inherit',
-  HOME = wezterm.home_dir,
+    MSYSTEM = 'MINGW64',
+    MSYS2_PATH_TYPE = 'inherit',
+    HOME = wezterm.home_dir,
+    MSYS = 'winsymlinks:nativestrict',
 }
-
--- カラースキームの設定
-config.color_scheme = 'Sakura'
-
--- 背景透過
-config.window_background_opacity = 0.8
-config.macos_window_background_blur = 20
 
 -- 最初からフルスクリーンで起動
 local mux = wezterm.mux
@@ -28,6 +27,13 @@ wezterm.on("gui-startup", function(cmd)
     local tab, pane, window = mux.spawn_window(cmd or {})
     window:gui_window():toggle_fullscreen()
 end)
+
+-- カラースキームの設定
+config.color_scheme = 'Sakura'
+
+-- 背景透過
+config.window_background_opacity = 0.8
+config.macos_window_background_blur = 20
 
 -- フォントの設定
 config.font = wezterm.font_with_fallback {
@@ -38,7 +44,6 @@ config.font = wezterm.font_with_fallback {
    "Courier New",
    "monospace",
 }
--- config.font = wezterm.font("Consolas", {weight="Medium", stretch="Normal", style="Normal"})
 
 -- フォントサイズの設定
 config.font_size = 12
@@ -88,55 +93,68 @@ config.inactive_pane_hsb ={
 -- カーソルの設定
 config.default_cursor_style = "BlinkingBlock"
 
--- ショートカットキー設定
-local act = wezterm.action
-config.keys = {
-  -- Alt(Opt)+Shift+Fでフルスクリーン切り替え
-  {
-    key = 'f',
-    mods = 'SHIFT|META',
-    action = wezterm.action.ToggleFullScreen,
-  },
-  -- Ctrl+Shift+tで新しいタブを作成
-  {
-    key = 't',
-    mods = 'CTRL|SHIFT',
-    action = act.SpawnTab 'CurrentPaneDomain',
-  },
-  -- Ctrl+Shift+dで新しいペインを作成(画面を分割)
-  {
-    key = 'd',
-    mods = 'SHIFT|CTRL',
-    action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
-  },
-  -- Ctrl+左矢印でカーソルを前の単語に移動
-  {
-    key = "LeftArrow",
-    mods = "CTRL",
-    action = act.SendKey {
-      key = "b",
-      mods = "META",
-    },
-  },
-  -- Ctrl+右矢印でカーソルを次の単語に移動
-  {
-    key = "RightArrow",
-    mods = "CTRL",
-    action = act.SendKey {
-      key = "f",
-      mods = "META",
-    },
-  },
-  -- Ctrl+Backspaceで前の単語を削除
-  {
-    key = "Backspace",
-    mods = "CTRL",
-    action = act.SendKey {
-      key = "w",
-      mods = "CTRL",
-    },
-  },
-}
+-- 右ステータスのカスタマイズ
+wezterm.on("update-status", function(window, pane)
+    local cells = {};
+
+    -- 時刻表示
+    local date = wezterm.strftime("%m/%-d %H:%M:%S %a");
+    table.insert(cells, '  ' .. date);
+
+    -- -- バッテリー
+    -- for _, b in ipairs(wezterm.battery_info()) do
+    --   table.insert(cells, string.format("%.0f%%", b.state_of_charge * 100))
+    -- end
+
+    -- -- The powerline < symbol
+    -- local LEFT_ARROW = utf8.char(0xe0b3);
+    -- -- The filled in variant of the < symbol
+    -- local SOLID_LEFT_ARROW = utf8.char(0xe0b2)
+
+    -- Color palette for the backgrounds of each cell
+    local colors = {
+      "#3c1361",
+      "#52307c",
+      "#663a82",
+      "#7c5295",
+      "#b491c8",
+    };
+
+    -- Foreground color for the text across the fade
+    local text_fg = "#c0c0c0";
+
+    -- The elements to be formatted
+    local elements = {};
+    -- How many cells have been formatted
+    local num_cells = 0;
+
+    -- Translate a cell into elements
+    function push(text, is_last)
+      local cell_no = num_cells + 1
+      table.insert(elements, {Foreground={Color=text_fg}})
+      table.insert(elements, {Background={Color=colors[cell_no]}})
+      table.insert(elements, {Text=" "..text.." "})
+      if not is_last then
+        table.insert(elements, {Foreground={Color=colors[cell_no+1]}})
+        table.insert(elements, {Text=SOLID_LEFT_ARROW})
+      end
+      num_cells = num_cells + 1
+    end
+
+    while #cells > 0 do
+      local cell = table.remove(cells, 1)
+      push(cell, #cells == 0)
+    end
+
+    window:set_right_status(wezterm.format(elements));
+
+end);
+
+-- keybindings.lua からショートカットキーを読み込む
+local keybinds = require("keybindings")
+config.disable_default_key_bindings = true -- デフォルトのキーbindingsを無効化
+config.keys = keybinds.keys
+
 
 
 return config
