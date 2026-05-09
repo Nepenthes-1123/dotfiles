@@ -92,7 +92,7 @@
             ],
             "color": "terminal.ansiYellow",
             "icon": "arrow-right",
-            "path": "C:\\Windows\\System32\\cmd.exe"
+            "path": "${env:windir}\\System32\\cmd.exe"
         },
         "Command Prompt": {
             "args": [],
@@ -105,7 +105,6 @@
         "Git Bash": {
             "color": "terminal.ansiGreen",
             "icon": "terminal-bash",
-            "path": "C:\\Program Files\\Git\\bin\\bash.exe",
             "source": "Git Bash"
         },
         "PowerShell": {
