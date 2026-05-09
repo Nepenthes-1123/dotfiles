@@ -1,6 +1,4 @@
 # !/bin/sh
-set -euC
-set -o pipefail
 
 function install_win() {
     # install zsh
@@ -100,13 +98,19 @@ function install_zsh_plugins() {
 
     for path in "${zsh_plugins[@]}"; do
         zsh_plugin=(${path[@]})
-        git clone ${zsh_plugin[0]} ${zsh_plugin[1]}
+        if [[ ! -d ${zsh_plugin[1]} ]]; then
+            git clone ${zsh_plugin[0]} ${zsh_plugin[1]}
+        else
+            echo "Cloned file already exists: ${zsh_plugin[1]}"
+        fi
     done
 }
 
 function install_fzf() {
-    git clone --depth 1 https://github.com/junegunn/fzf.git ${HOME}/.fzf
-    ${HOME}/.fzf/install
+    if ! type fzf > /dev/null 2>&1; then
+        git clone --depth 1 https://github.com/junegunn/fzf.git ${HOME}/.fzf
+        ${HOME}/.fzf/install
+    fi
 }
 
 function install() {
@@ -138,6 +142,32 @@ function install() {
     return 0
 }
 
-if [[ "${BASH_SOURCE:-$0}" == "${0}" ]]; then
+# source実行か直接実行かの判定処理
+_is_sourced=0
+_SCRIPT_NAME="install.sh"
+
+if [ -n "$BASH_VERSION" ]; then
+    # Bash環境の場合の判定
+    [ "${BASH_SOURCE[0]}" != "$0" ] && _is_sourced=1
+elif [ -n "$ZSH_VERSION" ]; then
+    # Zsh環境の場合の判定
+    case $ZSH_EVAL_CONTEXT in
+        *:file) _is_sourced=1 ;;
+    esac
+else
+    # その他のPOSIX互換シェル (dash, ash, sh など) の場合
+    # 実行時の $0 のファイル名が、定義したスクリプト名と一致するかで判定
+    _basename_0=$(basename -- "$0" 2>/dev/null || echo "$0")
+    if [ "$_basename_0" != "$_SCRIPT_NAME" ]; then
+        _is_sourced=1
+    fi
+fi
+
+if [ "$_is_sourced" -eq 0 ]; then
+    set -euC
+    set -o pipefail
     install
 fi
+
+# 判定に使用した内部変数をクリーンアップ (source先の環境を汚さないため)
+unset _SCRIPT_NAME _is_sourced _basename_0

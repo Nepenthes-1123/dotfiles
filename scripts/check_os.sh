@@ -1,6 +1,4 @@
 # !/bin/sh
-set -euC
-set -o pipefail
 
 function check_os() {
     declare OS="unsupported os"
@@ -30,6 +28,32 @@ function check_os() {
     echo ${OS}
 }
 
-if [[ "${BASH_SOURCE:-$0}" == "${0}" ]]; then
+# source実行か直接実行かの判定処理
+_is_sourced=0
+_SCRIPT_NAME="check_os.sh"
+
+if [ -n "$BASH_VERSION" ]; then
+    # Bash環境の場合の判定
+    [ "${BASH_SOURCE[0]}" != "$0" ] && _is_sourced=1
+elif [ -n "$ZSH_VERSION" ]; then
+    # Zsh環境の場合の判定
+    case $ZSH_EVAL_CONTEXT in
+        *:file) _is_sourced=1 ;;
+    esac
+else
+    # その他のPOSIX互換シェル (dash, ash, sh など) の場合
+    # 実行時の $0 のファイル名が、定義したスクリプト名と一致するかで判定
+    _basename_0=$(basename -- "$0" 2>/dev/null || echo "$0")
+    if [ "$_basename_0" != "$_SCRIPT_NAME" ]; then
+        _is_sourced=1
+    fi
+fi
+
+if [ "$_is_sourced" -eq 0 ]; then
+    set -euC
+    set -o pipefail
     check_os
 fi
+
+# 判定に使用した内部変数をクリーンアップ (source先の環境を汚さないため)
+unset _SCRIPT_NAME _is_sourced _basename_0
