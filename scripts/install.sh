@@ -1,20 +1,19 @@
 #!/usr/bin/env bash
 
 function install_win() {
-    # install zsh
-    : # Windows環境でのインストールが複雑すぎるため
+    if ! command -v winget > /dev/null 2>&1; then
+        echo "winget is not installed or not available in PATH. Please install winget manually, then rerun setup."
+        return 0
+    fi
 
-    # install wezterm
     if ! winget list wezterm > /dev/null 2>&1; then
         winget install --id wez.wezterm -e --source winget
     fi
 
-    # install vscode
     if ! winget list vscode > /dev/null 2>&1; then
         winget install --id Microsoft.VisualStudioCode -e --source winget
     fi
 
-    # install git
     if ! winget list git > /dev/null 2>&1; then
         winget install --id Git.Git -e --source winget
     fi

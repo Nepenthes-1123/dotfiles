@@ -12,50 +12,60 @@ function prompt_read() {
 }
 
 function safe_ln() {
-    # source file must exist
-    if [[ ! -e "$1" ]]; then
-        echo "Source file not found: ${1}"
+    local src="$1"
+    local dst="$2"
+
+    if [[ ! -e "$src" ]]; then
+        echo "Source file not found: ${src}"
         return 0
     fi
 
-    # target file must not exist
-    if [[ -e "$2" ]]; then
-        echo "Target file already exists: ${2}"
+    if [[ -L "$dst" ]]; then
+        if [[ "$(readlink "$dst")" == "$src" ]]; then
+            echo "Already linked: ${dst}"
+            return 0
+        fi
+    fi
+
+    if [[ -e "$dst" || -L "$dst" ]]; then
+        echo "Target file already exists: ${dst}"
         prompt_read _replace_link "Do you want to replace the file? [Yes / No]:"
         case "$_replace_link" in
             [Yy] | [Yy][Ee][Ss] )
-                rm "$2"
+                if [[ -d "$dst" && ! -L "$dst" ]]; then
+                    rm -rf "$dst"
+                else
+                    rm -f "$dst"
+                fi
                 ;;
             [Nn] | [Nn][Oo] )
                 prompt_read _backup_link "Do you want to make backup file? [Yes / No]:"
                 case "$_backup_link" in
                     [Yy] | [Yy][Ee][Ss] )
-                        mv "$2" "${2}.bak"
+                        mv "$dst" "${dst}.bak"
                         ;;
                     [Nn] | [Nn][Oo] )
-                        echo "skip ${2}"
+                        echo "skip ${dst}"
                         return 0
                         ;;
                     * )
-                        echo "skip ${2}"
+                        echo "skip ${dst}"
                         return 0
                         ;;
                 esac
                 ;;
             * )
-                echo "skip ${2}"
+                echo "skip ${dst}"
                 return 0
                 ;;
         esac
     fi
 
-    # create target directory if not exist
-    if [[ ! -e "$(dirname "$2")" ]]; then
-        mkdir -p "$(dirname "$2")"
+    if [[ ! -e "$(dirname "$dst")" ]]; then
+        mkdir -p "$(dirname "$dst")"
     fi
 
-    # make symbolic link
-    ln -s "$1" "$2"
+    ln -s "$src" "$dst"
 
     return 0
 }
@@ -83,7 +93,7 @@ function symlink() {
 
     for path in "${symlink_list[@]}"; do
         local src dst
-        read -r src dst <<< "$path"
+        IFS='|' read -r src dst <<< "$path"
 
         safe_ln "$src" "$dst"
     done
