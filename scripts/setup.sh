@@ -1,33 +1,37 @@
-# !/bin/sh
+#!/usr/bin/env bash
+
+function prompt_read() {
+    local varname="$1"
+    local prompt="$2"
+
+    if [[ -n "${ZSH_VERSION-}" ]]; then
+        read -r "_${varname}?${prompt} "
+    else
+        read -rp "${prompt} " "$varname"
+    fi
+}
 
 function safe_ln() {
     # source file must exist
-    if [[ ! -e $1 ]]; then
+    if [[ ! -e "$1" ]]; then
         echo "Source file not found: ${1}"
         return 0
     fi
 
     # target file must not exist
-    if [[ -e $2 ]]; then
+    if [[ -e "$2" ]]; then
         echo "Target file already exists: ${2}"
-        if [[ -n "$ZSH_VERSION" ]]; then
-            read -r "_replace_link?Do you want to replace the file? [Yes / No]: "
-        else
-            read -p  "Do you want to replace the file? [Yes / No]: " -r _replace_link
-        fi
+        prompt_read _replace_link "Do you want to replace the file? [Yes / No]:"
         case "$_replace_link" in
             [Yy] | [Yy][Ee][Ss] )
+                rm "$2"
                 ;;
             [Nn] | [Nn][Oo] )
-                if [[ -n "$ZSH_VERSION" ]]; then
-                    read -r "_backup_link?Do you want to make backup file? [Yes / No]: "
-                else
-                    read -p "So you want to make backup file? [Yes / No]: " -r _backup_link
-                fi
+                prompt_read _backup_link "Do you want to make backup file? [Yes / No]:"
                 case "$_backup_link" in
                     [Yy] | [Yy][Ee][Ss] )
-                    mv $2 "${2}.bak"
-                    ;;
+                        mv "$2" "${2}.bak"
+                        ;;
                     [Nn] | [Nn][Oo] )
                         echo "skip ${2}"
                         return 0
@@ -46,12 +50,12 @@ function safe_ln() {
     fi
 
     # create target directory if not exist
-    if [[ ! -e $(dirname $2) ]]; then
-        mkdir -p $(dirname $2)
+    if [[ ! -e "$(dirname "$2")" ]]; then
+        mkdir -p "$(dirname "$2")"
     fi
 
     # make symbolic link
-    ln -s $1 $2
+    ln -s "$1" "$2"
 
     return 0
 }
@@ -78,16 +82,17 @@ function symlink() {
     fi
 
     for path in "${symlink_list[@]}"; do
-        symlink=(${path[@]})
+        local src dst
+        read -r src dst <<< "$path"
 
-        safe_ln ${symlink[0]} ${symlink[1]}
+        safe_ln "$src" "$dst"
     done
 
     return 0
 }
 
 function select_gitconfig() {
-    GIT_DIR="$(cd $(dirname ${BASH_SOURCE:-$0})/../git; pwd)"
+    GIT_DIR="$(cd "$(dirname "${BASH_SOURCE:-$0}")"/../git && pwd)"
 
     echo "select your git user config type"
     select user in "private" "make"

@@ -1,4 +1,4 @@
-# !/bin/sh
+#!/usr/bin/env bash
 
 function install_win() {
     # install zsh
@@ -108,8 +108,14 @@ function install_zsh_plugins() {
 
 function install_fzf() {
     if ! type fzf > /dev/null 2>&1; then
-        git clone --depth 1 https://github.com/junegunn/fzf.git ${HOME}/.fzf
-        ${HOME}/.fzf/install
+        if [[ ! -d "${HOME}/.fzf" ]]; then
+            git clone --depth 1 https://github.com/junegunn/fzf.git "${HOME}/.fzf"
+        else
+            echo "Directory already exists: ${HOME}/.fzf"
+        fi
+        if [[ -d "${HOME}/.fzf" ]]; then
+            "${HOME}/.fzf/install" --all
+        fi
     fi
 }
 

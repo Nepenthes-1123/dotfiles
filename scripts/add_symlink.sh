@@ -1,4 +1,4 @@
-# !/bin/sh
+#!/usr/bin/env bash
 
 function usage() {
     echo "Usage: $0 <source> <target>"
@@ -12,25 +12,25 @@ function add_symlink() {
     fi
 
     # source file must exist
-    if [[ ! -e $1 ]]; then
+    if [[ ! -e "$1" ]]; then
         echo "Source file not found: $1"
         return 1
     fi
 
     # target file must not exist
-    if [[ -e $2 ]]; then
+    if [[ -e "$2" ]]; then
         echo "Target file already exists: $2"
         return 1
     fi
 
     # create target directory if not exist
-    if [[ ! -e $(dirname $2) ]]; then
-        mkdir -p $(dirname $2)
+    if [[ ! -e "$(dirname "$2")" ]]; then
+        mkdir -p "$(dirname "$2")"
     fi
 
     # move source file to target location and create symbolic link
-    mv $1 $2
-    ln -s $2 $1
+    mv "$1" "$2"
+    ln -s "$2" "$1"
 
     script_dir="$(dirname "$0")"
     echo "${script_dir}@add"
@@ -42,7 +42,7 @@ function add_symlink() {
     if [[ $OS == "Cygwin" ]]; then
         link_path="${script_dir}/props/symlink_win_list.conf"
     elif [[ $OS == "Mac" ]]; then
-        link_path="${script_dir}/props/simlink_mac_list.conf"
+        link_path="${script_dir}/props/symlink_mac_list.conf"
     elif [[ $OS == "CentOS" ]]; then
         # sudo dnf install -y zsh
         :
@@ -57,8 +57,18 @@ function add_symlink() {
     fi
 
     # add symlink info to symlink_win_list.conf
-    local -r list_row_num=$(wc -l < $link_path)
-    sed -i "${list_row_num},$((list_row_num + 1))i\"${2} ${1} \" \\\\" $link_path
+    if [[ ! -f "$link_path" ]]; then
+        echo "Symlink list file not found: $link_path"
+        return 1
+    fi
+
+    local -r list_row_num=$(wc -l < "$link_path")
+    local insert_line="\"${2} ${1}\" \\\\"
+    local tmpfile
+    tmpfile="$(mktemp)"
+
+    awk -v n="$list_row_num" -v line="$insert_line" 'NR==n { print line } { print }' "$link_path" > "$tmpfile"
+    mv "$tmpfile" "$link_path"
 
     return 0
 }
