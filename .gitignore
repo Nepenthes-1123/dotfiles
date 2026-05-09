@@ -31,6 +31,7 @@
 !zsh/.zsh.d/prompt.zsh
 
 # wezterm セッティング
+!wezterm/WEZTERM_SETUP.md
 !wezterm/.wezterm.lua
 !wezterm/.wezterm/keybindings.lua
 

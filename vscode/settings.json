@@ -87,8 +87,8 @@
         "Anaconda Prompt": {
             "args": [
                 "/K",
-                "C:\\Users\\topaz\\anaconda3\\Scripts\\activate.bat",
-                "C:\\Users\\topaz\\anaconda3"
+                "%USERPROFILE%\\anaconda3\\Scripts\\activate.bat",
+                "%USERPROFILE%\\anaconda3"
             ],
             "color": "terminal.ansiYellow",
             "icon": "arrow-right",
@@ -113,7 +113,7 @@
             "source": "PowerShell"
         },
         "Windows PowerShell7": {
-            "path": "C:\\Users\\topaz\\AppData\\Local\\Microsoft\\WindowsApps\\Microsoft.PowerShell_8wekyb3d8bbwe\\pwsh.exe"
+            "path": "pwsh.exe"
         }
     },
     "workbench.editorAssociations": {

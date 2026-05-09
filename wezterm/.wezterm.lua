@@ -5,10 +5,55 @@ if wezterm.config_builder then
   config = wezterm.config_builder()
 end
 
--- windows環境でMSYS2のzshを使用する設定
+-- Windows環境でzshを探索して使用
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
-    -- MSYS2のzshをデフォルトシェルに設定
-    config.default_prog = { 'C:\\msys64\\usr\\bin\\zsh.exe', '-l' }
+    local function file_exists(filepath)
+        local f = io.open(filepath, "r")
+        if f then
+            io.close(f)
+            return true
+        end
+        return false
+    end
+
+    local function find_zsh()
+        -- 1. ユーザーが明示的に指定した場合
+        local custom_zsh = os.getenv("ZSH_CUSTOM_PATH")
+        if custom_zsh and file_exists(custom_zsh) then
+            return custom_zsh
+        end
+
+        -- 2. MSYS2_HOME環境変数から推測
+        local msys2_home = os.getenv("MSYS2_HOME")
+        if msys2_home then
+            local msys2_zsh = msys2_home .. "\\usr\\bin\\zsh.exe"
+            if file_exists(msys2_zsh) then
+                return msys2_zsh
+            end
+        end
+
+        -- 3. よくあるデフォルト候補を試す
+        local candidates = {
+            "C:\\msys64\\usr\\bin\\zsh.exe",
+            "C:\\tools\\msys64\\usr\\bin\\zsh.exe",
+            "C:\\Program Files\\Git\\usr\\bin\\zsh.exe",
+            "C:\\cygwin64\\bin\\zsh.exe",
+        }
+
+        for _, candidate in ipairs(candidates) do
+            if file_exists(candidate) then
+                return candidate
+            end
+        end
+
+        -- フォールバック
+        return nil
+    end
+
+    local zsh_path = find_zsh()
+    if zsh_path then
+        config.default_prog = { zsh_path, '-l' }
+    end
 end
 
 
