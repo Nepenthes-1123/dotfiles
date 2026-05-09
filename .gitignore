@@ -1,0 +1,46 @@
+# 最初にすべての階層のファイルを無視します
+# 階層は必要なだけ追加する
+### all ignore ###
+*
+
+# 全てのディレクトリをホワイトリストに追加
+!*/
+
+# ホワイトリストに入れたいファイルを個別に許可
+### not ignore ###
+!README.md
+!.gitignore
+
+# scripts セッティング
+!scripts/install.sh
+!scripts/setup.sh
+!scripts/add_symlink.sh
+!scripts/check_os.sh
+!scripts/props/symlink_win_list.conf
+!scripts/props/symlink_mac_list.conf
+!scripts/props/symlink_ubuntu_list.conf
+!scripts/props/zsh_plugins.conf
+
+# zsh セッティング
+!zsh/.zshrc
+!zsh/.zsh.d/priorities.conf
+!zsh/.zsh.d/audit.zsh
+!zsh/.zsh.d/plugins.zsh
+!zsh/.zsh.d/alias.zsh
+!zsh/.zsh.d/completion.zsh
+!zsh/.zsh.d/prompt.zsh
+
+# wezterm セッティング
+!wezterm/.wezterm.lua
+!wezterm/.wezterm/keybindings.lua
+
+# vscode セッティング
+!vscode/settings.json
+!vscode/keybindings.json
+!vscode/snippets/c.json
+!vscode/snippets/latex.json
+!vscode/extensions.txt
+
+# git セッティング
+!git/.gitconfig
+!git/.gitconfig.private

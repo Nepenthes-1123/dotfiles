@@ -1,0 +1,17 @@
+[core]
+	editor = code --wait
+	protectNTFS = false
+	autoCRLF = false
+	ignorecase = false
+	quotepath = false
+	safecrlf = true
+[push]
+	default = simple
+	autoSetupRemote = true
+[fetch]
+	prune = true
+	writeCommitGraph = true
+[column]
+	ui = auto
+[include]
+    path = .gitconfig.local
