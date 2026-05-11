@@ -1,298 +1,293 @@
 {
-    // ==========================================
-    // 1. エディタ基本設定 (General Editor)
-    // ==========================================
-    "editor.fontSize": 14,
-    "editor.tabSize": 4,
-    "editor.detectIndentation": false,
-    "editor.fontFamily": "Consolas,'游明朝','Monaspace Neon Var','Source Han Code JP','Courier New', monospace",
-    "editor.fontLigatures": true,
-    "editor.cursorStyle": "block-outline",
-    "editor.cursorBlinking": "smooth",
-    "editor.cursorSmoothCaretAnimation": "on",
-    "editor.suggestSelection": "first",
-    // 自動化:  保存時・入力時の挙動
-    "editor.formatOnSave": true,
-    "editor.formatOnType": true,
-    "editor.formatOnPaste": true,
-    "editor.codeActionsOnSave": {
-        "source.fixAll": "explicit",
-        "source.organizeImports": "explicit"
+  // ==========================================
+  // 1. エディタ基本設定 (General Editor)
+  // ==========================================
+  "editor.fontSize": 14,
+  "editor.tabSize": 4,
+  "editor.detectIndentation": false,
+  "editor.fontFamily": "Consolas,'游明朝','Monaspace Neon Var','Source Han Code JP','Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.cursorStyle": "block-outline",
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.suggestSelection": "first",
+  // 自動化:  保存時・入力時の挙動
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.formatOnPaste": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  // 視認性:  空白・制御文字・ガイド
+  "editor.renderWhitespace": "boundary",
+  "editor.renderControlCharacters": true,
+  "editor.renderLineHighlight": "all",
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+  "editor.guides.bracketPairs": true,
+  "editor.unicodeHighlight.allowedCharacters": {
+    "　": true
+  },
+  "editor.unicodeHighlight.ambiguousCharacters": true,
+  "editor.quickSuggestions": {
+    "other": "on",
+    "comments": "off",
+    "strings": "on"
+  },
+  // ==========================================
+  // 2. ワークスペース・UI (Workbench & UI)
+  // ==========================================
+  "workbench.colorTheme": "GitHub Dark",
+  "workbench.startupEditor": "none",
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.empty.hint": "hidden",
+  "workbench.tree.enableStickyScroll": false,
+  "workbench.tree.indent": 16,
+  "workbench.tree.renderIndentGuides": "always",
+  "workbench.activityBar.location": "default",
+  "workbench.editor.wrapTabs": true,
+  "workbench.list.openMode": "doubleClick",
+  "window.title": "${dirty}${activeEditorShort}${separator}${rootName}",
+  "update.showReleaseNotes": false,
+  // ミニマップ
+  "editor.minimap.side": "left",
+  "editor.minimap.showSlider": "always",
+  "editor.minimap.maxColumn": 60,
+  "editor.minimap.renderCharacters": false,
+  "workbench.colorCustomizations": {
+    "minimap.background": "#00ff0d05"
+  },
+  "explorer.compactFolders": false,
+  // ==========================================
+  // 3. ファイル・検索 (Files & Search)
+  // ==========================================
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/Thumbs.db": true
+  },
+  "security.workspace.trust.untrustedFiles": "open",
+  // ==========================================
+  // 4. ターミナル (Terminal)
+  // ==========================================
+  "terminal.integrated.fontFamily": "HackGen,Consolas,'游明朝','Monaspace Neon Var','Courier New', monospace",
+  "terminal.integrated.fontSize": 15,
+  "terminal.integrated.stickyScroll.enabled": false,
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+  "terminal.integrated.profiles.windows": {
+    "Anaconda Prompt": {
+      "args": [
+        "/K",
+        "%USERPROFILE%\\anaconda3\\Scripts\\activate.bat",
+        "%USERPROFILE%\\anaconda3"
+      ],
+      "color": "terminal.ansiYellow",
+      "icon": "arrow-right",
+      "path": "${env:windir}\\System32\\cmd.exe"
     },
-    // 視認性:  空白・制御文字・ガイド
-    "editor.renderWhitespace": "boundary",
-    "editor.renderControlCharacters": true,
-    "editor.renderLineHighlight": "all",
-    "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
-    "editor.guides.bracketPairs": true,
-    "editor.unicodeHighlight.allowedCharacters": {
-        "　": true,
+    "Command Prompt": {
+      "args": [],
+      "icon": "terminal-cmd",
+      "path": [
+        "${env:windir}\\Sysnative\\cmd.exe",
+        "${env:windir}\\System32\\cmd.exe"
+      ]
     },
-    "editor.unicodeHighlight.ambiguousCharacters": true,
+    "Git Bash": {
+      "color": "terminal.ansiGreen",
+      "icon": "terminal-bash",
+      "source": "Git Bash"
+    },
+    "PowerShell": {
+      "icon": "terminal-powershell",
+      "source": "PowerShell"
+    },
+    "Windows PowerShell7": {
+      "path": "pwsh.exe"
+    }
+  },
+  "workbench.editorAssociations": {
+    "*.exe": "default",
+    "*.pdf": "latex-workshop-pdf-hook",
+    "*.png": "imagePreview.previewEditor"
+  },
+  // ==========================================
+  // 5. 言語別設定 (Language Specifics)
+  // ==========================================
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnType": true
+  },
+  "[tex]": {
+    // スニペット補完中にも補完を使えるようにする
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    // インデント幅を2にする
+    "editor.tabSize": 2
+  },
+  "[latex]": {
+    "editor.formatOnSave": false,
+    "editor.formatOnType": false,
+    // スニペット補完中にも補完を使えるようにする
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    // インデント幅を2にする
+    "editor.tabSize": 2
+  },
+  "[bibtex]": {
+    // インデント幅を2にする
+    "editor.tabSize": 2
+  },
+  "[json]": {
     "editor.quickSuggestions": {
-        "other": "on",
-        "comments": "off",
-        "strings": "on",
+      "strings": true
     },
-    // ==========================================
-    // 2. ワークスペース・UI (Workbench & UI)
-    // ==========================================
-    "workbench.colorTheme": "GitHub Dark",
-    "workbench.startupEditor": "none",
-    "workbench.editor.enablePreview": false,
-    "workbench.editor.empty.hint": "hidden",
-    "workbench.tree.enableStickyScroll": false,
-    "workbench.tree.indent": 16,
-    "workbench.tree.renderIndentGuides": "always",
-    "workbench.activityBar.location": "default",
-    "workbench.editor.wrapTabs": true,
-    "workbench.list.openMode": "doubleClick",
-    "window.title": "${dirty}${activeEditorShort}${separator}${rootName}",
-    "update.showReleaseNotes": false,
-    // ミニマップ
-    "editor.minimap.side": "left",
-    "editor.minimap.showSlider": "always",
-    "editor.minimap.maxColumn": 60,
-    "editor.minimap.renderCharacters": false,
-    "workbench.colorCustomizations": {
-        "minimap.background": "#00ff0d05"
-    },
-    "explorer.compactFolders": false,
-    // ==========================================
-    // 3. ファイル・検索 (Files & Search)
-    // ==========================================
-    "files.eol": "\n",
-    "files.insertFinalNewline": true,
-    "files.trimTrailingWhitespace": true,
-    "files.exclude": {
-        "**/.git": true,
-        "**/.DS_Store": true,
-        "**/node_modules": true,
-        "**/__pycache__": true,
-        "**/*.pyc": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/Thumbs.db": true
-    },
-    "security.workspace.trust.untrustedFiles": "open",
-    // ==========================================
-    // 4. ターミナル (Terminal)
-    // ==========================================
-    "terminal.integrated.fontFamily": "HackGen,Consolas,'游明朝','Monaspace Neon Var','Courier New', monospace",
-    "terminal.integrated.fontSize": 15,
-    "terminal.integrated.stickyScroll.enabled": false,
-    "terminal.integrated.defaultProfile.windows": "Git Bash",
-    "terminal.integrated.enableMultiLinePasteWarning": "never",
-    "terminal.integrated.profiles.windows": {
-        "Anaconda Prompt": {
-            "args": [
-                "/K",
-                "%USERPROFILE%\\anaconda3\\Scripts\\activate.bat",
-                "%USERPROFILE%\\anaconda3"
-            ],
-            "color": "terminal.ansiYellow",
-            "icon": "arrow-right",
-            "path": "${env:windir}\\System32\\cmd.exe"
-        },
-        "Command Prompt": {
-            "args": [],
-            "icon": "terminal-cmd",
-            "path": [
-                "${env:windir}\\Sysnative\\cmd.exe",
-                "${env:windir}\\System32\\cmd.exe"
-            ]
-        },
-        "Git Bash": {
-            "color": "terminal.ansiGreen",
-            "icon": "terminal-bash",
-            "source": "Git Bash"
-        },
-        "PowerShell": {
-            "icon": "terminal-powershell",
-            "source": "PowerShell"
-        },
-        "Windows PowerShell7": {
-            "path": "pwsh.exe"
-        }
-    },
-    "workbench.editorAssociations": {
-        "*.exe": "default",
-        "*.pdf": "latex-workshop-pdf-hook",
-        "*.png": "imagePreview.previewEditor"
-    },
-    // ==========================================
-    // 5. 言語別設定 (Language Specifics)
-    // ==========================================
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter",
-        "editor.formatOnType": true
-    },
-    "[tex]": {
-        // スニペット補完中にも補完を使えるようにする
-        "editor.suggest.snippetsPreventQuickSuggestions": false,
-        // インデント幅を2にする
-        "editor.tabSize": 2
-    },
-    "[latex]": {
-        "editor.formatOnSave": false,
-        "editor.formatOnType": false,
-        // スニペット補完中にも補完を使えるようにする
-        "editor.suggest.snippetsPreventQuickSuggestions": false,
-        // インデント幅を2にする
-        "editor.tabSize": 2
-    },
-    "[bibtex]": {
-        // インデント幅を2にする
-        "editor.tabSize": 2
-    },
-    "[json]": {
-        "editor.quickSuggestions": {
-            "strings": true
-        },
-        "editor.suggest.insertMode": "replace"
-    },
-    "[markdown]": {
-        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
-        "editor.formatOnPaste": true,
-        "editor.formatOnSave": true,
-        "files.trimTrailingWhitespace": false
-    },
-    // ==========================================
-    // 6. 拡張機能設定 (Extensions)
-    // ==========================================
-    // Python & Jupyter
-    "black-formatter.importStrategy": "useBundled",
-    "flake8.args": [
-        "--ignore=E203,W503,W504",
-        "--max-line-length=88"
-    ],
-    "flake8.importStrategy": "fromEnvironment",
-    "flake8.severity": {
-        "E": "Warning",
-        "F": "Warning",
-        "I": "Information",
-        "W": "Warning"
-    },
-    "mypy-type-checker.args": [
-        "--warn-return-any",
-        "--no-implicit-optional",
-        "--disallow-untyped-calls",
-        "--disallow-untyped-defs",
-        "--ignore-missing-imports",
-        "--follow-imports=skip"
-    ],
-    "python.venvPath": "~/.virtualenvs",
-    "python.terminal.activateEnvironment": false,
-    "jupyter.askForKernelRestart": false,
-    "notebook.compactView": false,
-    "notebook.consolidatedRunButton": true,
-    "notebook.formatOnCellExecution": true,
-    "notebook.formatOnSave.enabled": true,
-    "notebook.lineNumbers": "on",
-    "notebook.output.scrolling": true,
-    "notebook.scrolling.revealNextCellOnExecute": "none",
-    // LaTeX Workshop
-    "latex-workshop.latex.autoBuild.run": "onSave",
-    "latex-workshop.view.pdf.viewer": "tab",
-    "latex-workshop.latex.outDir": "out",
-    "latex-workshop.bibtex-format.sort.enabled": true, // bibtexのソートを有効
-    "latex-workshop.bibtex-fields.sort.enabled": true, // bibtexのフィールドのソートを有効
-    // ---------- LaTeX Workshop ----------
-    // 使用パッケージのコマンドや環境の補完を有効にする
-    "latex-workshop.intellisense.package.enabled": true,
-    // 生成ファイルを削除するときに対象とするファイル
-    // デフォルト値に "*.synctex.gz" を追加
-    "latex-workshop.latex.clean.fileTypes": [
-        "*.aux",
-        "*.bbl",
-        "*.blg",
-        "*.idx",
-        "*.ind",
-        // "*.lof",
-        // "*.lot",
-        "*.out",
-        // "*.toc",
-        "*.acn",
-        "*.acr",
-        "*.alg",
-        "*.glg",
-        "*.glo",
-        "*.gls",
-        "*.ist",
-        "*.fls",
-        "*.log",
-        "*.fdb_latexmk",
-        "*.snm",
-        "*.nav",
-        "*.dvi",
-        "*.synctex.gz"
-    ],
-    // 生成ファイルを "out" ディレクトリに吐き出す
-    // ビルドのレシピ
-    "latex-workshop.latex.recipes": [
-        {
-            "name": "latexmk",
-            "tools": [
-                "latexmk"
-            ]
-        }
-    ],
-    // ビルドのレシピに使われるパーツ
-    "latex-workshop.latex.tools": [
-        {
-            "args": [
-                "-file-line-error",
-                "-interaction=nonstopmode",
-                // "-silent",
-                // "-c",
-                "-synctex=1",
-                // "-pdf",
-                "-outdir=%OUTDIR%",
-                "%DOC%"
-            ],
-            "command": "latexmk",
-            "name": "latexmk"
-        }
-    ],
-    // Git
-    "git.autofetch": true,
-    "git.confirmSync": false,
-    "github.copilot.enable": {
-        "*": true,
-        "markdown": false,
-        "plaintext": false,
-        "python": true,
-        "scminput": false
-    },
-    "git.addAICoAuthor": "off",
-    // Remote
-    "remote.SSH.remotePlatform": {
-        "192.168.1.33": "linux",
-        "olab_gpu": "linux",
-        "student-gpu4": "linux"
-    },
-    // ??????
-    "C_Cpp.clang_format_style": "{BasedOnStyle: Google, IndentWidth: 4}",
-    "[txt]": {
-        "editor.unicodeHighlight.allowedCharacters": {
-            "　": true
-        }
-    },
-    "chat.viewSessions.orientation": "stacked",
-    "docker.extension.dockerEngineAvailabilityPrompt": false,
-    "hediet.vscode-drawio.resizeImages": null,
-    "interactiveWindow.executeWithShiftEnter": true,
-    "livePreview.notifyOnOpenLooseFile": false,
-    "markdown-preview-enhanced.codeBlockTheme": "github-dark.css",
-    "markdown-preview-enhanced.enablePreviewZenMode": true,
-    "markdown-preview-enhanced.hideDefaultVSCodeMarkdownPreviewButtons": false,
-    "markdown-preview-enhanced.previewTheme": "github-dark.css",
-    "markdown.extension.completion.enabled": true,
-    "markdown.preview.scrollEditorWithPreview": false,
-    "markdown.preview.scrollPreviewWithEditor": false,
-    "markdown.preview.typographer": true,
-    "mypy-type-checker.severity": {
-        "error": "Information"
-    },
-    "task.allowAutomaticTasks": "on",
+    "editor.suggest.insertMode": "replace"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "files.trimTrailingWhitespace": false
+  },
+  // ==========================================
+  // 6. 拡張機能設定 (Extensions)
+  // ==========================================
+  // Python & Jupyter
+  "black-formatter.importStrategy": "useBundled",
+  "flake8.args": ["--ignore=E203,W503,W504", "--max-line-length=88"],
+  "flake8.importStrategy": "fromEnvironment",
+  "flake8.severity": {
+    "E": "Warning",
+    "F": "Warning",
+    "I": "Information",
+    "W": "Warning"
+  },
+  "mypy-type-checker.args": [
+    "--warn-return-any",
+    "--no-implicit-optional",
+    "--disallow-untyped-calls",
+    "--disallow-untyped-defs",
+    "--ignore-missing-imports",
+    "--follow-imports=skip"
+  ],
+  "python.venvPath": "~/.virtualenvs",
+  "python.terminal.activateEnvironment": false,
+  "jupyter.askForKernelRestart": false,
+  "notebook.compactView": false,
+  "notebook.consolidatedRunButton": true,
+  "notebook.formatOnCellExecution": true,
+  "notebook.formatOnSave.enabled": true,
+  "notebook.lineNumbers": "on",
+  "notebook.output.scrolling": true,
+  "notebook.scrolling.revealNextCellOnExecute": "none",
+  // LaTeX Workshop
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.latex.outDir": "out",
+  "latex-workshop.bibtex-format.sort.enabled": true, // bibtexのソートを有効
+  "latex-workshop.bibtex-fields.sort.enabled": true, // bibtexのフィールドのソートを有効
+  // ---------- LaTeX Workshop ----------
+  // 使用パッケージのコマンドや環境の補完を有効にする
+  "latex-workshop.intellisense.package.enabled": true,
+  // 生成ファイルを削除するときに対象とするファイル
+  // デフォルト値に "*.synctex.gz" を追加
+  "latex-workshop.latex.clean.fileTypes": [
+    "*.aux",
+    "*.bbl",
+    "*.blg",
+    "*.idx",
+    "*.ind",
+    // "*.lof",
+    // "*.lot",
+    "*.out",
+    // "*.toc",
+    "*.acn",
+    "*.acr",
+    "*.alg",
+    "*.glg",
+    "*.glo",
+    "*.gls",
+    "*.ist",
+    "*.fls",
+    "*.log",
+    "*.fdb_latexmk",
+    "*.snm",
+    "*.nav",
+    "*.dvi",
+    "*.synctex.gz"
+  ],
+  // 生成ファイルを "out" ディレクトリに吐き出す
+  // ビルドのレシピ
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "latexmk",
+      "tools": ["latexmk"]
+    }
+  ],
+  // ビルドのレシピに使われるパーツ
+  "latex-workshop.latex.tools": [
+    {
+      "args": [
+        "-file-line-error",
+        "-interaction=nonstopmode",
+        // "-silent",
+        // "-c",
+        "-synctex=1",
+        // "-pdf",
+        "-outdir=%OUTDIR%",
+        "%DOC%"
+      ],
+      "command": "latexmk",
+      "name": "latexmk"
+    }
+  ],
+  // Git
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "github.copilot.enable": {
+    "*": true,
+    "markdown": false,
+    "plaintext": false,
+    "python": true,
+    "scminput": false
+  },
+  "git.addAICoAuthor": "off",
+  // Remote
+  "remote.SSH.remotePlatform": {
+    "192.168.1.33": "linux",
+    "olab_gpu": "linux",
+    "student-gpu4": "linux"
+  },
+  // ??????
+  "C_Cpp.clang_format_style": "{BasedOnStyle: Google, IndentWidth: 4}",
+  "[txt]": {
+    "editor.unicodeHighlight.allowedCharacters": {
+      "　": true
+    }
+  },
+  "chat.viewSessions.orientation": "stacked",
+  "docker.extension.dockerEngineAvailabilityPrompt": false,
+  "hediet.vscode-drawio.resizeImages": null,
+  "interactiveWindow.executeWithShiftEnter": true,
+  "livePreview.notifyOnOpenLooseFile": false,
+  "markdown-preview-enhanced.codeBlockTheme": "github-dark.css",
+  "markdown-preview-enhanced.enablePreviewZenMode": true,
+  "markdown-preview-enhanced.hideDefaultVSCodeMarkdownPreviewButtons": false,
+  "markdown-preview-enhanced.previewTheme": "github-dark.css",
+  "markdown.extension.completion.enabled": true,
+  "markdown.preview.scrollEditorWithPreview": false,
+  "markdown.preview.scrollPreviewWithEditor": false,
+  "markdown.preview.typographer": true,
+  "mypy-type-checker.severity": {
+    "error": "Information"
+  },
+  "task.allowAutomaticTasks": "on"
 }
