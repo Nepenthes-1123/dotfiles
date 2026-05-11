@@ -17,7 +17,7 @@
   "editor.formatOnPaste": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
-    "source.organizeImports": "explicit"
+    "source.organizeImports": "explicit",
   },
   // 視認性:  空白・制御文字・ガイド
   "editor.renderWhitespace": "boundary",
@@ -26,13 +26,13 @@
   "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
   "editor.guides.bracketPairs": true,
   "editor.unicodeHighlight.allowedCharacters": {
-    "　": true
+    "　": true,
   },
   "editor.unicodeHighlight.ambiguousCharacters": true,
   "editor.quickSuggestions": {
     "other": "on",
     "comments": "off",
-    "strings": "on"
+    "strings": "on",
   },
   // ==========================================
   // 2. ワークスペース・UI (Workbench & UI)
@@ -55,7 +55,7 @@
   "editor.minimap.maxColumn": 60,
   "editor.minimap.renderCharacters": false,
   "workbench.colorCustomizations": {
-    "minimap.background": "#00ff0d05"
+    "minimap.background": "#00ff0d05",
   },
   "explorer.compactFolders": false,
   // ==========================================
@@ -72,7 +72,7 @@
     "**/*.pyc": true,
     "**/.svn": true,
     "**/.hg": true,
-    "**/Thumbs.db": true
+    "**/Thumbs.db": true,
   },
   "security.workspace.trust.untrustedFiles": "open",
   // ==========================================
@@ -88,50 +88,50 @@
       "args": [
         "/K",
         "%USERPROFILE%\\anaconda3\\Scripts\\activate.bat",
-        "%USERPROFILE%\\anaconda3"
+        "%USERPROFILE%\\anaconda3",
       ],
       "color": "terminal.ansiYellow",
       "icon": "arrow-right",
-      "path": "${env:windir}\\System32\\cmd.exe"
+      "path": "${env:windir}\\System32\\cmd.exe",
     },
     "Command Prompt": {
       "args": [],
       "icon": "terminal-cmd",
       "path": [
         "${env:windir}\\Sysnative\\cmd.exe",
-        "${env:windir}\\System32\\cmd.exe"
-      ]
+        "${env:windir}\\System32\\cmd.exe",
+      ],
     },
     "Git Bash": {
       "color": "terminal.ansiGreen",
       "icon": "terminal-bash",
-      "source": "Git Bash"
+      "source": "Git Bash",
     },
     "PowerShell": {
       "icon": "terminal-powershell",
-      "source": "PowerShell"
+      "source": "PowerShell",
     },
     "Windows PowerShell7": {
-      "path": "pwsh.exe"
-    }
+      "path": "pwsh.exe",
+    },
   },
   "workbench.editorAssociations": {
     "*.exe": "default",
     "*.pdf": "latex-workshop-pdf-hook",
-    "*.png": "imagePreview.previewEditor"
+    "*.png": "imagePreview.previewEditor",
   },
   // ==========================================
   // 5. 言語別設定 (Language Specifics)
   // ==========================================
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
-    "editor.formatOnType": true
+    "editor.formatOnType": true,
   },
   "[tex]": {
     // スニペット補完中にも補完を使えるようにする
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     // インデント幅を2にする
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   "[latex]": {
     "editor.formatOnSave": false,
@@ -139,23 +139,23 @@
     // スニペット補完中にも補完を使えるようにする
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     // インデント幅を2にする
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   "[bibtex]": {
     // インデント幅を2にする
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   "[json]": {
     "editor.quickSuggestions": {
-      "strings": true
+      "strings": true,
     },
-    "editor.suggest.insertMode": "replace"
+    "editor.suggest.insertMode": "replace",
   },
   "[markdown]": {
     "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
-    "files.trimTrailingWhitespace": false
+    "files.trimTrailingWhitespace": false,
   },
   // ==========================================
   // 6. 拡張機能設定 (Extensions)
@@ -168,7 +168,7 @@
     "E": "Warning",
     "F": "Warning",
     "I": "Information",
-    "W": "Warning"
+    "W": "Warning",
   },
   "mypy-type-checker.args": [
     "--warn-return-any",
@@ -176,7 +176,7 @@
     "--disallow-untyped-calls",
     "--disallow-untyped-defs",
     "--ignore-missing-imports",
-    "--follow-imports=skip"
+    "--follow-imports=skip",
   ],
   "python.venvPath": "~/.virtualenvs",
   "python.terminal.activateEnvironment": false,
@@ -222,15 +222,15 @@
     "*.snm",
     "*.nav",
     "*.dvi",
-    "*.synctex.gz"
+    "*.synctex.gz",
   ],
   // 生成ファイルを "out" ディレクトリに吐き出す
   // ビルドのレシピ
   "latex-workshop.latex.recipes": [
     {
       "name": "latexmk",
-      "tools": ["latexmk"]
-    }
+      "tools": ["latexmk"],
+    },
   ],
   // ビルドのレシピに使われるパーツ
   "latex-workshop.latex.tools": [
@@ -243,11 +243,11 @@
         "-synctex=1",
         // "-pdf",
         "-outdir=%OUTDIR%",
-        "%DOC%"
+        "%DOC%",
       ],
       "command": "latexmk",
-      "name": "latexmk"
-    }
+      "name": "latexmk",
+    },
   ],
   // Git
   "git.autofetch": true,
@@ -257,21 +257,21 @@
     "markdown": false,
     "plaintext": false,
     "python": true,
-    "scminput": false
+    "scminput": false,
   },
   "git.addAICoAuthor": "off",
   // Remote
   "remote.SSH.remotePlatform": {
     "192.168.1.33": "linux",
     "olab_gpu": "linux",
-    "student-gpu4": "linux"
+    "student-gpu4": "linux",
   },
   // ??????
   "C_Cpp.clang_format_style": "{BasedOnStyle: Google, IndentWidth: 4}",
   "[txt]": {
     "editor.unicodeHighlight.allowedCharacters": {
-      "　": true
-    }
+      "　": true,
+    },
   },
   "chat.viewSessions.orientation": "stacked",
   "docker.extension.dockerEngineAvailabilityPrompt": false,
@@ -287,7 +287,7 @@
   "markdown.preview.scrollPreviewWithEditor": false,
   "markdown.preview.typographer": true,
   "mypy-type-checker.severity": {
-    "error": "Information"
+    "error": "Information",
   },
-  "task.allowAutomaticTasks": "on"
+  "task.allowAutomaticTasks": "on",
 }
