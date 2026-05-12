@@ -44,3 +44,6 @@ setopt extended_glob
 setopt numeric_glob_sort
 ## 出力時8ビットを通す
 setopt print_eight_bit
+
+## .zshrc.local が存在する場合は読み込む
+[ -f "${HOME}/.zshrc.local" ] && source "${HOME}/.zshrc.local"
