@@ -198,6 +198,7 @@ end);
 -- keybindings.lua からショートカットキーを読み込む
 local keybinds = require("keybindings")
 config.disable_default_key_bindings = true -- デフォルトのキーbindingsを無効化
+config.leader = keybinds.leader
 config.keys = keybinds.keys
 
 

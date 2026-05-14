@@ -2,23 +2,11 @@ local wezterm = require 'wezterm'
 local act = wezterm.action
 
 return {
+  leader = { key = "a", mods = "CTRL", timeout_milliseconds = 2000 },
   keys = {
     { key = 'Tab', mods = 'CTRL', action = act.ActivateTabRelative(1) },
     { key = 'Tab', mods = 'SHIFT|CTRL', action = act.ActivateTabRelative(-1) },
     { key = 'Enter', mods = 'ALT', action = act.ToggleFullScreen },
-    { key = '!', mods = 'CTRL', action = act.ActivateTab(0) },
-    { key = '!', mods = 'SHIFT|CTRL', action = act.ActivateTab(0) },
-    { key = '\"', mods = 'ALT|CTRL', action = act.SplitVertical{ domain =  'CurrentPaneDomain' } },
-    { key = '\"', mods = 'SHIFT|ALT|CTRL', action = act.SplitVertical{ domain =
- 'CurrentPaneDomain' } },
-    { key = '%', mods = 'ALT|CTRL', action = act.SplitHorizontal{ domain =  'CurrentPaneDomain' } },
-    { key = '%', mods = 'SHIFT|ALT|CTRL', action = act.SplitHorizontal{ domain =  'CurrentPaneDomain' } },
-    { key = '\'', mods = 'SHIFT|ALT|CTRL', action = act.SplitVertical{ domain =
- 'CurrentPaneDomain' } },
-    { key = '(', mods = 'CTRL', action = act.ActivateTab(-1) },
-    { key = '(', mods = 'SHIFT|CTRL', action = act.ActivateTab(-1) },
-    { key = ')', mods = 'CTRL', action = act.ResetFontSize },
-    { key = ')', mods = 'SHIFT|CTRL', action = act.ResetFontSize },
     { key = '+', mods = 'CTRL', action = act.IncreaseFontSize },
     { key = '+', mods = 'SHIFT|CTRL', action = act.IncreaseFontSize },
     { key = '-', mods = 'CTRL', action = act.DecreaseFontSize },
@@ -27,7 +15,6 @@ return {
     { key = '0', mods = 'CTRL', action = act.ResetFontSize },
     { key = '0', mods = 'SHIFT|CTRL', action = act.ResetFontSize },
     { key = '0', mods = 'SUPER', action = act.ResetFontSize },
-    { key = '5', mods = 'SHIFT|ALT|CTRL', action = act.SplitHorizontal{ domain =  'CurrentPaneDomain' } },
     { key = '=', mods = 'CTRL', action = act.IncreaseFontSize },
     { key = '=', mods = 'SHIFT|CTRL', action = act.IncreaseFontSize },
     { key = '=', mods = 'SUPER', action = act.IncreaseFontSize },
@@ -175,7 +162,35 @@ true, copy_to =  'ClipboardAndPrimarySelection' } },
 
     -- ¥でバックスラッシュ・ALT + ¥で¥
     { key = "¥", action = act.SendKey({ key = "\\" }) },
-    { key = "¥", mods = "ALT", action = act.SendKey( {key = "¥" }) }
+    { key = "¥", mods = "ALT", action = act.SendKey( {key = "¥" }) },
+    -- ctrl+,で下にpane ctrl+.で右にpane
+    { key = ",", mods = "CTRL", action = act.SplitVertical{ domain =  'CurrentPaneDomain' }},
+    { key = ".", mods = "CTRL", action = act.SplitHorizontal{ domain =  'CurrentPaneDomain' }},
+
+    {
+    mods = 'LEADER',
+    key = 's',
+    action = act.ShowLauncherArgs { flags = 'WORKSPACES' , title = "Select workspace" },
+    },
+
+    {
+    -- Create new workspace
+    mods = 'LEADER|SHIFT',
+    key = 'S',
+    action = act.PromptInputLine {
+      description = "(wezterm) Create new workspace:",
+      action = wezterm.action_callback(function(window, pane, line)
+        if line then
+          window:perform_action(
+            act.SwitchToWorkspace {
+              name = line,
+            },
+            pane
+          )
+        end
+        end),
+    },
+},
   },
 
   key_tables = {
