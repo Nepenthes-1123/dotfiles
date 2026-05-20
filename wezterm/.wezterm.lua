@@ -78,16 +78,13 @@ config.color_scheme = 'Sakura'
 
 -- 背景透過
 config.window_background_opacity = 0.8
-config.macos_window_background_blur = 20
+config.macos_window_background_blur = 5
 
 -- フォントの設定
 config.font = wezterm.font_with_fallback {
-  "Consolas",
+   "JetBrains Mono",
    "游明朝",
-   "Monaspace Neon Var",
-   "Source Han Code JP",
-   "Courier New",
-   "monospace",
+   "Hiragino Sans",
 }
 
 -- フォントサイズの設定
