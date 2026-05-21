@@ -14,8 +14,8 @@ return {
     { key = 'c', mods = 'SUPER', action = act.CopyTo 'Clipboard' },
     { key = 'F', mods = 'SHIFT|CTRL', action = act.Search 'CurrentSelectionOrEmptyString' },
     { key = 'f', mods = 'SUPER', action = act.Search 'CurrentSelectionOrEmptyString' },
-    { key = 'K', mods = 'SHIFT|CTRL', action = act.ClearScrollback 'ScrollbackOnly' },
-    { key = 'k', mods = 'SUPER', action = act.ClearScrollback 'ScrollbackOnly' },
+    { key = 'K', mods = 'SHIFT|CTRL', action = act.ClearScrollback 'ScrollbackAndViewport' },
+    { key = 'k', mods = 'SUPER', action = act.ClearScrollback 'ScrollbackAndViewport' },
     { key = 'L', mods = 'SHIFT|CTRL', action = act.ShowDebugOverlay },
     { key = 'l', mods = 'SUPER', action = act.ShowDebugOverlay },
     { key = 'M', mods = 'SHIFT|CTRL', action = act.Hide },
@@ -57,12 +57,6 @@ true, copy_to =  'ClipboardAndPrimarySelection' } },
     { key = 'Insert', mods = 'CTRL', action = act.CopyTo 'PrimarySelection' },
     { key = 'Copy', mods = 'NONE', action = act.CopyTo 'Clipboard' },
     { key = 'Paste', mods = 'NONE', action = act.PasteFrom 'Clipboard' },
-    -- Ctrl+Shift+tで新しいタブを作成
-    {
-        key = 't',
-        mods = 'CTRL|SHIFT',
-        action = act.SpawnTab 'CurrentPaneDomain',
-    },
     -- Ctrl+左矢印でカーソルを前の単語に移動
     {
         key = "LeftArrow",
@@ -106,6 +100,9 @@ true, copy_to =  'ClipboardAndPrimarySelection' } },
     -- ctrl+,で下にpane ctrl+.で右にpane
     { key = ",", mods = "CTRL", action = act.SplitVertical{ domain =  'CurrentPaneDomain' }},
     { key = ".", mods = "CTRL", action = act.SplitHorizontal{ domain =  'CurrentPaneDomain' }},
+    -- leader + q で Pane を閉じる
+    { key = "Q", mods = "CTRL|SHIFT", action = act({ CloseCurrentPane = { confirm = true } }) },
+    { key = "q", mods = "SUPER", action = act({ CloseCurrentPane = { confirm = true } }) },
     -- LEADERの後にsでワークスペース切り替え
     {
     mods = 'LEADER',
