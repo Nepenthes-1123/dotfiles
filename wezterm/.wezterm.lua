@@ -97,25 +97,6 @@ config.font_size = 12
 -- IMEの設定
 config.use_ime = true
 
--- タブバーの設定
-
--- タブバーを下に配置し、新しいタブボタンを非表示にする
-config.tab_bar_at_bottom = true
-config.show_new_tab_button_in_tab_bar = false
-config.tab_max_width = 30
-
--- タイトルバーの設定
-config.window_decorations = "RESIZE"
-
--- ペーンの設定
-config.inactive_pane_hsb ={
-    saturation = 0.8,
-    brightness = 0.4,
-}
-
--- カーソルの設定
-config.default_cursor_style = "BlinkingBlock"
-
 -- ステータスのカスタマイズ
 local status = require('status')
 status.setup()
@@ -125,7 +106,5 @@ local keybinds = require("keybindings")
 config.disable_default_key_bindings = true -- デフォルトのキーbindingsを無効化
 config.leader = keybinds.leader
 config.keys = keybinds.keys
-
-
 
 return config
