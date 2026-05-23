@@ -7,7 +7,7 @@ end
 
 -- tabのフォーマットを読み込む
 local format = require('format')
-format.setup(config)
+format.setup(wezterm, config)
 
 -- Windows環境でzshを探索して使用
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
@@ -99,7 +99,7 @@ config.use_ime = true
 
 -- ステータスのカスタマイズ
 local status = require('status')
-status.setup()
+status.setup(wezterm, config)
 
 -- keybindings.lua からショートカットキーを読み込む
 local keybinds = require("keybindings")

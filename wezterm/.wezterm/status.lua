@@ -1,5 +1,3 @@
-local wezterm = require('wezterm')
-
 -- Color palette for the backgrounds of each cell
 local COLORS = {
   "#8a3375",
@@ -10,16 +8,16 @@ local COLORS = {
 local TEXT_FG = "#fee6ee";
 
 
-local function getTime(elems, window)
+local function getTime(elems, window, wezterm)
     -- 時刻表示
     local date = wezterm.strftime("%m/%-d %H:%M:%S %a");
     table.insert(elems, '  ' .. date);
 end
 
-local function rightUpdate(window, pane)
+local function rightUpdate(window, pane, wezterm)
     local cells = {};
 
-    getTime(cells, window)
+    getTime(cells, window, wezterm)
 
 
     -- The elements to be formatted
@@ -50,9 +48,9 @@ end
 
 local M = {}
 
-function M.setup()
+function M.setup(wezterm, config)
     wezterm.on('update-status', function(window, pane)
-        rightUpdate(window, pane)
+        rightUpdate(window, pane, wezterm)
     end)
 end
 
