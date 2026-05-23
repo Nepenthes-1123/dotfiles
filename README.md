@@ -58,6 +58,8 @@
 
 - **`.wezterm/`** — 追加設定（キーバインディングなど）
   - `keybindings.lua` — カスタムキーバインディング
+  - `format.lua` — タブバー、タイトルバー、ペイン、カーソルの見た目設定
+  - `status.lua` — 右ステータスバー（時刻表示など）の設定
 
 - **`WEZTERM_SETUP.md`** — Windows での zsh 設定方法
 
@@ -177,15 +179,15 @@ setx MSYS2_HOME "C:\msys64"
 
 | カテゴリ | 拡張機能 |
 |---------|--------|
-| **Python** | python, black-formatter, flake8, isort, mypy-type-checker, pylance |
-| **Jupyter** | jupyter, jupyter-keymap, jupyter-renderers, vscode-jupyter-cell-tags, jupyter-slideshow |
+| **Python** | python, black-formatter, debugpy, flake8, isort, mypy-type-checker, vscode-pylance, vscode-python-envs |
+| **Jupyter** | jupyter, jupyter-keymap, jupyter-renderers, vscode-jupyter-cell-tags, vscode-jupyter-slideshow |
 | **LaTeX** | latex-workshop |
-| **言語** | better-cpp-syntax, cmake-language-support, cmake-tools, cpptools, cpptools-extension-pack |
+| **言語** | better-cpp-syntax, cmake-language-support-vscode, cmake-tools, cpp-devtools, cpptools, cpptools-extension-pack, cpptools-themes, dotnet-runtime, twxs.cmake |
 | **Git/GitHub** | github-vscode-theme, vscode-pull-request-github |
 | **Docker** | docker, vscode-containers, remote-containers |
 | **Remote** | remote-ssh, remote-ssh-edit, remote-wsl, remote-explorer |
-| **Markdown** | markdownlint, markdown-all-in-one, markdown-preview-enhanced |
-| **その他** | drawio, foam-vscode, errorlens, autodocstring, language-pack-ja, copilot |
+| **Markdown** | markdownlint, markdown-all-in-one, markdown-preview-enhanced, marp-vscode |
+| **その他** | drawio, foam-vscode, errorlens, autodocstring, vscode-language-pack-ja |
 
 詳細は [vscode/extensions.txt](vscode/extensions.txt) を参照。
 
