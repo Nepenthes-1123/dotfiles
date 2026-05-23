@@ -32,16 +32,19 @@
 ### `zsh/` — Zsh 設定
 
 - **`.zshrc`** — Zsh メイン設定ファイル
-  - `.zsh.d` 内の設定ファイルを自動読み込み
-  - PATH、環境変数、ターミナルオプションなど
+  - 言語・ロケール設定（日本語対応）
+  - `.zsh.d` 内の設定ファイルを優先度順に自動読み込み
+  - PATH、環境変数、ターミナルオプション、タイトルバー設定など
+  - `.zshrc.local` が存在する場合は読み込み（個人用設定）
 
-- **`.zsh.d/`** — 分割された機能別設定（自動読み込み）
+- **`.zsh.d/`** — 分割された機能別設定ファイル
+  - 読み込みプロセス：`.zshrc` → `priorities.conf` 読み込み → 指定順序でファイル読み込み
   - `priorities.conf` — 読み込み順序の指定
-  - `audit.zsh` — 管理外のファイル監査
-  - `plugins.zsh` — プラグインの読み込み
-  - `alias.zsh` — コマンドエイリアス
-  - `completion.zsh` — 補完設定
-  - `prompt.zsh` — プロンプト・履歴設定
+  - `plugins.zsh` — zsh プラグイン（fzf-tab, zsh-autosuggestions など）の読み込み設定
+  - `alias.zsh` — よく使うコマンドのエイリアス定義
+  - `completion.zsh` — 補完機能設定
+  - `prompt.zsh` — プロンプト表示・履歴設定
+  - `audit.zsh` — 監査・ファイルチェック設定
 
 ### `wezterm/` — Wezterm ターミナル設定
 
@@ -87,12 +90,22 @@
 
 ### 前提条件
 
-- **Bash** — インストール必須（Windows の場合は Git for Windows 推奨）
+- **Bash** — インストール必須（Windows の場合は Git for Windows または MSYS2 推奨）
 - **Git** — インストール推奨
 - **OS 別要件**：
-  - **Windows**: winget がインストールされていること（Windows 11 標準）
+  - **Windows**: winget がインストールされていること（Windows 11 標準） or MSYS2
   - **macOS**: Xcode Command Line Tools
-  - **Ubuntu**: sudo アクセス権
+  - **Ubuntu/Debian**: sudo アクセス権
+
+### 対応状況
+
+以下の OS/環境に対応しています：
+
+- ✅ **Windows 11** (winget or MSYS2/Git Bash)
+- ✅ **macOS** (Homebrew)
+- ✅ **Ubuntu/Debian** (apt)
+- ⚠️ **CentOS/Amazon Linux** (実装予定)
+- ⚠️ **WSL** (部分対応)
 
 ### セットアップ手順
 
@@ -109,13 +122,15 @@ cd ~/dotfiles
 bash scripts/setup.sh
 ```
 
-実行中に以下の選択肢が出ます：
+セットアップでは以下の処理が順に自動実行されます：
 
-1. **Tool Installation** — 必要なツールをインストール
-2. **Symlink Creation** — 設定ファイルをホームディレクトリにリンク
-3. **Git User Config** — Git ユーザー設定を選択：
-   - `private`: `git/.gitconfig.private` をコピー
-   - `make`: その場で入力して `.gitconfig.local` を作成
+1. **ツールのインストール** — OS ごとに必要なツール（wezterm, VS Code, Git, zsh など）をインストール
+2. **プラグイン・ツールのインストール** — fzf、zsh プラグイン（zsh-autosuggestions, zsh-syntax-highlighting, fzf-tab）をインストール
+3. **シンボリックリンク作成** — 設定ファイルをホームディレクトリにリンク  
+   既存ファイルがある場合は「置き換え/バックアップ/スキップ」を選択できます
+4. **Git ユーザー設定** — 以下の方法から選択：
+   - `private`: `.gitconfig.private` をコピー (GitHub noreply メール)
+   - `make`: その場で入力して `.gitconfig.local` を作成（ローカルのみ有効）
 
 #### 3. Windows での zsh 設定（オプション）
 
@@ -158,11 +173,21 @@ setx MSYS2_HOME "C:\msys64"
 
 #### VS Code
 
-- Python（Black, Flake8, mypy）
-- LaTeX（LaTeX Workshop）
-- Jupyter Notebook
-- 複数の言語サポート
-- カスタムスニペット
+**主要な拡張機能（extensions.txt より）：**
+
+| カテゴリ | 拡張機能 |
+|---------|--------|
+| **Python** | python, black-formatter, flake8, isort, mypy-type-checker, pylance |
+| **Jupyter** | jupyter, jupyter-keymap, jupyter-renderers, vscode-jupyter-cell-tags, jupyter-slideshow |
+| **LaTeX** | latex-workshop |
+| **言語** | better-cpp-syntax, cmake-language-support, cmake-tools, cpptools, cpptools-extension-pack |
+| **Git/GitHub** | github-vscode-theme, vscode-pull-request-github |
+| **Docker** | docker, vscode-containers, remote-containers |
+| **Remote** | remote-ssh, remote-ssh-edit, remote-wsl, remote-explorer |
+| **Markdown** | markdownlint, markdown-all-in-one, markdown-preview-enhanced |
+| **その他** | drawio, foam-vscode, errorlens, autodocstring, language-pack-ja, copilot |
+
+詳細は [vscode/extensions.txt](vscode/extensions.txt) を参照。
 
 #### Wezterm
 
@@ -197,9 +222,19 @@ bash scripts/add_symlink.sh
 
 ## ⚠️ 注意事項
 
-- **既存ファイルの上書き**: セットアップ中に既存ファイルが検出されると、置き換え・バックアップ・スキップを選択できます
-- **Symlink 対応**: Windows は NTFS シンボリックリンクに対応していますが、管理者権限が必要な場合があります
-- **環境変数**: 設定によっては環境変数の設定が必要です（例: `MSYS2_HOME`）
+- **既存ファイルの上書き**: セットアップ中に既存ファイルが検出されると、以下を対話的に選択できます：
+  - 置き換え（上書き）
+  - バックアップ（`.bak` 拡張子を付けて保存）
+  - スキップ（処理をスキップ）
+
+- **Symlink 対応**（環境による）：
+  - **Windows (NTFS)**: 管理者権限が必要な場合あり。`symlink_win_list.conf` で設定
+  - **MSYS2/Git Bash**: シンボリックリンク作成時に `-s` フラグを使用
+  - **macOS/Linux**: 標準的なシンボリックリンク対応
+
+- **環境変数**: 一部機能で環境変数設定が必要です：
+  - `MSYS2_HOME` — Windows で MSYS2 を使用する場合（例: `C:\msys64`）
+  - `ZSH_CUSTOM_PATH` — Wezterm で zsh のパスを明示的に指定したい場合
 
 ---
 
@@ -221,12 +256,33 @@ bash scripts/add_symlink.sh
 
 ### シンボリックリンク作成に失敗する
 
-- **Windows**: 管理者権限で Bash を実行
-- **macOS/Linux**: ホームディレクトリの書き込み権限を確認
+- **Windows (Git Bash/MSYS2)**:
+  - Git Bash や MSYS2 のシェルを管理者権限で実行
+  - または、Git Config で `core.symlinks=true` を設定
+- **Windows (PowerShell)**:
+  - Developer Mode を有効化 or 管理者権限で実行
+- **macOS/Linux**:
+  - ホームディレクトリの書き込み権限を確認
+  - `ls -ld ~` でパーミッションを確認（755 or 700）
 
 ### Wezterm で zsh が見つからない
 
-[wezterm/WEZTERM_SETUP.md](wezterm/WEZTERM_SETUP.md) を確認し、環境変数を設定してください。
+Windowsの場合、以下を確認してください：
+
+1. zsh がインストールされているか確認：`where zsh.exe`
+2. [wezterm/WEZTERM_SETUP.md](wezterm/WEZTERM_SETUP.md) を参照
+3. `ZSH_CUSTOM_PATH` または `MSYS2_HOME` 環境変数を設定
+
+### セットアップ後に zsh がデフォルトシェルにならない
+
+- **Windows**: `.wezterm.lua` がシェル自動検出を行います。環境変数で明示的に指定可能
+- **macOS/Linux**: `chsh -s /bin/zsh` でデフォルトシェルを変更
+
+### VS Code の拡張機能を一括インストール
+
+```bash
+cat vscode/extensions.txt | xargs -L1 code --install-extension
+```
 
 ---
 
