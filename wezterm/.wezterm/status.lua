@@ -2,21 +2,18 @@ local wezterm = require('wezterm')
 
 -- Color palette for the backgrounds of each cell
 local COLORS = {
-  "#3c1361",
-  "#52307c",
-  "#663a82",
-  "#7c5295",
-  "#b491c8",
+  "#8a3375",
+  "#b33c86",
 };
 
 -- Foreground color for the text across the fade
-local TEXT_FG = "#c0c0c0";
+local TEXT_FG = "#fee6ee";
 
 
 local function getTime(elems, window)
     -- 時刻表示
     local date = wezterm.strftime("%m/%-d %H:%M:%S %a");
-    table.insert(cells, '  ' .. date);
+    table.insert(elems, '  ' .. date);
 end
 
 local function rightUpdate(window, pane)
@@ -51,6 +48,12 @@ local function rightUpdate(window, pane)
     window:set_right_status(wezterm.format(elements));
 end
 
-wezterm.on('update-status', function(window, pane)
-    rightUpdate(window, pane)
-end)
+local M = {}
+
+function M.setup()
+    wezterm.on('update-status', function(window, pane)
+        rightUpdate(window, pane)
+    end)
+end
+
+return M

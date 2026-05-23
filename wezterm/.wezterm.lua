@@ -6,7 +6,8 @@ if wezterm.config_builder then
 end
 
 -- tabのフォーマットを読み込む
-require('format')
+local format = require('format')
+format.setup(config)
 
 -- Windows環境でzshを探索して使用
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
@@ -116,7 +117,8 @@ config.inactive_pane_hsb ={
 config.default_cursor_style = "BlinkingBlock"
 
 -- ステータスのカスタマイズ
-require('status')
+local status = require('status')
+status.setup()
 
 -- keybindings.lua からショートカットキーを読み込む
 local keybinds = require("keybindings")
