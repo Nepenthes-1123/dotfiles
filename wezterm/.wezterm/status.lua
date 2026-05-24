@@ -48,8 +48,45 @@ end
 
 local M = {}
 
+local function leftUpdate(window, pane, wezterm)
+    local vars = pane:get_user_vars()
+    local branch = vars.GIT_BRANCH
+    local status = vars.GIT_STATUS
+    
+    -- 左側の背景色（右側の最初のセル COLORS[1] と合わせる）
+    local BG_COLOR = COLORS[1]
+    
+    -- 背景色の上でも視認性が高い「Bright」系カラーを中心に使用
+    local GIT_COLORS = {
+        clean     = "#22e529", -- Bright Green
+        untracked = "#f59574", -- Bright Yellow
+        modified  = "#f41d99", -- Bright Red (Sakura Pink)
+        staged    = "#eeeeee", -- Bright Cyan (視認性重視)
+    }
+    
+    local elements = {}
+    
+    -- 背景色の設定
+    table.insert(elements, {Background={Color=BG_COLOR}})
+
+    if branch and branch ~= "" then
+        -- Gitリポジトリ内
+        local color = GIT_COLORS[status] or GIT_COLORS.clean
+        table.insert(elements, {Foreground={Color=color}})
+        table.insert(elements, {Text="   " .. branch .. "  "})
+    else
+        -- Git管理外: ワークスペース名を表示 (Bright White)
+        local workspace = window:active_workspace()
+        table.insert(elements, {Foreground={Color="#cbb6ff"}}) -- Bright White (Pale Purple)
+        table.insert(elements, {Text="  󱂬 " .. workspace .. "  "})
+    end
+    
+    window:set_left_status(wezterm.format(elements))
+end
+
 function M.setup(wezterm, config)
     wezterm.on('update-status', function(window, pane)
+        leftUpdate(window, pane, wezterm)
         rightUpdate(window, pane, wezterm)
     end)
 end

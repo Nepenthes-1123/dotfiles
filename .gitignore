@@ -29,6 +29,7 @@
 !zsh/.zsh.d/alias.zsh
 !zsh/.zsh.d/completion.zsh
 !zsh/.zsh.d/prompt.zsh
+!zsh/.zsh.d/wezterm.zsh
 
 # wezterm セッティング
 !wezterm/WEZTERM_SETUP.md
