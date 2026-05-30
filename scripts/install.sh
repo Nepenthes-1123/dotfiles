@@ -17,6 +17,10 @@ function install_win() {
     if ! winget list git > /dev/null 2>&1; then
         winget install --id Git.Git -e --source winget
     fi
+
+    if ! winget list ripgrep > /dev/null 2>&1; then
+      winget install --id BurntSushi.ripgrep.MSVC -e --source winget
+    fi
 }
 
 function install_mac() {
@@ -41,6 +45,10 @@ function install_mac() {
     # install git
     if ! type git > /dev/null 2>&1; then
         brew install git
+    fi
+    
+    if ! type rg > /dev/null 2>%1; then
+      brew install ripgrep
     fi
 }
 
@@ -84,6 +92,10 @@ Signed-By: /usr/share/keyrings/microsoft.gpg" | sudo tee /etc/apt/sources.list.d
     # install git
     if ! type git > /dev/null 2>&1; then
         sudo apt install -y git
+    fi
+
+    if ! type rg > /dev/null 2>&1; then
+      sudo apt install -y ripgrep
     fi
 }
 
