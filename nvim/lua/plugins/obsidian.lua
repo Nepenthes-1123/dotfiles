@@ -1,3 +1,5 @@
+local vault_path = vim.fn.expand(vim.env.OBSIDIAN_VAULT_PATH or "~/Documents/slip-box"):gsub("\\", "/")
+
 return {
 	"epwalsh/obsidian.nvim",
 	version = "*", -- recommended, use latest release instead of latest commit
@@ -53,7 +55,7 @@ return {
 		workspaces = {
 			{
 				name = "slip-box",
-				path = vim.fn.expand("~/Documents/slip-box"),
+				path = vault_path,
 			},
 		},
 
@@ -183,9 +185,9 @@ return {
 			pattern = "*.md",
 			callback = function(args)
 				local current_path = args.file:gsub("\\", "/")
-				local workspace_root = vim.fn.expand("~/Documents/slip-box")
+				local workspace_root = vault_path
 
-				if not current_path:lower():match("slip%-box") then
+				if not current_path:lower():find(workspace_root:lower(), 1, true) then
 					return
 				end
 
