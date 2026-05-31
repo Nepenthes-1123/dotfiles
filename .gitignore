@@ -16,6 +16,7 @@
 !scripts/setup.sh
 !scripts/add_symlink.sh
 !scripts/check_os.sh
+!scripts/update.sh
 !scripts/props/symlink_win_list.conf
 !scripts/props/symlink_mac_list.conf
 !scripts/props/symlink_ubuntu_list.conf
