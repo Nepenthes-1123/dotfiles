@@ -48,3 +48,30 @@
 # git セッティング
 !git/.gitconfig
 !git/.gitconfig.private
+
+# neovim セッティング
+!nvim/init.lua
+!nvim/lua/config/autocmds.lua
+!nvim/lua/config/keymaps.lua
+!nvim/lua/config/lazy.lua
+!nvim/lua/config/options.lua
+!nvim/lua/config/shell.lua
+!nvim/lua/plugins/autopairs.lua
+!nvim/lua/plugins/cmp.lua
+!nvim/lua/plugins/comment.lua
+!nvim/lua/plugins/conform.lua
+!nvim/lua/plugins/gitsigns.lua
+!nvim/lua/plugins/lazydev.lua
+!nvim/lua/plugins/lint.lua
+!nvim/lua/plugins/lsp.lua
+!nvim/lua/plugins/neo-tree.lua
+!nvim/lua/plugins/nvim-autopairs.lua
+!nvim/lua/plugins/nvim-navbuddy.lua
+!nvim/lua/plugins/obsidian.lua
+!nvim/lua/plugins/pretty-fold.lua
+!nvim/lua/plugins/rainbow-delimiters.lua
+!nvim/lua/plugins/render-markdown.lua
+!nvim/lua/plugins/telescope.lua
+!nvim/lua/plugins/treesitter.lua
+!nvim/lua/plugins/trouble.lua
+!nvim/lua/plugins/ui.lua
