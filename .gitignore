@@ -21,6 +21,7 @@
 !scripts/props/symlink_mac_list.conf
 !scripts/props/symlink_ubuntu_list.conf
 !scripts/props/zsh_plugins.conf
+!scripts/props/packages.conf
 
 # zsh セッティング
 !zsh/.zshrc

@@ -6,97 +6,79 @@ function install_win() {
         return 0
     fi
 
-    if ! winget list wezterm > /dev/null 2>&1; then
-        winget install --id wez.wezterm -e --source winget
-    fi
+    script_dir="$(dirname "${BASH_SOURCE:-$0}")"
+    source "${script_dir}/props/packages.conf"
 
-    if ! winget list vscode > /dev/null 2>&1; then
-        winget install --id Microsoft.VisualStudioCode -e --source winget
-    fi
-
-    if ! winget list git > /dev/null 2>&1; then
-        winget install --id Git.Git -e --source winget
-    fi
-
-    if ! winget list ripgrep > /dev/null 2>&1; then
-      winget install --id BurntSushi.ripgrep.MSVC -e --source winget
-    fi
+    for pkg in "${win_packages[@]}"; do
+        if ! winget list --id "$pkg" > /dev/null 2>&1; then
+            echo "Installing $pkg..."
+            winget install --id "$pkg" -e --source winget || echo "Warning: Failed to install $pkg. Skipping..."
+        else
+            echo "$pkg is already installed."
+        fi
+    done
 }
 
 function install_mac() {
     # install homebrew
     if ! type brew > /dev/null 2>&1; then
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || echo "Warning: Failed to install Homebrew."
     fi
 
-    # install zsh
-    : # 現在のMacOSはzshがデフォルトシェルなので、特にインストールは必要ない
+    script_dir="$(dirname "${BASH_SOURCE:-$0}")"
+    source "${script_dir}/props/packages.conf"
 
-    # install wezterm
-    if ! type wezterm > /dev/null 2>&1; then
-        brew install --cask wezterm
-    fi
-
-    # install vscode
-    if ! type code > /dev/null 2>&1; then
-        brew install --cask visual-studio-code
-    fi
-
-    # install git
-    if ! type git > /dev/null 2>&1; then
-        brew install git
-    fi
-    
-    if ! type rg > /dev/null 2>%1; then
-      brew install ripgrep
-    fi
+    for pkg in "${mac_packages[@]}"; do
+        if ! type "$pkg" > /dev/null 2>&1 && ! brew list --cask "$pkg" > /dev/null 2>&1; then
+            echo "Installing $pkg..."
+            brew install "$pkg" || echo "Warning: Failed to install $pkg. Skipping..."
+        else
+            echo "$pkg is already installed."
+        fi
+    done
 }
 
 function install_ubuntu() {
-    sudo apt update
+    sudo apt update || echo "Warning: apt update failed."
 
-    # install zsh
-    if ! type zsh > /dev/null 2>&1; then
-        sudo apt install -y zsh
-    fi
+    script_dir="$(dirname "${BASH_SOURCE:-$0}")"
+    source "${script_dir}/props/packages.conf"
 
-    # install wezterm
+    # 特殊なセットアップが必要なパッケージの処理
+    # wezterm
     if ! type wezterm > /dev/null 2>&1; then
-        # GPGキーを追加
-        curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
-        # リポジトリを追加
+        echo "Setting up wezterm repository..."
+        curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg || echo "Warning: Failed to add wezterm GPG key."
         echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
-        # インストール
-        sudo apt install wezterm
+        sudo apt update || echo "Warning: apt update failed after adding wezterm repo."
     fi
 
-    # install vscode
+    # vscode
     if ! type code > /dev/null 2>&1; then
-        sudo apt update
-        sudo apt install -y wget gpg
-
-        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-        sudo install -D -o root -g root -m 644 microsoft.gpg /usr/share/keyrings/microsoft.gpg
-        rm -f microsoft.gpg
-
+        echo "Setting up VSCode repository..."
+        sudo apt install -y wget gpg || echo "Warning: Failed to install wget or gpg."
+        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg || echo "Warning: Failed to download microsoft GPG key."
+        if [[ -f microsoft.gpg ]]; then
+            sudo install -D -o root -g root -m 644 microsoft.gpg /usr/share/keyrings/microsoft.gpg
+            rm -f microsoft.gpg
+        fi
         echo "Types: deb
 URIs: https://packages.microsoft.com/repos/code
 Suites: stable
 Components: main
 Architectures: amd64,arm64,armhf
 Signed-By: /usr/share/keyrings/microsoft.gpg" | sudo tee /etc/apt/sources.list.d/vscode.sources
-
-        sudo apt install -y code
+        sudo apt update || echo "Warning: apt update failed after adding vscode repo."
     fi
 
-    # install git
-    if ! type git > /dev/null 2>&1; then
-        sudo apt install -y git
-    fi
-
-    if ! type rg > /dev/null 2>&1; then
-      sudo apt install -y ripgrep
-    fi
+    for pkg in "${ubuntu_packages[@]}"; do
+        if ! type "$pkg" > /dev/null 2>&1; then
+            echo "Installing $pkg..."
+            sudo apt install -y "$pkg" || echo "Warning: Failed to install $pkg. Skipping..."
+        else
+            echo "$pkg is already installed."
+        fi
+    done
 }
 
 function install_zsh_plugins() {
@@ -104,13 +86,14 @@ function install_zsh_plugins() {
     source "${script_dir}/props/zsh_plugins.conf"
 
     if [[ ! -d "${HOME}/.zsh" ]]; then
-        mkdir "${HOME}/.zsh"
+        mkdir -p "${HOME}/.zsh" || echo "Warning: Failed to create ${HOME}/.zsh directory."
     fi
 
     for path in "${zsh_plugins[@]}"; do
         zsh_plugin=(${path[@]})
         if [[ ! -d ${zsh_plugin[1]} ]]; then
-            git clone ${zsh_plugin[0]} ${zsh_plugin[1]}
+            echo "Cloning ${zsh_plugin[0]}..."
+            git clone ${zsh_plugin[0]} ${zsh_plugin[1]} || echo "Warning: Failed to clone ${zsh_plugin[0]}. Skipping..."
         else
             echo "Cloned file already exists: ${zsh_plugin[1]}"
         fi
@@ -120,12 +103,14 @@ function install_zsh_plugins() {
 function install_fzf() {
     if ! type fzf > /dev/null 2>&1; then
         if [[ ! -d "${HOME}/.fzf" ]]; then
-            git clone --depth 1 https://github.com/junegunn/fzf.git "${HOME}/.fzf"
+            echo "Cloning fzf..."
+            git clone --depth 1 https://github.com/junegunn/fzf.git "${HOME}/.fzf" || { echo "Warning: Failed to clone fzf."; return 0; }
         else
             echo "Directory already exists: ${HOME}/.fzf"
         fi
         if [[ -d "${HOME}/.fzf" ]]; then
-            "${HOME}/.fzf/install" --all
+            echo "Installing fzf..."
+            "${HOME}/.fzf/install" || echo "Warning: fzf installation script failed."
         fi
     fi
 }

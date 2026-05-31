@@ -6,8 +6,12 @@ function update_win() {
 
     # OS Packages
     if command -v winget > /dev/null 2>&1; then
-        echo "Updating OS packages via winget..."
-        winget upgrade --all
+        echo "Updating specific OS packages via winget..."
+        source "${script_dir}/props/packages.conf"
+        for pkg in "${win_packages[@]}"; do
+            echo "Updating $pkg..."
+            winget upgrade --id "$pkg" -e --source winget || echo "No update available for $pkg or failed."
+        done
     fi
 
     # zsh plugins
@@ -21,6 +25,14 @@ function update_win() {
             git -C "${plugin_dir}" pull
         fi
     done
+
+    # fzf
+    echo "--- Updating fzf ---"
+    if [[ -d "${HOME}/.fzf" ]]; then
+        echo "Updating fzf..."
+        git -C "${HOME}/.fzf" pull
+        "${HOME}/.fzf/install" --all
+    fi
 
     # Neovim plugins
     echo "--- Updating Neovim plugins ---"
@@ -45,8 +57,14 @@ function update_mac() {
 
     # OS Packages
     if command -v brew > /dev/null 2>&1; then
-        echo "Updating OS packages via brew..."
-        brew update && brew upgrade
+        echo "Updating specific OS packages via brew..."
+        source "${script_dir}/props/packages.conf"
+        brew update
+        # Install new versions of packages in the list
+        for pkg in "${mac_packages[@]}"; do
+            echo "Updating $pkg..."
+            brew upgrade "$pkg" || echo "No update available for $pkg or failed."
+        done
     fi
 
     # zsh plugins
@@ -60,6 +78,14 @@ function update_mac() {
             git -C "${plugin_dir}" pull
         fi
     done
+
+    # fzf
+    echo "--- Updating fzf ---"
+    if [[ -d "${HOME}/.fzf" ]]; then
+        echo "Updating fzf..."
+        git -C "${HOME}/.fzf" pull
+        "${HOME}/.fzf/install" --all
+    fi
 
     # Neovim plugins
     echo "--- Updating Neovim plugins ---"
@@ -83,8 +109,13 @@ function update_ubuntu() {
     script_dir="$(dirname "${BASH_SOURCE:-$0}")"
 
     # OS Packages
-    echo "Updating OS packages via apt..."
-    sudo apt update && sudo apt upgrade -y
+    echo "Updating specific OS packages via apt..."
+    source "${script_dir}/props/packages.conf"
+    sudo apt update
+    for pkg in "${ubuntu_packages[@]}"; do
+        echo "Updating $pkg..."
+        sudo apt install --only-upgrade -y "$pkg" || echo "No update available for $pkg or failed."
+    done
 
     # zsh plugins
     echo "--- Updating zsh plugins ---"
@@ -97,6 +128,14 @@ function update_ubuntu() {
             git -C "${plugin_dir}" pull
         fi
     done
+
+    # fzf
+    echo "--- Updating fzf ---"
+    if [[ -d "${HOME}/.fzf" ]]; then
+        echo "Updating fzf..."
+        git -C "${HOME}/.fzf" pull
+        "${HOME}/.fzf/install" --all
+    fi
 
     # Neovim plugins
     echo "--- Updating Neovim plugins ---"
