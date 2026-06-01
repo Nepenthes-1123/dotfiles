@@ -71,6 +71,8 @@ Signed-By: /usr/share/keyrings/microsoft.gpg" | sudo tee /etc/apt/sources.list.d
         sudo apt update || echo "Warning: apt update failed after adding vscode repo."
     fi
 
+    # TODO: JetBrains Mono Nerd Fontのインストールを追記
+
     for pkg in "${ubuntu_packages[@]}"; do
         if ! type "$pkg" > /dev/null 2>&1; then
             echo "Installing $pkg..."
