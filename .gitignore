@@ -56,6 +56,9 @@
 !.githooks/pre-commit
 !.githooks/post-merge
 
+# github セッティング
+!.github/workflows/normalize-eol.yml
+
 # neovim セッティング
 !nvim/init.lua
 !nvim/lua/config/autocmds.lua

@@ -1,7 +1,7 @@
 [core]
 	editor = code --wait
 	protectNTFS = false
-	autoCRLF = false
+	autoCRLF = input
 	ignorecase = false
 	quotepath = false
 	safecrlf = true
