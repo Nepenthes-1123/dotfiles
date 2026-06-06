@@ -5,7 +5,7 @@
   "editor.fontSize": 14,
   "editor.tabSize": 4,
   "editor.detectIndentation": false,
-  "editor.fontFamily": "'JetBrainsMono Nerd Font', 'JetBrains Mono', Consolas,'游明朝','Monaspace Neon Var','Source Han Code JP','Courier New', monospace",
+  "editor.fontFamily": "'JetBrainsMono Nerd Font', 'JetBrains Mono', 'UDデジタル教科書体', 'Osaka-等幅', 'Noto Sans Mono CJK JP'",
   "editor.fontLigatures": true,
   "editor.cursorStyle": "block-outline",
   "editor.cursorBlinking": "smooth",
@@ -78,7 +78,7 @@
   // ==========================================
   // 4. ターミナル (Terminal)
   // ==========================================
-  "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font', 'JetBrains Mono',Consolas,'游明朝','Monaspace Neon Var','Courier New', monospace",
+  "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font', 'JetBrains Mono', 'UDデジタル教科書体', 'Osaka-等幅', 'Noto Sans Mono CJK JP'",
   "terminal.integrated.fontSize": 15,
   "terminal.integrated.stickyScroll.enabled": false,
   "terminal.integrated.defaultProfile.windows": "Git Bash",
