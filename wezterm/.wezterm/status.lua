@@ -52,10 +52,10 @@ local function leftUpdate(window, pane, wezterm)
     local vars = pane:get_user_vars()
     local branch = vars.GIT_BRANCH
     local status = vars.GIT_STATUS
-    
+
     -- 左側の背景色（右側の最初のセル COLORS[1] と合わせる）
     local BG_COLOR = COLORS[1]
-    
+
     -- 背景色の上でも視認性が高い「Bright」系カラーを中心に使用
     local GIT_COLORS = {
         clean     = "#22e529", -- Bright Green
@@ -63,9 +63,9 @@ local function leftUpdate(window, pane, wezterm)
         modified  = "#f41d99", -- Bright Red (Sakura Pink)
         staged    = "#eeeeee", -- Bright Cyan (視認性重視)
     }
-    
+
     local elements = {}
-    
+
     -- 背景色の設定
     table.insert(elements, {Background={Color=BG_COLOR}})
 
@@ -80,7 +80,7 @@ local function leftUpdate(window, pane, wezterm)
         table.insert(elements, {Foreground={Color="#cbb6ff"}}) -- Bright White (Pale Purple)
         table.insert(elements, {Text="  󱂬 " .. workspace .. "  "})
     end
-    
+
     window:set_left_status(wezterm.format(elements))
 end
 
