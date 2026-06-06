@@ -153,16 +153,16 @@ setx MSYS2_HOME "C:\msys64"
 
 ### インストールされるツール
 
-| ツール | 用途 | 対応 OS |
-|--------|------|--------|
-| **Wezterm** | モダンターミナルエミュレータ | Win, Mac, Linux |
-| **VS Code** | コードエディタ | Win, Mac, Linux |
-| **Git** | バージョン管理 | Win, Mac, Linux |
-| **Zsh** | シェル | Mac, Linux（Windows: MSYS2 経由） |
-| **fzf** | ファジー検索 | Win, Mac, Linux |
-| **zsh-autosuggestions** | 履歴補完 | All |
-| **zsh-syntax-highlighting** | シンタックスハイライト | All |
-| **fzf-tab** | fzf 統合補完 | All |
+| ツール                      | 用途                         | 対応 OS                           |
+| --------------------------- | ---------------------------- | --------------------------------- |
+| **Wezterm**                 | モダンターミナルエミュレータ | Win, Mac, Linux                   |
+| **VS Code**                 | コードエディタ               | Win, Mac, Linux                   |
+| **Git**                     | バージョン管理               | Win, Mac, Linux                   |
+| **Zsh**                     | シェル                       | Mac, Linux（Windows: MSYS2 経由） |
+| **fzf**                     | ファジー検索                 | Win, Mac, Linux                   |
+| **zsh-autosuggestions**     | 履歴補完                     | All                               |
+| **zsh-syntax-highlighting** | シンタックスハイライト       | All                               |
+| **fzf-tab**                 | fzf 統合補完                 | All                               |
 
 ### 設定内容
 
@@ -177,17 +177,17 @@ setx MSYS2_HOME "C:\msys64"
 
 **主要な拡張機能（extensions.txt より）：**
 
-| カテゴリ | 拡張機能 |
-|---------|--------|
-| **Python** | python, black-formatter, debugpy, flake8, isort, mypy-type-checker, vscode-pylance, vscode-python-envs |
-| **Jupyter** | jupyter, jupyter-keymap, jupyter-renderers, vscode-jupyter-cell-tags, vscode-jupyter-slideshow |
-| **LaTeX** | latex-workshop |
-| **言語** | better-cpp-syntax, cmake-language-support-vscode, cmake-tools, cpp-devtools, cpptools, cpptools-extension-pack, cpptools-themes, dotnet-runtime, twxs.cmake |
-| **Git/GitHub** | github-vscode-theme, vscode-pull-request-github |
-| **Docker** | docker, vscode-containers, remote-containers |
-| **Remote** | remote-ssh, remote-ssh-edit, remote-wsl, remote-explorer |
-| **Markdown** | markdownlint, markdown-all-in-one, markdown-preview-enhanced, marp-vscode |
-| **その他** | drawio, foam-vscode, errorlens, autodocstring, vscode-language-pack-ja |
+| カテゴリ       | 拡張機能                                                                                                                                                    |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Python**     | python, black-formatter, debugpy, flake8, isort, mypy-type-checker, vscode-pylance, vscode-python-envs                                                      |
+| **Jupyter**    | jupyter, jupyter-keymap, jupyter-renderers, vscode-jupyter-cell-tags, vscode-jupyter-slideshow                                                              |
+| **LaTeX**      | latex-workshop                                                                                                                                              |
+| **言語**       | better-cpp-syntax, cmake-language-support-vscode, cmake-tools, cpp-devtools, cpptools, cpptools-extension-pack, cpptools-themes, dotnet-runtime, twxs.cmake |
+| **Git/GitHub** | github-vscode-theme, vscode-pull-request-github                                                                                                             |
+| **Docker**     | docker, vscode-containers, remote-containers                                                                                                                |
+| **Remote**     | remote-ssh, remote-ssh-edit, remote-wsl, remote-explorer                                                                                                    |
+| **Markdown**   | markdownlint, markdown-all-in-one, markdown-preview-enhanced, marp-vscode                                                                                   |
+| **その他**     | drawio, foam-vscode, errorlens, autodocstring, vscode-language-pack-ja                                                                                      |
 
 詳細は [vscode/extensions.txt](vscode/extensions.txt) を参照。
 
@@ -280,10 +280,22 @@ Windowsの場合、以下を確認してください：
 - **Windows**: `.wezterm.lua` がシェル自動検出を行います。環境変数で明示的に指定可能
 - **macOS/Linux**: `chsh -s /bin/zsh` でデフォルトシェルを変更
 
-### VS Code の拡張機能を一括インストール
+### VS Code の拡張機能
+
+- `git commit`時に自動的にextensions.txtファイルを更新
+- `git pull`時に差分があれば自動更新を行う
+
+拡張機能の自動同期有効化
 
 ```bash
-cat vscode/extensions.txt | xargs -L1 code --install-extension
+git config --local core.hooksPath .githooks
+```
+
+拡張機能の手動同期
+
+```bash
+cd ~/dotfiles
+scripts/install_vscode_exts.sh
 ```
 
 ---

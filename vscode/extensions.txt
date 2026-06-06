@@ -26,6 +26,7 @@ ms-vscode.cpptools-extension-pack
 ms-vscode.cpptools-themes
 mvllow.rose-pine
 njpwerner.autodocstring
+sumneko.lua
 usernamehw.errorlens
 vue.volar
 yzhang.markdown-all-in-one
