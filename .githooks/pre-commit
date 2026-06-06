@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# extensions.txt の出力先パスを指定
+EXT_FILE="$(dirname $(dirname "${BASH_SOURCE:-$0}"))/vscode/extensions.txt"
+
+echo "Updating VS Code extensions list..."
+code --list-extensions > "$EXT_FILE"
+
+# 更新されたファイルをステージングエリアに追加
+git add "$EXT_FILE"

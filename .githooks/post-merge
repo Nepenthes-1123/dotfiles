@@ -1,0 +1,16 @@
+#!/bin/sh
+
+DOTFILES_DIR="$(dirname $(dirname "${BASH_SOURCE:-$0}"))"
+EXT_FILE="$DOTFILES_DIR/vscode/extensions.txt"
+SCRIPT_FILE="$DOTFILES_DIR/scripts/install_vscode_exts.sh"
+
+# extensions.txt の更新を確認
+if git diff-tree -r --name-only ORIG_HEAD HEAD | grep -q "$EXT_FILE"; then
+    echo "VS Code extensions list has been updated."
+    echo "Starting installation of extensions..."
+
+    $SCRIPT_FILE || echo "Warning: Failed to install VS Code extensions. Please run $SCRIPT_FILE manually."
+else
+    # 変更がない場合は何もしない
+    exit 0
+fi
