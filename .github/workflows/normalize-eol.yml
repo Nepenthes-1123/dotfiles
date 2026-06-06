@@ -1,10 +1,10 @@
-name: Normalize Line Endings (CRLF -> LF)
+name: Normalize Line Endings (CRLF to LF)
 
 on:
   push:
     branches:
       - main
-    pull_request:
+  pull_request:
 
 jobs:
   convert-crlf-to-lf:
@@ -17,10 +17,11 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y dos2unix
 
       - name: Convert CRLF to LF
-        run: find . -type f -not -path "*/\.git/*" -exec dos2uinx --quiet {} +
+
+        run: find . -type f -not -path "*/\.git/*" -exec dos2unix --quiet {} +
 
       - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-actions@v5
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: force convert CRLF to LF"
           branch: ${{ github.head_ref || github.ref_name }}
