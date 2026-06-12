@@ -43,4 +43,55 @@ alias gpl='git pull'
 alias gco='git checkout'
 alias gf='git fetch'
 alias gc='git commit'
+alias gwt='git worktree'
+alias gwtip='git --git-dir=.bare worktree' # 親ディレクトリにいる時用
+
+## Git worktree用のベアリポジトリ環境を自動構築する関数
+function gwt-init() {
+  # 1. 引数のチェック
+  if [[ -z "$1" ]]; then
+    echo "エラー: リポジトリのURLを指定してください。"
+    echo "使い方: gwt-init <リポジトリURL> [プロジェクトディレクトリ名]"
+    return 1
+  fi
+
+  local repo_url="$1"
+  local project_name="$2"
+
+  # 2. プロジェクト名が指定されていない場合、URLから自動で推測
+  if [[ -z "$project_name" ]]; then
+    project_name=$(basename "$repo_url" .git)
+  fi
+
+  # 既に同名のディレクトリが存在しないかチェック
+  if [[ -d "$project_name" ]]; then
+    echo "エラー: ディレクトリ '$project_name' は既に存在します。"
+    return 1
+  fi
+
+  echo "プロジェクトディレクトリ '$project_name' を作成中..."
+  mkdir "$project_name"
+  cd "$project_name" || return 1
+
+  echo "ベアリポジトリを .bare にクローン中..."
+  git clone --bare "$repo_url" .bare
+
+  # クローンに失敗した場合は作成したディレクトリを消して終了
+  if [[ $? -ne 0 ]]; then
+    echo "エラー: クローンに失敗しました。"
+    cd ..
+    rm -rf "$project_name"
+    return 1
+  fi
+
+  echo "⚙️ fetch設定を修正中..."
+  # .bareディレクトリに入らずに直接設定を書き換える
+  git --git-dir=.bare config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+
+  echo "セットアップが完了しました！"
+  echo "現在のディレクトリ: $(pwd)"
+  echo ""
+  echo "続けて、以下のコマンドでメインのブランチを展開できます:"
+  echo "  git --git-dir=.bare worktree add main main"
+}
 
