@@ -5,7 +5,7 @@ setup("rose-pine", function(m)
 	m.setup({
 		variant = "moon",
 		dark_variant = "moon",
-		styles = { bold = true, italic = false },
+		styles = { bold = true, italic = false, transparency = true },
 		highlight_groups = {
 			DiagnosticVirtualTextError = { fg = "love", bg = "love", blend = 10 },
 			DiagnosticVirtualTextWarn = { fg = "gold", bg = "gold", blend = 10 },
