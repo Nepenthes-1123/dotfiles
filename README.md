@@ -1,308 +1,293 @@
-# dotfiles
+# Neovim 設定 (VSCode dotfiles 移植版)
 
-新しい PC で開発環境を素早くセットアップするためのドットファイル集です。複数の OS（Windows、macOS、Linux）に対応しており、シンボリックリンクを使ってリポジトリ内の設定を各ツールの標準位置にリンクします。
-
-## 📁 ディレクトリ構成
-
-### `scripts/` — セットアップスクリプト
-
-新しい PC での環境構築を自動化するスクリプトたち：
-
-- **`setup.sh`** — メインのセットアップスクリプト。以下を実行します：
-  - 必要なツールをインストール（`install.sh`）
-  - 設定ファイルをシンボリックリンク（`symlink()` 関数）
-  - Git ユーザー設定の選択・作成
-
-- **`install.sh`** — OS ごとに必要なツールをインストール：
-  - **Windows（winget 使用）**: wezterm, VS Code, Git
-  - **macOS（Homebrew 使用）**: wezterm, VS Code, Git, Homebrew
-  - **Ubuntu**: zsh, wezterm, VS Code, Git
-  - **全 OS 共通**: fzf, zsh プラグイン（zsh-autosuggestions, zsh-syntax-highlighting, fzf-tab）
-
-- **`check_os.sh`** — OS 判定スクリプト（Darwin / Linux / CYGWIN / MINGW）
-
-- **`add_symlink.sh`** — 既存のシンボリックリンク機能に加えて、追加のリンクを設定する場合に使用
-
-- **`props/`** — OS 別の設定ファイル：
-  - `symlink_win_list.conf` — Windows 用シンボリックリンク設定
-  - `symlink_mac_list.conf` — macOS 用シンボリックリンク設定
-  - `symlink_ubuntu_list.conf` — Ubuntu 用シンボリックリンク設定
-  - `zsh_plugins.conf` — インストールする zsh プラグインのリスト
-
-### `zsh/` — Zsh 設定
-
-- **`.zshrc`** — Zsh メイン設定ファイル
-  - 言語・ロケール設定（日本語対応）
-  - `.zsh.d` 内の設定ファイルを優先度順に自動読み込み
-  - PATH、環境変数、ターミナルオプション、タイトルバー設定など
-  - `.zshrc.local` が存在する場合は読み込み（個人用設定）
-
-- **`.zsh.d/`** — 分割された機能別設定ファイル
-  - 読み込みプロセス：`.zshrc` → `priorities.conf` 読み込み → 指定順序でファイル読み込み
-  - `priorities.conf` — 読み込み順序の指定
-  - `plugins.zsh` — zsh プラグイン（fzf-tab, zsh-autosuggestions など）の読み込み設定
-  - `alias.zsh` — よく使うコマンドのエイリアス定義
-  - `completion.zsh` — 補完機能設定
-  - `prompt.zsh` — プロンプト表示・履歴設定
-  - `audit.zsh` — 監査・ファイルチェック設定
-
-### `wezterm/` — Wezterm ターミナル設定
-
-- **`.wezterm.lua`** — Wezterm 設定ファイル
-  - フォント、カラースキーム、タブバー設定
-  - **Windows での zsh 自動探索機能**：
-    - `ZSH_CUSTOM_PATH` 環境変数で明示的に指定可能
-    - `MSYS2_HOME` から自動推測
-    - よくあるデフォルト候補から探索
-    - PATH から自動探索
-
-- **`.wezterm/`** — 追加設定（キーバインディングなど）
-  - `keybindings.lua` — カスタムキーバインディング
-  - `format.lua` — タブバー、タイトルバー、ペイン、カーソルの見た目設定
-  - `status.lua` — 右ステータスバー（時刻表示など）の設定
-
-- **`WEZTERM_SETUP.md`** — Windows での zsh 設定方法
-
-### `vscode/` — VS Code 設定
-
-- **`settings.json`** — VS Code 全体設定
-  - エディタ、ワークスペース、ターミナル、拡張機能設定
-  - Windows ターミナル設定（Anaconda Prompt, Git Bash, PowerShell 7）
-  - 環境変数を使ってパスの汎用性を確保
-
-- **`keybindings.json`** — カスタムキーバインディング
-
-- **`snippets/`** — 言語別コードスニペット
-  - `c.json` — C 言語スニペット
-  - `latex.json` — LaTeX スニペット
-
-- **`extensions.txt`** — インストール推奨拡張機能のリスト
-
-### `git/` — Git 設定
-
-- **`.gitconfig`** — Git 共通設定
-  - エイリアス、デフォルト設定など
-
-- **`.gitconfig.private`** — 個人用 Git ユーザー設定のテンプレート
-  - `setup.sh` 実行時に `.gitconfig.local` にコピーまたは作成
+Neovim v0.12 向け設定。外部プラグインマネージャ不使用、Neovim 標準 **`vim.pack`** で管理。
+LSPサーバー・フォーマッタ・リンタは **Mason** で一元管理。
 
 ---
 
-## 🚀 使い方
+## ディレクトリ構成
 
-### 前提条件
+```
+~/.config/nvim/   (Windows: %LOCALAPPDATA%\nvim)
+├── init.lua                          # エントリポイント
+├── nvim-pack-lock.json               # vim.pack のバージョンロック (自動生成)
+├── lsp/                               # LSP サーバー設定 (vim.lsp.enable() 用)
+│   ├── pyright.lua                    # Python 型チェック (Pylance 相当)
+│   ├── ruff.lua                       # Python フォーマット/リント (black+flake8+isort 統合)
+│   ├── clangd.lua                     # C/C++
+│   ├── lua_ls.lua                     # Lua
+│   ├── vue_ls.lua                     # Vue 3 (Volar v2)
+│   ├── ts_ls.lua                      # TypeScript / JavaScript
+│   ├── texlab.lua                     # LaTeX
+│   ├── marksman.lua                   # Markdown
+│   ├── jsonls.lua                     # JSON / JSONC
+│   ├── dockerls.lua                   # Dockerfile
+│   └── docker_compose_language_service.lua  # docker-compose.yml
+├── lua/
+│   ├── config/
+│   │   ├── options.lua                # エディタ基本設定 + ui2 有効化
+│   │   ├── keymaps.lua                # グローバルキーマップ
+│   │   ├── autocmds.lua               # 自動コマンド (trimTrailingWhitespace 等)
+│   │   └── lsp.lua                    # 診断表示・hover/signatureHelp の border 設定
+│   └── plugins/
+│       ├── init.lua                   # vim.pack.add() 一覧 + 各 config 読み込み
+│       └── config/
+│           ├── utils.lua              # pcall setup ヘルパー (初回インストール対応)
+│           ├── ui.lua                 # colorscheme/lualine/ibl/which-key/render-markdown
+│           ├── editor.lua             # nvim-tree/telescope/gitsigns/rainbow/Comment/autopairs/illuminate
+│           ├── lsp.lua                # mason/mason-lspconfig/mason-tool-installer/conform/nvim-lint
+│           ├── cmp.lua                # nvim-cmp 補完エンジン
+│           ├── treesitter.lua         # nvim-treesitter
+│           ├── obsidian.lua           # obsidian.nvim (Zettelkasten ノート管理)
+│           ├── docker.lua             # nvim-dev-container / lazydocker
+│           ├── octo.lua               # GitHub PR/Issue 連携
+│           ├── snacks.lua             # 通知(notifier)・input・scroll (noice代替)
+│           └── tiny-cmdline.lua       # フローティングコマンドライン (ui2連携)
+└── after/
+    └── ftplugin/                      # ファイルタイプ別設定
+        ├── python.lua
+        ├── tex.lua
+        ├── markdown.lua
+        ├── json.lua
+        └── dockerfile.lua
+```
 
-- **Bash** — インストール必須（Windows の場合は Git for Windows または MSYS2 推奨）
-- **Git** — インストール推奨
-- **OS 別要件**：
-  - **Windows**: winget がインストールされていること（Windows 11 標準） or MSYS2
-  - **macOS**: Xcode Command Line Tools
-  - **Ubuntu/Debian**: sudo アクセス権
+> プラグイン本体 (`pack/plugins/start/*`) は `vim.pack.add()` が自動で
+> git clone するため、手動でのインストール作業は不要です。
 
-### 対応状況
+---
 
-以下の OS/環境に対応しています：
+## 全体構成の特徴
 
-- ✅ **Windows 11** (winget or MSYS2/Git Bash)
-- ✅ **macOS** (Homebrew)
-- ✅ **Ubuntu/Debian** (apt)
-- ⚠️ **CentOS/Amazon Linux** (実装予定)
-- ⚠️ **WSL** (部分対応)
+### 1. プラグイン管理: `vim.pack.add()`
 
-### セットアップ手順
+`lua/plugins/init.lua` の `vim.pack.add({...})` にURLを並べるだけで、
+**初回起動時に確認ダイアログが表示され `y` で自動 git clone** されます。
+バージョンは `nvim-pack-lock.json` で固定管理され、`:Pack update` で更新できます。
 
-#### 1. リポジトリをクローン
+### 2. LSP・フォーマッタ・リンタ管理: Mason
+
+`lua/plugins/config/lsp.lua` で `mason-lspconfig` の `ensure_installed` に
+列挙したLSPサーバーは自動インストール＋ `vim.lsp.enable()` されます
+(`automatic_enable = true`)。`lsp/<server>.lua` がサーバー固有設定です。
+
+フォーマッタ・リンタは `mason-tool-installer` で管理され、
+`conform.nvim` / `nvim-lint` から参照されます。
+
+### 3. UI: ui2 + snacks.nvim + tiny-cmdline.nvim (noice.nvim 代替)
+
+Neovim v0.12 の実験的UI `vim._core.ui2` をベースに、
+不足機能を以下のプラグインで補完しています。
+
+| 役割 | 担当 |
+|---|---|
+| cmdline/メッセージ基盤 (`cmdheight=0`) | `vim._core.ui2` (options.lua) |
+| cmdlineを画面中央にフロート表示 | `tiny-cmdline.nvim` |
+| 通知のトースト表示・LSPプログレス | `snacks.nvim` (notifier) |
+
+### 4. Markdownレンダリング: render-markdown.nvim
+
+`obsidian.nvim` の `ui` モジュールは **Vault外のMarkdownファイルには適用されず、
+将来的に廃止予定**(専用レンダラの利用が推奨)のため、
+Vault内外問わず一貫した見た目にするために `render-markdown.nvim` を採用しています
+(`obsidian.lua` 側は `ui.enable = false`)。
+
+---
+
+## 必要な外部ツール
+
+### LSP サーバー・フォーマッタ・リンタ (Mason管理)
+
+以下は `mason-lspconfig` / `mason-tool-installer` の `ensure_installed` に
+列挙されており、**Neovim初回起動時に自動インストールされます**。
+手動インストールは基本的に不要です。
+
+| 種別 | 名前 | 対象 |
+|---|---|---|
+| LSP | `pyright` | Python (型チェック) |
+| LSP | `ruff` | Python (フォーマット/リント) |
+| LSP | `clangd` | C/C++ |
+| LSP | `lua_ls` | Lua |
+| LSP | `vue_ls` | Vue 3 |
+| LSP | `ts_ls` | TypeScript/JavaScript |
+| LSP | `texlab` | LaTeX |
+| LSP | `marksman` | Markdown |
+| LSP | `jsonls` | JSON/JSONC |
+| LSP | `dockerls` | Dockerfile |
+| LSP | `docker_compose_language_service` | docker-compose.yml |
+| Formatter | `stylua` | Lua |
+| Formatter | `prettier` | JS/TS/Vue/JSON |
+| Formatter | `clang-format` | C/C++ |
+| Lint/Fix | `markdownlint` | Markdown (フォーマット兼リント) |
+| Lint | `eslint_d` | JavaScript/TypeScript |
+
+### Mason管理外で別途インストールが必要なツール
 
 ```bash
-git clone https://github.com/Nepenthes-1123/dotfiles.git ~/dotfiles
-cd ~/dotfiles
+# ripgrep (Telescope の live_grep に必須)
+sudo apt install ripgrep   # Ubuntu/Debian
+brew install ripgrep       # macOS
+winget install BurntSushi.ripgrep.MSVC  # Windows
+
+# GitHub CLI (octo.nvim に必須)
+winget install GitHub.cli  # Windows
+brew install gh             # macOS
+# 初回認証
+gh auth login
+# GitHub Projects (v2) を使う場合
+gh auth refresh -s read:project
+
+# lazydocker (Docker UI, オプション)
+scoop install lazydocker    # Windows
+brew install lazydocker     # macOS
+
+# hadolint (Dockerfile lint, オプション)
+scoop install hadolint       # Windows
+brew install hadolint        # macOS
+
+# jq (JSON整形フォールバック, オプション)
+winget install jqlang.jq    # Windows
+brew install jq             # macOS
+
+# Docker / Podman + docker compose (nvim-dev-container に必須)
 ```
 
-#### 2. セットアップ実行
+---
+
+## 初回起動手順
 
 ```bash
-bash scripts/setup.sh
+# 1. Neovim を起動
+nvim
+
+# 2. vim.pack の確認ダイアログが出るので y で承認
+#    (バックグラウンドでプラグインが git clone される)
+
+# 3. 一度終了して再起動 (初回インストール直後は require が失敗するため必須)
+:q
+nvim
+
+# 4. Treesitter パーサーをビルド (初回のみ・PackChanged で自動実行されるが念のため)
+:TSUpdate
+
+# 5. Mason で LSP/フォーマッタ/リンタの自動インストールが走るのを待つ
+:Mason   " ✓ になっていればOK
+
+# 6. ヘルスチェックで不足ツールを確認
+:checkhealth
+
+# 7. LSP が正しく動作しているか確認
+:lua vim.print(vim.lsp.get_clients())
 ```
-
-セットアップでは以下の処理が順に自動実行されます：
-
-1. **ツールのインストール** — OS ごとに必要なツール（wezterm, VS Code, Git, zsh など）をインストール
-2. **プラグイン・ツールのインストール** — fzf、zsh プラグイン（zsh-autosuggestions, zsh-syntax-highlighting, fzf-tab）をインストール
-3. **シンボリックリンク作成** — 設定ファイルをホームディレクトリにリンク  
-   既存ファイルがある場合は「置き換え/バックアップ/スキップ」を選択できます
-4. **Git ユーザー設定** — 以下の方法から選択：
-   - `private`: `.gitconfig.private` をコピー (GitHub noreply メール)
-   - `make`: その場で入力して `.gitconfig.local` を作成（ローカルのみ有効）
-
-#### 3. Windows での zsh 設定（オプション）
-
-Wezterm で zsh を使いたい場合：
-
-```powershell
-# PowerShell で実行
-setx MSYS2_HOME "C:\msys64"
-```
-
-詳細は [wezterm/WEZTERM_SETUP.md](wezterm/WEZTERM_SETUP.md) を参照。
 
 ---
 
-## 💻 セットアップ後の環境
+## VSCode → Neovim 機能対応表
 
-このリポジトリでセットアップすると、以下のような環境になります：
-
-### インストールされるツール
-
-| ツール                      | 用途                         | 対応 OS                           |
-| --------------------------- | ---------------------------- | --------------------------------- |
-| **Wezterm**                 | モダンターミナルエミュレータ | Win, Mac, Linux                   |
-| **VS Code**                 | コードエディタ               | Win, Mac, Linux                   |
-| **Git**                     | バージョン管理               | Win, Mac, Linux                   |
-| **Zsh**                     | シェル                       | Mac, Linux（Windows: MSYS2 経由） |
-| **fzf**                     | ファジー検索                 | Win, Mac, Linux                   |
-| **zsh-autosuggestions**     | 履歴補完                     | All                               |
-| **zsh-syntax-highlighting** | シンタックスハイライト       | All                               |
-| **fzf-tab**                 | fzf 統合補完                 | All                               |
-
-### 設定内容
-
-#### Zsh
-
-- 複数プラグイン統合
-- カスタムプロンプト
-- エイリアス・補完設定
-- ファイルの優先度管理
-
-#### VS Code
-
-**主要な拡張機能（extensions.txt より）：**
-
-| カテゴリ       | 拡張機能                                                                                                                                                    |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Python**     | python, black-formatter, debugpy, flake8, isort, mypy-type-checker, vscode-pylance, vscode-python-envs                                                      |
-| **Jupyter**    | jupyter, jupyter-keymap, jupyter-renderers, vscode-jupyter-cell-tags, vscode-jupyter-slideshow                                                              |
-| **LaTeX**      | latex-workshop                                                                                                                                              |
-| **言語**       | better-cpp-syntax, cmake-language-support-vscode, cmake-tools, cpp-devtools, cpptools, cpptools-extension-pack, cpptools-themes, dotnet-runtime, twxs.cmake |
-| **Git/GitHub** | github-vscode-theme, vscode-pull-request-github                                                                                                             |
-| **Docker**     | docker, vscode-containers, remote-containers                                                                                                                |
-| **Remote**     | remote-ssh, remote-ssh-edit, remote-wsl, remote-explorer                                                                                                    |
-| **Markdown**   | markdownlint, markdown-all-in-one, markdown-preview-enhanced, marp-vscode                                                                                   |
-| **その他**     | drawio, foam-vscode, errorlens, autodocstring, vscode-language-pack-ja                                                                                      |
-
-詳細は [vscode/extensions.txt](vscode/extensions.txt) を参照。
-
-#### Wezterm
-
-- Sakura カラースキーム
-- 背景透過設定
-- カスタムキーバインディング
-- タブバーのカスタマイズ
-- Windows での zsh 自動検出
-
-#### Git
-
-- ユーザー設定の柔軟な選択
-- ローカル設定で個人情報保護
+| VSCode 機能 | Neovim での実現方法 | キーバインド |
+|---|---|---|
+| 定義ジャンプ (F12) | `vim.lsp.buf.definition` | `gd` |
+| 宣言ジャンプ | `vim.lsp.buf.declaration` | `gD` |
+| 参照ジャンプ (Shift+F12) | `vim.lsp.buf.references` | `gr` |
+| 実装ジャンプ | `vim.lsp.buf.implementation` | `gi` |
+| ホバー表示 | `vim.lsp.buf.hover` | `K` |
+| リネーム (F2) | `vim.lsp.buf.rename` | `<F2>` / `<Leader>rn` |
+| クイックフィックス | `vim.lsp.buf.code_action` | `<Leader>ca` |
+| フォーマット (手動) | `vim.lsp.buf.format` | `<Leader>f` |
+| 保存時フォーマット | conform.nvim `format_on_save` | 保存時自動 |
+| ファイルエクスプローラー | nvim-tree | `<Leader>e` |
+| ファイル検索 (Ctrl+P) | Telescope find_files | `<Leader>ff` |
+| 全文検索 (Ctrl+Shift+F) | Telescope live_grep | `<Leader>fg` |
+| Git インライン Blame | gitsigns current_line_blame | 自動表示 / `<Leader>gB` でトグル |
+| Git Gutter 差分 | gitsigns signs | 自動表示 |
+| ErrorLens (インライン診断) | `vim.diagnostic.config virtual_text` | 自動表示 |
+| コメントトグル (Ctrl+/) | Comment.nvim | `gcc` (行) / `gc` (Visual) |
+| ブラケットペア色付け | rainbow-delimiters.nvim | 自動 |
+| Markdownプレビュー | render-markdown.nvim | 自動 (編集中インライン表示) |
+| LSPサーバー管理 | Mason | `<Leader>m` |
+| 通知トースト | snacks.nvim (notifier) | 自動 / `<Leader>nh` 履歴, `<Leader>nd` 全消去 |
+| GitHub PR一覧 | octo.nvim | `<Leader>hpl` |
+| GitHub PRレビュー開始/送信 | octo.nvim | `<Leader>hprs` / `<Leader>hprx` |
+| GitHub Issue一覧/作成 | octo.nvim | `<Leader>hil` / `<Leader>hin` |
+| Dev Container でリオープン | nvim-dev-container | `<Leader>dcu` |
+| Dev Container アタッチ | nvim-dev-container | `<Leader>dca` |
+| Docker UI (lazydocker) | lazydocker (フロート端末) | `<Leader>dk` |
 
 ---
 
-## 🔧 カスタマイズ
+## obsidian.nvim (Zettelkasten ノート管理)
 
-### シンボリックリンク設定を追加
+### Vault パスの指定 (環境変数)
 
-`scripts/add_symlink.sh` で追加のリンク設定ができます：
+Vaultパスは環境変数 `OBSIDIAN_VALUT_PATH` で指定します
+(未設定時は `~/Documents/slip-box` にフォールバック)。
 
 ```bash
-bash scripts/add_symlink.sh
+# Windows (PowerShell, 永続化)
+[System.Environment]::SetEnvironmentVariable("OBSIDIAN_VALUT_PATH", "C:\path\to\vault", "User")
+
+# macOS/Linux (~/.bashrc, ~/.zshrc 等に追記)
+export OBSIDIAN_VALUT_PATH="$HOME/path/to/vault"
 ```
 
-### 対応 OS の追加
+### ノートタイプ別の新規作成 (`<Leader>oz` + キー)
 
-`scripts/check_os.sh` と `scripts/props/` に OS 判定と設定を追加。
+各ノートタイプには専用フォルダとテンプレートが事前に割り当てられています。
+タイトルをプロンプト入力すると、対応フォルダ配下にテンプレート付きでノートが作成されます。
+
+| キー | ノートタイプ | 保存先フォルダ | テンプレート |
+|---|---|---|---|
+| `<Leader>ozf` | Fleeting Note | `00_Inbox` | `fleeting-note.md` |
+| `<Leader>ozl` | Literature Note | `10_Literature` | `literature-note.md` |
+| `<Leader>ozp` | Permanent Note | `20_Notes` | `permanent-note.md` |
+| `<Leader>ozi` | Index Note (MOC) | `30_Indes` | `index-note.md` |
+
+> ⚠️ `30_Indes` は `30_Index` のtypoの可能性があります。意図したフォルダ名でなければ
+> `lua/plugins/config/obsidian.lua` の `note_types` テーブルを修正してください。
+
+フォルダ名・テンプレート名を変更する場合は `note_types` テーブル
+(`lua/plugins/config/obsidian.lua`)を編集してください。
+
+### その他の主なキーバインド (`<Leader>o` プレフィックス)
+
+| キー | 動作 |
+|---|---|
+| `<Leader>of` | ノート検索 (quick_switch) |
+| `<Leader>og` | 全文検索 |
+| `<Leader>od` / `<Leader>oD` | 今日 / 昨日のデイリーノートを開く |
+| `<Leader>on` | 新規ノート作成 (テンプレート選択なし) |
+| `<Leader>oN` | テンプレート選択ピッカーから新規作成 |
+| `gf` / `<Leader>ol` | `[[wikilink]]` を追う |
+| `<Leader>ob` | バックリンク一覧 |
+| `<Leader>ot` | タグ一覧 |
+| `<Leader>oc` | 目次 (TOC) |
+| `<Leader>or` | ノートのリネーム (リンク自動更新) |
+| `<Leader>ox` | チェックボックスのトグル |
 
 ---
 
-## ⚠️ 注意事項
+## カスタマイズのヒント
 
-- **既存ファイルの上書き**: セットアップ中に既存ファイルが検出されると、以下を対話的に選択できます：
-  - 置き換え（上書き）
-  - バックアップ（`.bak` 拡張子を付けて保存）
-  - スキップ（処理をスキップ）
+### インライン Blame の常時表示を OFF にする
 
-- **Symlink 対応**（環境による）：
-  - **Windows (NTFS)**: 管理者権限が必要な場合あり。`symlink_win_list.conf` で設定
-  - **MSYS2/Git Bash**: シンボリックリンク作成時に `-s` フラグを使用
-  - **macOS/Linux**: 標準的なシンボリックリンク対応
+`lua/plugins/config/editor.lua` の gitsigns 設定で
+`current_line_blame = false` に変更し、必要なときだけ `<Leader>gB` でトグルする運用も可能。
 
-- **環境変数**: 一部機能で環境変数設定が必要です：
-  - `MSYS2_HOME` — Windows で MSYS2 を使用する場合（例: `C:\msys64`）
-  - `ZSH_CUSTOM_PATH` — Wezterm で zsh のパスを明示的に指定したい場合
+### LSP サーバーの追加
 
----
+1. `lsp/<server_name>.lua` を作成 (サーバー固有設定を `return {...}` で記述)
+2. `lua/plugins/config/lsp.lua` の `mason-lspconfig` `ensure_installed` に
+   Mason パッケージ名を追記
 
-## 📝 トラブルシューティング
+これだけで自動インストール＋有効化されます。
 
-### セットアップが途中で失敗する
+### Python 仮想環境
 
-1. OS が正しく判定されているか確認：
+プロジェクトルートに `.venv/` があれば pyright が自動検出します。
+手動指定する場合は `lsp/pyright.lua` の `python.pythonPath` を変更してください。
 
-   ```bash
-   bash scripts/check_os.sh
-   ```
+### tiny-cmdline.nvim の補完アダプター
 
-2. 必要なコマンドが PATH に含まれているか確認：
-
-   ```bash
-   which git bash zsh
-   ```
-
-### シンボリックリンク作成に失敗する
-
-- **Windows (Git Bash/MSYS2)**:
-  - Git Bash や MSYS2 のシェルを管理者権限で実行
-  - または、Git Config で `core.symlinks=true` を設定
-- **Windows (PowerShell)**:
-  - Developer Mode を有効化 or 管理者権限で実行
-- **macOS/Linux**:
-  - ホームディレクトリの書き込み権限を確認
-  - `ls -ld ~` でパーミッションを確認（755 or 700）
-
-### Wezterm で zsh が見つからない
-
-Windowsの場合、以下を確認してください：
-
-1. zsh がインストールされているか確認：`where zsh.exe`
-2. [wezterm/WEZTERM_SETUP.md](wezterm/WEZTERM_SETUP.md) を参照
-3. `ZSH_CUSTOM_PATH` または `MSYS2_HOME` 環境変数を設定
-
-### セットアップ後に zsh がデフォルトシェルにならない
-
-- **Windows**: `.wezterm.lua` がシェル自動検出を行います。環境変数で明示的に指定可能
-- **macOS/Linux**: `chsh -s /bin/zsh` でデフォルトシェルを変更
-
-### VS Code の拡張機能
-
-- `git commit`時に自動的にextensions.txtファイルを更新
-- `git pull`時に差分があれば自動更新を行う
-
-拡張機能の自動同期有効化
-
-```bash
-git config --local core.hooksPath .githooks
-```
-
-拡張機能の手動同期
-
-```bash
-cd ~/dotfiles
-scripts/install_vscode_exts.sh
-```
-
----
-
-## 🔗 関連リンク
-
-- [Wezterm 公式](https://wezfurlong.org/wezterm/)
-- [Zsh 公式](https://www.zsh.org/)
-- [VS Code 公式](https://code.visualstudio.com/)
-- [fzf](https://github.com/junegunn/fzf)
+nvim-cmp を使用しているため `adapters.blink` (blink.cmp専用) は不要です。
+blink.cmp に乗り換える場合のみ `on_reposition = require("tiny-cmdline").adapters.blink`
+を追加してください。
