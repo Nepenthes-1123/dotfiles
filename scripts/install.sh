@@ -72,6 +72,28 @@ Signed-By: /usr/share/keyrings/microsoft.gpg" | sudo tee /etc/apt/sources.list.d
     fi
 
     # TODO: JetBrains Mono Nerd Fontのインストールを追記
+    # フォント用のディレクトリを作成
+    mkdir -p ~/.local/share/fonts/JetBrainsMono
+
+    # Nerd Fontsの公式リポジトリからJetBrains MonoのZIPをダウンロード (v3.2.1の例)
+    wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.zip
+
+    # ディレクトリに展開
+    unzip JetBrainsMono.zip -d ~/.local/share/fonts/JetBrainsMono
+
+    # 不要になったZIPファイルを削除
+    rm JetBrainsMono.zip
+
+    # フォントキャッシュを更新してシステムに認識させる
+    fc-cache -fv
+
+    # gh コマンドのインストール
+    if ! type gh > /dev/null 2>&1; then
+        type -p curl >/dev/null || sudo apt install curl -y
+        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+        && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    fi
 
     for pkg in "${ubuntu_packages[@]}"; do
         if ! type "$pkg" > /dev/null 2>&1; then
