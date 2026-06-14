@@ -47,12 +47,13 @@ setup("lualine", function(m)
 						if #clients == 0 then
 							return ""
 						end
-						return " " .. table.concat(
-							vim.tbl_map(function(c)
-								return c.name
-							end, clients),
-							", "
-						)
+						return " "
+							.. table.concat(
+								vim.tbl_map(function(c)
+									return c.name
+								end, clients),
+								", "
+							)
 					end,
 					color = { fg = "#c4a7e7" },
 				},
@@ -90,63 +91,60 @@ setup("which-key", function(m)
 	})
 end)
 
--- -- =============================================================================
--- -- lua/plugins/render-markdown.lua  –  render-markdown.nvim 設定
--- -- VSCode: Markdown プレビュー (yzhang.markdown-all-in-one の見た目を
--- --         Neovim エディタ内でリアルタイムにレンダリングして再現)
--- -- =============================================================================
--- -- 依存プラグイン (いずれも plugins/init.lua の vim.pack.add() で導入済み):
--- --   - nvim-treesitter/nvim-treesitter
--- --   - nvim-tree/nvim-web-devicons
--- -- =============================================================================
+-- =============================================================================
+-- render-markdown.nvim 設定
+-- VSCode: Markdown プレビュー (yzhang.markdown-all-in-one の見た目を
+--         Neovim エディタ内でリアルタイムにレンダリングして再現)
+-- =============================================================================
+-- 依存プラグイン (いずれも plugins/init.lua の vim.pack.add() で導入済み):
+--   - nvim-treesitter/nvim-treesitter
+--   - nvim-tree/nvim-web-devicons
 --
---
--- local function setup(mod, fn)
---     local ok, m = pcall(require, mod)
---     if not ok then return end
---     fn(m)
--- end
---
--- setup('render-markdown', function(m)
---     m.setup({
---         -- 対象ファイルタイプ (lazy.nvim の ft = {...} 相当)
---         -- vim.pack には遅延読み込み機構が無いため、setup 内の file_types で制御する
---         file_types   = { 'markdown', 'norg', 'rmd', 'org' },
---
---         enabled      = true,
---
---         -- markdown.preview.typographer: true 相当
---         -- 'n' (Normal) と 'c' (Command-line) モードでレンダリングを有効化
---         render_modes = { 'n', 'c' },
---
---         heading      = {
---             enabled = true,
---             sign    = true,
---             icons   = { '󰲡 ', '󰲣 ', '󰲥 ', '󰲧 ', '󰲩 ', '󰲫 ' },
---         },
---
---         code         = {
---             enabled = true,
---             sign    = true,
---             style   = 'full',
---             border  = 'thin',
---         },
---
---         dash         = { enabled = true },
---         bullet       = { enabled = true },
---
---         checkbox     = {
---             enabled   = true,
---             unchecked = { icon = '󰄱 ' },
---             checked   = { icon = '󰱒 ' },
---         },
---
---         table        = {
---             enabled = true,
---             -- markdown.extension.tableFormatter.enabled: true 相当
---             style   = 'full',
---         },
---
---         link         = { enabled = true },
---     })
--- end)
+-- obsidian.nvim の ui モジュールは Vault 外の Markdown に適用されず、
+-- 将来的に廃止予定 (専用レンダラの使用が推奨) のため、
+-- Vault内外問わず一貫した見た目にするためこちらを使用する。
+-- (obsidian.lua 側は ui.enable = false に設定済み)
+-- =============================================================================
+setup("render-markdown", function(m)
+	m.setup({
+		-- 対象ファイルタイプ (lazy.nvim の ft = {...} 相当)
+		-- vim.pack には遅延読み込み機構が無いため、setup 内の file_types で制御する
+		file_types = { "markdown", "norg", "rmd", "org" },
+
+		enabled = true,
+
+		-- markdown.preview.typographer: true 相当
+		-- 'n' (Normal) と 'c' (Command-line) モードでレンダリングを有効化
+		render_modes = { "n", "c" },
+
+		heading = {
+			enabled = true,
+			sign = true,
+			icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
+		},
+
+		code = {
+			enabled = true,
+			sign = true,
+			style = "full",
+			border = "thin",
+		},
+
+		dash = { enabled = true },
+		bullet = { enabled = true },
+
+		checkbox = {
+			enabled = true,
+			unchecked = { icon = "󰄱 " },
+			checked = { icon = "󰱒 " },
+		},
+
+		table = {
+			enabled = true,
+			-- markdown.extension.tableFormatter.enabled: true 相当
+			style = "full",
+		},
+
+		link = { enabled = true },
+	})
+end)
