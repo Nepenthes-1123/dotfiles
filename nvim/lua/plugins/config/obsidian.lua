@@ -63,7 +63,7 @@ local note_types = {
 	f = { folder = "00_Inbox", template = "fleeting-note.md", desc = "Fleeting Note" },
 	l = { folder = "10_Literature", template = "literature-note.md", desc = "Literature Note" },
 	p = { folder = "20_Notes", template = "permanent-note.md", desc = "Permanent Note" },
-	i = { folder = "30_Indes", template = "index-note.md", desc = "Index Note (MOC)" },
+	i = { folder = "30_Index", template = "index-note.md", desc = "Index Note (MOC)" },
 }
 
 -- 指定フォルダ + テンプレートでノートを新規作成する
@@ -94,7 +94,7 @@ setup("obsidian", function(m)
 				-- Windows:  'C:/Users/<username>/path/to/foam-repo'
 				-- macOS:    '~/path/to/foam-repo'
 				-- Linux:    '~/path/to/foam-repo'
-				path = vim.env.OBSIDIAN_VALUT_PATH or "~/Documents/slip-box",
+				path = vim.env.OBSIDIAN_VAULT_PATH or "~/Documents/slip-box",
 			},
 		},
 
