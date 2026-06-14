@@ -41,19 +41,6 @@ local function setup(mod, fn)
 	fn(m)
 end
 
--- ── Foam スラッグ変換ヘルパー ──────────────────────────────────────────────────
--- $FOAM_SLUG: タイトルを GitHub slug 方式でスラッグ化
--- 例: "My Note Title" → "my-note-title"
-local function slugify(str)
-	return str
-		:lower()
-		:gsub("[%s_]+", "-") -- 空白・アンダースコアをハイフンに
-		:gsub("[^%w%-]", "") -- 英数字とハイフン以外を除去
-		:gsub("%-+", "-") -- 連続ハイフンを単一に
-		:gsub("^%-+", "") -- 先頭ハイフンを除去
-		:gsub("%-+$", "") -- 末尾ハイフンを除去
-end
-
 -- ── ノートタイプ別の保存先・テンプレート定義 ────────────────────────────────────
 -- Zettelkasten のノートタイプごとに「保存先フォルダ」と「テンプレートファイル名」を
 -- 事前に定義しておく。<Leader>oz + キー で各タイプのノートを新規作成できる。
@@ -101,12 +88,20 @@ setup("obsidian", function(m)
 		-- ── ノート ID・ファイル名のデフォルト形式 ─────────────────────────────
 		-- Foam はタイトルをファイル名にするスタイルなので合わせる
 		note_id_func = function(title)
-			if title ~= nil then
-				return slugify(title)
-			else
-				-- タイトルなしの場合はタイムスタンプ
+			-- タイトルが nil または空文字の場合はタイムスタンプ
+			if title == nil or title == "" then
 				return tostring(os.time())
 			end
+
+			-- slugify の代わりに、OSで禁止されている記号だけを削除する
+			local safe_title = title:gsub(" ", "-"):gsub('[\\/:"*?<>|]', "")
+
+			-- 万が一、禁止記号だけを入力して空文字になってしまった場合の保険
+			if safe_title == "" then
+				return tostring(os.time())
+			end
+
+			return safe_title
 		end,
 
 		-- ノートのフルパス生成関数
