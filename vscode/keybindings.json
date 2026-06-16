@@ -1,5 +1,57 @@
 // 既定値を上書きするには、このファイル内にキー バインドを挿入します
 [
+  // ---------------------------------------------------
+  // Ctrl+Space をプレフィックスとした疑似リーダーキー操作
+  // ---------------------------------------------------
+
+  // 1. ファイル保存 (Ctrl+Space -> w)
+  {
+    "key": "ctrl+space w",
+    "command": "workbench.action.files.save"
+  },
+
+  // 2. 現在のファイルを閉じる (Ctrl+Space -> q)
+  {
+    "key": "ctrl+space q",
+    "command": "workbench.action.closeActiveEditor"
+  },
+
+  // 3. ファジーファインダー (Ctrl+Space -> f)
+  {
+    "key": "ctrl+space f",
+    "command": "workbench.action.quickOpen"
+  },
+
+  // 4. ファイルエクスプローラーの開閉 (Ctrl+Space -> e)
+  {
+    "key": "ctrl+space e",
+    "command": "workbench.action.toggleSidebarVisibility"
+  },
+
+  // 5. おまけ: 全文検索 (Ctrl+Space -> s)
+  {
+    "key": "ctrl+space s",
+    "command": "workbench.action.findInFiles"
+  },
+  // ---------------------------------------------------
+  // Ctrl + h,j,k,l でのペイン（エディタグループ）移動
+  // ---------------------------------------------------
+  {
+    "key": "ctrl+h",
+    "command": "workbench.action.navigateLeft"
+  },
+  {
+    "key": "ctrl+j",
+    "command": "workbench.action.navigateDown"
+  },
+  {
+    "key": "ctrl+k",
+    "command": "workbench.action.navigateUp"
+  },
+  {
+    "key": "ctrl+l",
+    "command": "workbench.action.navigateRight"
+  },
   {
     "key": "ctrl+alt+t",
     "command": "command-runner.run",
