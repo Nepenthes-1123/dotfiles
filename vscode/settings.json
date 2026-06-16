@@ -84,6 +84,9 @@
   "terminal.integrated.stickyScroll.enabled": false,
   "terminal.integrated.defaultProfile.windows": "Git Bash",
   "terminal.integrated.enableMultiLinePasteWarning": "never",
+  // お使いのOSに合わせてWezTermの実行ファイルを指定
+  "terminal.external.osxExec": "wezterm",
+  "terminal.external.windowsExec": "wezterm-gui.exe",
   "terminal.integrated.profiles.windows": {
     "Anaconda Prompt": {
       "args": [
