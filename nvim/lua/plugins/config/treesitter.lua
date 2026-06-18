@@ -18,7 +18,6 @@ setup("nvim-treesitter.configs", function(m)
 			"jsonc",
 			"markdown",
 			"markdown_inline",
-			"latex",
 			"bash",
 			"yaml",
 			"toml",

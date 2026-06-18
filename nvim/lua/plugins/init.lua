@@ -10,21 +10,25 @@
 
 -- ── Treesitter ビルドフック ───────────────────────────────────────────────────
 -- PackChanged イベントは vim.pack.add() より前に登録する必要がある
-vim.api.nvim_create_autocmd('PackChanged', {
-    callback = function(ev)
-        local name = ev.data.spec.name
-        local kind = ev.data.kind -- 'install' | 'update' | 'delete'
-        -- nvim-treesitter: install/update 後に :TSUpdate でパーサーをビルド
-        if name == 'nvim-treesitter' and (kind == 'install' or kind == 'update') then
-            if not ev.data.active then vim.cmd.packadd('nvim-treesitter') end
-            vim.cmd('TSUpdate')
-        end
-        -- LuaSnip: install 後に friendly-snippets を読み込む
-        if name == 'LuaSnip' and kind == 'install' then
-            if not ev.data.active then vim.cmd.packadd('LuaSnip') end
-            pcall(require, 'luasnip.loaders.from_vscode')
-        end
-    end,
+vim.api.nvim_create_autocmd("PackChanged", {
+	callback = function(ev)
+		local name = ev.data.spec.name
+		local kind = ev.data.kind -- 'install' | 'update' | 'delete'
+		-- nvim-treesitter: install/update 後に :TSUpdate でパーサーをビルド
+		if name == "nvim-treesitter" and (kind == "install" or kind == "update") then
+			if not ev.data.active then
+				vim.cmd.packadd("nvim-treesitter")
+			end
+			vim.cmd("TSUpdate")
+		end
+		-- LuaSnip: install 後に friendly-snippets を読み込む
+		if name == "LuaSnip" and kind == "install" then
+			if not ev.data.active then
+				vim.cmd.packadd("LuaSnip")
+			end
+			pcall(require, "luasnip.loaders.from_vscode")
+		end
+	end,
 })
 
 -- =============================================================================
@@ -35,112 +39,112 @@ vim.api.nvim_create_autocmd('PackChanged', {
 -- =============================================================================
 vim.pack.add({
 
-    -- ── カラースキーム ──────────────────────────────────────────────────────────
-    -- VSCode: "workbench.colorTheme": "Rosé Pine Moon (no italics)"
-    'https://github.com/rose-pine/neovim',
+	-- ── カラースキーム ──────────────────────────────────────────────────────────
+	-- VSCode: "workbench.colorTheme": "Rosé Pine Moon (no italics)"
+	"https://github.com/rose-pine/neovim",
 
-    -- ── アイコン (nvim-tree / lualine が依存) ────────────────────────────────
-    'https://github.com/nvim-tree/nvim-web-devicons',
+	-- ── アイコン (nvim-tree / lualine が依存) ────────────────────────────────
+	"https://github.com/nvim-tree/nvim-web-devicons",
 
-    -- ── ファイルツリー ──────────────────────────────────────────────────────────
-    -- VSCode: サイドバーのファイルエクスプローラー
-    'https://github.com/nvim-tree/nvim-tree.lua',
+	-- ── ファイルツリー ──────────────────────────────────────────────────────────
+	-- VSCode: サイドバーのファイルエクスプローラー
+	"https://github.com/nvim-tree/nvim-tree.lua",
 
-    -- ── ファジーファインダー ────────────────────────────────────────────────────
-    -- VSCode: Ctrl+P / Ctrl+Shift+F
-    'https://github.com/nvim-lua/plenary.nvim',
-    'https://github.com/nvim-telescope/telescope.nvim',
+	-- ── ファジーファインダー ────────────────────────────────────────────────────
+	-- VSCode: Ctrl+P / Ctrl+Shift+F
+	"https://github.com/nvim-lua/plenary.nvim",
+	"https://github.com/nvim-telescope/telescope.nvim",
 
-    -- ── Git 連携 ────────────────────────────────────────────────────────────────
-    -- VSCode: git.blame.editorDecoration.enabled + Gutter 差分表示
-    'https://github.com/lewis6991/gitsigns.nvim',
+	-- ── Git 連携 ────────────────────────────────────────────────────────────────
+	-- VSCode: git.blame.editorDecoration.enabled + Gutter 差分表示
+	"https://github.com/lewis6991/gitsigns.nvim",
 
-    -- ── 補完エンジン ────────────────────────────────────────────────────────────
-    -- VSCode: editor.suggestSelection / quickSuggestions
-    'https://github.com/hrsh7th/nvim-cmp',
-    'https://github.com/hrsh7th/cmp-nvim-lsp',
-    'https://github.com/hrsh7th/cmp-buffer',
-    'https://github.com/hrsh7th/cmp-path',
-    'https://github.com/hrsh7th/cmp-cmdline',
-    'https://github.com/L3MON4D3/LuaSnip',
-    'https://github.com/saadparwaiz1/cmp_luasnip',
-    'https://github.com/rafamadriz/friendly-snippets',
+	-- ── 補完エンジン ────────────────────────────────────────────────────────────
+	-- VSCode: editor.suggestSelection / quickSuggestions
+	"https://github.com/hrsh7th/nvim-cmp",
+	"https://github.com/hrsh7th/cmp-nvim-lsp",
+	"https://github.com/hrsh7th/cmp-buffer",
+	"https://github.com/hrsh7th/cmp-path",
+	"https://github.com/hrsh7th/cmp-cmdline",
+	"https://github.com/L3MON4D3/LuaSnip",
+	"https://github.com/saadparwaiz1/cmp_luasnip",
+	"https://github.com/rafamadriz/friendly-snippets",
 
-    -- ── シンタックスハイライト ──────────────────────────────────────────────────
-    'https://github.com/nvim-treesitter/nvim-treesitter',
+	-- ── シンタックスハイライト ──────────────────────────────────────────────────
+	"https://github.com/nvim-treesitter/nvim-treesitter",
 
-    -- ── ブラケットペアのカラー化 ────────────────────────────────────────────────
-    -- VSCode: "editor.bracketPairColorization.independentColorPoolPerBracketType": true
-    'https://github.com/HiPhish/rainbow-delimiters.nvim',
+	-- ── ブラケットペアのカラー化 ────────────────────────────────────────────────
+	-- VSCode: "editor.bracketPairColorization.independentColorPoolPerBracketType": true
+	"https://github.com/HiPhish/rainbow-delimiters.nvim",
 
-    -- ── フォーマッター ──────────────────────────────────────────────────────────
-    -- VSCode: esbenp.prettier-vscode / ms-python.black-formatter
-    'https://github.com/stevearc/conform.nvim',
+	-- ── フォーマッター ──────────────────────────────────────────────────────────
+	-- VSCode: esbenp.prettier-vscode / ms-python.black-formatter
+	"https://github.com/stevearc/conform.nvim",
 
-    -- ── リンター ────────────────────────────────────────────────────────────────
-    -- VSCode: dbaeumer.vscode-eslint / ms-python.flake8
-    'https://github.com/mfussenegger/nvim-lint',
+	-- ── リンター ────────────────────────────────────────────────────────────────
+	-- VSCode: dbaeumer.vscode-eslint / ms-python.flake8
+	"https://github.com/mfussenegger/nvim-lint",
 
-    -- ── LSP サーバー管理 (Mason) ────────────────────────────────────────────────
-    -- VSCode 拡張が言語サーバーを自動インストールしてくれる体験を再現
-    'https://github.com/williamboman/mason.nvim',
-    'https://github.com/williamboman/mason-lspconfig.nvim',
-    'https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim',
+	-- ── LSP サーバー管理 (Mason) ────────────────────────────────────────────────
+	-- VSCode 拡張が言語サーバーを自動インストールしてくれる体験を再現
+	"https://github.com/williamboman/mason.nvim",
+	"https://github.com/williamboman/mason-lspconfig.nvim",
+	"https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
 
-    -- ── コメントトグル ──────────────────────────────────────────────────────────
-    -- VSCode: Ctrl+/
-    'https://github.com/numToStr/Comment.nvim',
+	-- ── コメントトグル ──────────────────────────────────────────────────────────
+	-- VSCode: Ctrl+/
+	"https://github.com/numToStr/Comment.nvim",
 
-    -- ── ステータスライン ────────────────────────────────────────────────────────
-    'https://github.com/nvim-lualine/lualine.nvim',
+	-- ── ステータスライン ────────────────────────────────────────────────────────
+	"https://github.com/nvim-lualine/lualine.nvim",
 
-    -- ── インデントガイド ────────────────────────────────────────────────────────
-    -- VSCode: "editor.guides.bracketPairs": true
-    'https://github.com/lukas-reineke/indent-blankline.nvim',
+	-- ── インデントガイド ────────────────────────────────────────────────────────
+	-- VSCode: "editor.guides.bracketPairs": true
+	"https://github.com/lukas-reineke/indent-blankline.nvim",
 
-    -- ── 自動括弧補完 ────────────────────────────────────────────────────────────
-    'https://github.com/windwp/nvim-autopairs',
+	-- ── 自動括弧補完 ────────────────────────────────────────────────────────────
+	"https://github.com/windwp/nvim-autopairs",
 
-    -- ── カーソル下の単語ハイライト ──────────────────────────────────────────────
-    -- VSCode: 変数にカーソルを合わせると同名箇所が全てハイライト
-    'https://github.com/RRethy/vim-illuminate',
+	-- ── カーソル下の単語ハイライト ──────────────────────────────────────────────
+	-- VSCode: 変数にカーソルを合わせると同名箇所が全てハイライト
+	"https://github.com/RRethy/vim-illuminate",
 
-    -- ── キーバインドガイド ──────────────────────────────────────────────────────
-    'https://github.com/folke/which-key.nvim',
+	-- ── キーバインドガイド ──────────────────────────────────────────────────────
+	"https://github.com/folke/which-key.nvim",
 
-    -- obsidian 用
-    'https://github.com/obsidian-nvim/obsidian.nvim',
+	-- obsidian 用
+	"https://github.com/obsidian-nvim/obsidian.nvim",
 
-    -- Dev Container サポート (ms-vscode-remote.remote-containers の再現)
-    -- .devcontainer/devcontainer.json を読み取り、コンテナ内で Neovim を起動する
-    'https://github.com/esensar/nvim-dev-container',
+	-- Dev Container サポート (ms-vscode-remote.remote-containers の再現)
+	-- .devcontainer/devcontainer.json を読み取り、コンテナ内で Neovim を起動する
+	"https://github.com/esensar/nvim-dev-container",
 
-    -- ── UI 補完 (通知・入力・スクロール) ────────────────────────────────────────
-    -- ui2 がカバーしない noice.nvim 相当機能 (notifier, input, scroll) を補完
-    -- 設定は lua/plugins/snacks.lua で管理
-    'https://github.com/folke/snacks.nvim',
+	-- ── UI 補完 (通知・入力・スクロール) ────────────────────────────────────────
+	-- ui2 がカバーしない noice.nvim 相当機能 (notifier, input, scroll) を補完
+	-- 設定は lua/plugins/snacks.lua で管理
+	"https://github.com/folke/snacks.nvim",
 
-    'https://github.com/MeanderingProgrammer/render-markdown.nvim',
+	"https://github.com/MeanderingProgrammer/render-markdown.nvim",
 
-    -- ── GitHub PR / Issue 連携 ───────────────────────────────────────────────
-    -- VSCode: GitHub.vscode-pull-request-github の代替
-    -- 要: GitHub CLI (gh) のインストールと `gh auth login`
-    'https://github.com/pwntester/octo.nvim',
+	-- ── GitHub PR / Issue 連携 ───────────────────────────────────────────────
+	-- VSCode: GitHub.vscode-pull-request-github の代替
+	-- 要: GitHub CLI (gh) のインストールと `gh auth login`
+	"https://github.com/pwntester/octo.nvim",
 
-    -- コマンドラインのフローティング
-    'https://github.com/rachartier/tiny-cmdline.nvim'
+	-- コマンドラインのフローティング
+	"https://github.com/rachartier/tiny-cmdline.nvim",
 })
 
 -- =============================================================================
 -- 各プラグインの設定を読み込む
 -- =============================================================================
-require('plugins.config.snacks')
-require('plugins.config.ui')
-require('plugins.config.editor')
-require('plugins.config.lsp')
-require('plugins.config.cmp')
-require('plugins.config.treesitter')
-require('plugins.config.obsidian')
-require('plugins.config.docker')
-require('plugins.config.octo')
-require('plugins.config.tiny-cmdline')
+require("plugins.config.snacks")
+require("plugins.config.ui")
+require("plugins.config.editor")
+require("plugins.config.lsp")
+require("plugins.config.cmp")
+require("plugins.config.treesitter")
+require("plugins.config.obsidian")
+require("plugins.config.docker")
+require("plugins.config.octo")
+require("plugins.config.tiny-cmdline")
