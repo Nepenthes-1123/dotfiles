@@ -139,7 +139,7 @@ setup("render-markdown", function(m)
 			checked = { icon = "󰱒 " },
 		},
 
-		table = {
+		pipe_table = {
 			enabled = true,
 			-- markdown.extension.tableFormatter.enabled: true 相当
 			style = "full",

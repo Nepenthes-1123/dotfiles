@@ -68,6 +68,7 @@
 !nvim/lua/config/options.lua
 !nvim/lua/config/shell.lua
 !nvim/lua/plugins/init.lua
+!nvim/lua/plugins/config/blink.lua
 !nvim/lua/plugins/config/cmp.lua
 !nvim/lua/plugins/config/docker.lua
 !nvim/lua/plugins/config/editor.lua
@@ -80,7 +81,7 @@
 !nvim/lua/plugins/config/ui.lua
 !nvim/lua/plugins/config/utils.lua
 !nvim/lsp/clangd.lua
-!nvim/lsp/docker_compose_language_server.lua
+!nvim/lsp/docker_compose_language_service.lua
 !nvim/lsp/dockerls.lua
 !nvim/lsp/jsonls.lua
 !nvim/lsp/lua_ls.lua
@@ -88,7 +89,7 @@
 !nvim/lsp/pyright.lua
 !nvim/lsp/ruff.lua
 !nvim/lsp/texlab.lua
-!nvim/lsp/ts_ls.lua
+!nvim/lsp/vtsls.lua
 !nvim/lsp/vue_ls.lua
 !nvim/after/ftplugin/dockerfile.lua
 !nvim/after/ftplugin/json.lua

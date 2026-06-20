@@ -27,7 +27,7 @@ setup("mason-lspconfig", function(m)
 			"clangd",
 			"lua_ls",
 			"vue_ls",
-			"ts_ls",
+			"vtsls",
 			"texlab",
 			"marksman",
 			"jsonls",

@@ -7,31 +7,43 @@ return {
 	cmd = { "vue-language-server", "--stdio" },
 	filetypes = { "vue" },
 	root_markers = { "vue.config.js", "vue.config.ts", "nuxt.config.ts", "package.json", ".git" },
-	init_options = {
-		typescript = {
-			tsdk = (function()
-				-- 1. プロジェクトローカルを最優先（もし今後プロジェクト内でnpm installした時用）
-				local local_ts = vim.fn.getcwd() .. "/node_modules/typescript/lib"
-				if vim.fn.isdirectory(local_ts) == 1 then
-					return local_ts
-				end
+	capabilities = require("cmp_nvim_lsp").default_capabilities(),
+	on_init = function(client)
+		client.handlers["tsserver/request"] = function(_, result, context)
+			local ts_clients = vim.lsp.get_clients({ bufnr = context.bufnr, name = "ts_ls" })
+			local vtsls_clients = vim.lsp.get_clients({ bufnr = context.bufnr, name = "vtsls" })
+			local clients = {}
 
-				-- 2. 【本命】Masonがインストールした typescript-language-server の中身を借りる
-				local mason_ts = vim.fn.stdpath("data")
-					.. "/mason/packages/typescript-language-server/node_modules/typescript/lib"
-				if vim.fn.isdirectory(mason_ts) == 1 then
-					return mason_ts
-				end
+			vim.list_extend(clients, ts_clients)
+			vim.list_extend(clients, vtsls_clients)
 
-				-- 3. Masonの vue-language-server が内包しているTSへのフォールバック
-				local mason_vue_ts = vim.fn.stdpath("data")
-					.. "/mason/packages/vue-language-server/node_modules/typescript/lib"
-				if vim.fn.isdirectory(mason_vue_ts) == 1 then
-					return mason_vue_ts
-				end
+			if #clients == 0 then
+				vim.notify(
+					"Could not find `vtsls` or `ts_ls` lsp client, `vue_ls` would not work without it.",
+					vim.log.levels.ERROR
+				)
+				return
+			end
+			local ts_client = clients[1]
 
-				return ""
-			end)(),
-		},
-	},
+			local param = unpack(result)
+			local id, command, payload = unpack(param)
+			ts_client:exec_cmd({
+				title = "vue_request_forward", -- You can give title anything as it's used to represent a command in the UI, `:h Client:exec_cmd`
+				command = "typescript.tsserverRequest",
+				arguments = {
+					command,
+					payload,
+				},
+			}, { bufnr = context.bufnr }, function(_, r)
+				local response = r and r.body
+				-- TODO: handle error or response nil here, e.g. logging
+				-- NOTE: Do NOT return if there's an error or no response, just return nil back to the vue_ls to prevent memory leak
+				local response_data = { { id, response } }
+
+				---@diagnostic disable-next-line: param-type-mismatch
+				client:notify("tsserver/response", response_data)
+			end)
+		end
+	end,
 }

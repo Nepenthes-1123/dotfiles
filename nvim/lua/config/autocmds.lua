@@ -86,7 +86,7 @@ au("LspAttach", {
 
 		-- フォーマット機能が無い LSP を除外してフォーマット競合を防ぐ
 		-- (例: tsserver は prettier に任せる)
-		if client.name == "ts_ls" or client.name == "vue_ls" then
+		if client.name == "vtsls" or client.name == "vue_ls" then
 			client.server_capabilities.documentFormattingProvider = false
 		end
 	end,
