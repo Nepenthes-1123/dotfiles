@@ -141,3 +141,8 @@ opt.titlestring = "%{expand('%:t')}%m  ·  %{fnamemodify(getcwd(), ':t')}"
 
 -- ── スペルチェック (markdown のみ有効化は autocmds.lua で制御) ───────────────
 opt.spelllang = { "en", "cjk" }
+
+-- シェルのデフォルトオプション-- もし以下のように zsh を指定している場合
+vim.opt.shellcmdflag = "-c"
+vim.opt.shellquote = ""
+vim.opt.shellxquote = ""
