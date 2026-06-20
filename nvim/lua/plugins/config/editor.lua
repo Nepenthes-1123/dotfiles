@@ -81,7 +81,6 @@ setup("gitsigns", function(m)
 end)
 
 -- VSCode: git.blame.editorDecoration.enabled → gitsigns blame_line
-map("n", "<Leader>gd", "<Cmd>Gitsigns diffthis<CR>", vim.tbl_extend("force", opts, { desc = "Git diff" }))
 map("n", "<Leader>gs", "<Cmd>Gitsigns stage_hunk<CR>", vim.tbl_extend("force", opts, { desc = "Stage hunk" }))
 map("n", "<Leader>gu", "<Cmd>Gitsigns undo_stage_hunk<CR>", vim.tbl_extend("force", opts, { desc = "Undo stage hunk" }))
 map("n", "<Leader>gr", "<Cmd>Gitsigns reset_hunk<CR>", vim.tbl_extend("force", opts, { desc = "Reset hunk" }))

@@ -220,6 +220,9 @@ setup("snacks", function(Snacks)
 	map("n", "<Leader>gb", function()
 		Snacks.git.blame_line()
 	end, vim.tbl_extend("force", opts, { desc = "Git blame line" }))
+	map("n", "<Leader>gd", function()
+		Snacks.picker.git_diff()
+	end, vim.tbl_extend("force", opts, { desc = "Git diff" }))
 
 	-- github情報
 	-- Issue 一覧 (VSCode: "Issues" サイドバー)
