@@ -3,29 +3,6 @@ local setup = require("plugins.config.utils").setup
 local map = vim.keymap.set
 local opts = { noremap = true, silent = true }
 
--- ── nvim-tree ─────────────────────────────────────────────────────────────────
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-setup("nvim-tree", function(m)
-	m.setup({
-		view = { width = 30, side = "left" },
-		renderer = {
-			group_empty = false,
-			indent_markers = { enable = true },
-		},
-		filters = {
-			custom = { "^.git$", "__pycache__", "*.pyc", "node_modules", ".DS_Store" },
-		},
-		git = { enable = true },
-		update_focused_file = { enable = true },
-	})
-end)
-
--- ── ファイルツリー (nvim-tree) ────────────────────────────────────────────────
--- VSCode: Ctrl+Shift+E → ファイルエクスプローラー
-map("n", "<Leader>e", "<Cmd>NvimTreeToggle<CR>", vim.tbl_extend("force", opts, { desc = "Toggle file tree" }))
-map("n", "<Leader>E", "<Cmd>NvimTreeFindFile<CR>", vim.tbl_extend("force", opts, { desc = "Reveal file in tree" }))
-
 -- ── telescope ─────────────────────────────────────────────────────────────────
 setup("telescope", function(m)
 	local actions = require("telescope.actions")

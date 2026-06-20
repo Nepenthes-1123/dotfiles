@@ -96,7 +96,7 @@ setup("snacks", function(Snacks)
 		-- plugins/init.lua で別途設定しているものと競合しないよう無効化
 		bigfile = { enabled = false }, -- autocmds.lua で代替済み
 		dashboard = { enabled = false }, -- 使用しない
-		explorer = { enabled = false }, -- nvim-tree を使用
+		explorer = { enabled = true }, -- nvim-tree を使用
 		indent = { enabled = true }, -- indent-blankline.nvim を使用
 		picker = {
 			enabled = true,
@@ -188,6 +188,14 @@ setup("snacks", function(Snacks)
 	-- ── キーマップ ────────────────────────────────────────────────────────────
 	local map = vim.keymap.set
 	local opts = { noremap = true, silent = true }
+
+	-- explorer設定
+	map("n", "<Leader>e", function()
+		Snacks.explorer()
+	end, vim.tbl_extend("force", opts, { desc = "Toggle Explorer" }))
+	map("n", "<Leader>E", function()
+		Snacks.explorer({ reveal_file = vim.fn.expand("%:p") })
+	end, vim.tbl_extend("force", opts, { desc = "Reveal current file in Explorer" }))
 
 	-- ファイル検索
 	map("n", "<Leader>ff", function()
