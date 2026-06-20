@@ -2,11 +2,18 @@
 -- lsp/vue_ls.lua  –  Vue LSP サーバー設定 (Volar v2)
 -- VSCode: vue.volar 拡張
 -- =============================================================================
+-- lsp.lua など、LSPをセットアップするファイル内
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+local ok, blink = pcall(require, "blink.cmp")
+if ok then
+	capabilities = blink.get_lsp_capabilities(capabilities)
+end
 
 return {
 	cmd = { "vue-language-server", "--stdio" },
 	filetypes = { "vue" },
 	root_markers = { "vue.config.js", "vue.config.ts", "nuxt.config.ts", "package.json", ".git" },
+	capabilities = capabilities,
 	on_init = function(client)
 		client.handlers["tsserver/request"] = function(_, result, context)
 			local ts_clients = vim.lsp.get_clients({ bufnr = context.bufnr, name = "ts_ls" })

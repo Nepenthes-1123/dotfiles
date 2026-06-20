@@ -61,6 +61,7 @@ vim.pack.add({
 
 	-- ── 補完エンジン ────────────────────────────────────────────────────────────
 	-- VSCode: editor.suggestSelection / quickSuggestions
+	"https://github.com/saghen/blink.lib",
 	"https://github.com/saghen/blink.cmp",
 
 	-- ── シンタックスハイライト ──────────────────────────────────────────────────
