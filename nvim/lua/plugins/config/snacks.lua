@@ -112,6 +112,10 @@ setup("snacks", function(Snacks)
 					cmd = "rg",
 					regex = true,
 				},
+				explorer = {
+					hidden = true,
+					ignored = true,
+				},
 			},
 		}, -- telescope.nvim を使用
 		statuscolumn = { enabled = false }, -- lualine.nvim を使用
