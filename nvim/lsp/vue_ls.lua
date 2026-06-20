@@ -7,7 +7,6 @@ return {
 	cmd = { "vue-language-server", "--stdio" },
 	filetypes = { "vue" },
 	root_markers = { "vue.config.js", "vue.config.ts", "nuxt.config.ts", "package.json", ".git" },
-	capabilities = require("cmp_nvim_lsp").default_capabilities(),
 	on_init = function(client)
 		client.handlers["tsserver/request"] = function(_, result, context)
 			local ts_clients = vim.lsp.get_clients({ bufnr = context.bufnr, name = "ts_ls" })

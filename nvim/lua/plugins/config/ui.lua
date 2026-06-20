@@ -68,22 +68,11 @@ setup("lualine", function(m)
 	})
 end)
 
--- ── indent-blankline ──────────────────────────────────────────────────────────
-setup("ibl", function(m)
-	m.setup({
-		indent = { char = "│" },
-		scope = { enabled = true, show_start = true },
-		exclude = { filetypes = { "help", "NvimTree", "telescope", "mason", "notify" } },
-	})
-end)
-
 -- ── which-key ─────────────────────────────────────────────────────────────────
 setup("which-key", function(m)
 	m.setup({
 		delay = 500,
 		spec = {
-			{ "<Leader>f", group = "Find (Telescope)" },
-			{ "<Leader>g", group = "Git" },
 			{ "<Leader>c", group = "Code (LSP)" },
 			{ "<Leader>b", group = "Buffer" },
 			{ "<Leader>m", group = "Mason" },

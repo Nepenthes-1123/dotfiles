@@ -77,49 +77,11 @@ map("v", "<Leader>f", function()
 	vim.lsp.buf.format({ async = true, range = true })
 end, vim.tbl_extend("force", opts, { desc = "Format selection" }))
 
--- ── ファイルツリー (nvim-tree) ────────────────────────────────────────────────
--- VSCode: Ctrl+Shift+E → ファイルエクスプローラー
-map("n", "<Leader>e", "<Cmd>NvimTreeToggle<CR>", vim.tbl_extend("force", opts, { desc = "Toggle file tree" }))
-map("n", "<Leader>E", "<Cmd>NvimTreeFindFile<CR>", vim.tbl_extend("force", opts, { desc = "Reveal file in tree" }))
-
--- ── ファジーファインダー (telescope) ─────────────────────────────────────────
+-- ── ファジーファインダー (blink) ─────────────────────────────────────────
 -- VSCode: Ctrl+P → ファイル検索
-map("n", "<Leader>ff", "<Cmd>Telescope find_files<CR>", vim.tbl_extend("force", opts, { desc = "Find files" }))
-map("n", "<Leader>fg", "<Cmd>Telescope live_grep<CR>", vim.tbl_extend("force", opts, { desc = "Live grep" }))
-map("n", "<Leader>fb", "<Cmd>Telescope buffers<CR>", vim.tbl_extend("force", opts, { desc = "Buffers" }))
-map("n", "<Leader>fh", "<Cmd>Telescope help_tags<CR>", vim.tbl_extend("force", opts, { desc = "Help tags" }))
-map("n", "<Leader>fd", "<Cmd>Telescope diagnostics<CR>", vim.tbl_extend("force", opts, { desc = "Diagnostics" }))
-map(
-	"n",
-	"<Leader>fs",
-	"<Cmd>Telescope lsp_document_symbols<CR>",
-	vim.tbl_extend("force", opts, { desc = "Document symbols" })
-)
-map(
-	"n",
-	"<Leader>fr",
-	"<Cmd>Telescope lsp_references<CR>",
-	vim.tbl_extend("force", opts, { desc = "References (Telescope)" })
-)
+
 -- VSCode: Ctrl+Shift+F → グローバル検索
 map("n", "<C-S-f>", "<Cmd>Telescope live_grep<CR>", vim.tbl_extend("force", opts, { desc = "Live grep" }))
-
--- ── Git ──────────────────────────────────────────────────────────────────────
--- VSCode: git.blame.editorDecoration.enabled → gitsigns blame_line
-map("n", "<Leader>gb", "<Cmd>Gitsigns blame_line<CR>", vim.tbl_extend("force", opts, { desc = "Git blame line" }))
-map(
-	"n",
-	"<Leader>gB",
-	"<Cmd>Gitsigns toggle_current_line_blame<CR>",
-	vim.tbl_extend("force", opts, { desc = "Toggle inline blame" })
-)
-map("n", "<Leader>gd", "<Cmd>Gitsigns diffthis<CR>", vim.tbl_extend("force", opts, { desc = "Git diff" }))
-map("n", "<Leader>gs", "<Cmd>Gitsigns stage_hunk<CR>", vim.tbl_extend("force", opts, { desc = "Stage hunk" }))
-map("n", "<Leader>gu", "<Cmd>Gitsigns undo_stage_hunk<CR>", vim.tbl_extend("force", opts, { desc = "Undo stage hunk" }))
-map("n", "<Leader>gr", "<Cmd>Gitsigns reset_hunk<CR>", vim.tbl_extend("force", opts, { desc = "Reset hunk" }))
-map("n", "<Leader>gp", "<Cmd>Gitsigns preview_hunk<CR>", vim.tbl_extend("force", opts, { desc = "Preview hunk" }))
-map("n", "]h", "<Cmd>Gitsigns next_hunk<CR>", vim.tbl_extend("force", opts, { desc = "Next hunk" }))
-map("n", "[h", "<Cmd>Gitsigns prev_hunk<CR>", vim.tbl_extend("force", opts, { desc = "Prev hunk" }))
 
 -- ── ターミナル ────────────────────────────────────────────────────────────────
 map("n", "<Leader>t", "<Cmd>terminal<CR>", vim.tbl_extend("force", opts, { desc = "Open terminal" }))

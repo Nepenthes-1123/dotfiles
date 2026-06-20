@@ -61,14 +61,7 @@ vim.pack.add({
 
 	-- ── 補完エンジン ────────────────────────────────────────────────────────────
 	-- VSCode: editor.suggestSelection / quickSuggestions
-	"https://github.com/hrsh7th/nvim-cmp",
-	"https://github.com/hrsh7th/cmp-nvim-lsp",
-	"https://github.com/hrsh7th/cmp-buffer",
-	"https://github.com/hrsh7th/cmp-path",
-	"https://github.com/hrsh7th/cmp-cmdline",
-	"https://github.com/L3MON4D3/LuaSnip",
-	"https://github.com/saadparwaiz1/cmp_luasnip",
-	"https://github.com/rafamadriz/friendly-snippets",
+	"https://github.com/saghen/blink.cmp",
 
 	-- ── シンタックスハイライト ──────────────────────────────────────────────────
 	"https://github.com/nvim-treesitter/nvim-treesitter",
@@ -93,21 +86,21 @@ vim.pack.add({
 
 	-- ── コメントトグル ──────────────────────────────────────────────────────────
 	-- VSCode: Ctrl+/
-	"https://github.com/numToStr/Comment.nvim",
+	-- 組み込みになったらしいので削除
 
 	-- ── ステータスライン ────────────────────────────────────────────────────────
 	"https://github.com/nvim-lualine/lualine.nvim",
 
 	-- ── インデントガイド ────────────────────────────────────────────────────────
 	-- VSCode: "editor.guides.bracketPairs": true
-	"https://github.com/lukas-reineke/indent-blankline.nvim",
+	-- snacksでやる
 
 	-- ── 自動括弧補完 ────────────────────────────────────────────────────────────
 	"https://github.com/windwp/nvim-autopairs",
 
 	-- ── カーソル下の単語ハイライト ──────────────────────────────────────────────
 	-- VSCode: 変数にカーソルを合わせると同名箇所が全てハイライト
-	"https://github.com/RRethy/vim-illuminate",
+	-- おそらく組み込み？
 
 	-- ── キーバインドガイド ──────────────────────────────────────────────────────
 	"https://github.com/folke/which-key.nvim",
@@ -142,7 +135,7 @@ require("plugins.config.snacks")
 require("plugins.config.ui")
 require("plugins.config.editor")
 require("plugins.config.lsp")
-require("plugins.config.cmp")
+require("plugins.config.blink")
 require("plugins.config.treesitter")
 require("plugins.config.obsidian")
 require("plugins.config.docker")
