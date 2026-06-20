@@ -105,7 +105,6 @@ setup("snacks", function(Snacks)
 			sources = {
 				files = {
 					hidden = true,
-					cmd = "fd",
 				},
 				grep = {
 					hidden = true,
