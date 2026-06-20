@@ -4,7 +4,7 @@ local setup = require("plugins.config.utils").setup
 setup("blink.cmp", function(m)
 	m.setup({
 		-- キーマップのプリセット
-		keymap = { preset = "default", ["<CR>"] = { "accept", "fallback" } },
+		keymap = { preset = "enter" },
 		appearance = {
 			use_nvim_cmp_as_default = true,
 			nerd_font_variant = "mono",
