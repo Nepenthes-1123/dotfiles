@@ -75,7 +75,6 @@ setup("which-key", function(m)
 		spec = {
 			{ "<Leader>c", group = "Code (LSP)" },
 			{ "<Leader>b", group = "Buffer" },
-			{ "<Leader>m", group = "Mason" },
 		},
 	})
 end)

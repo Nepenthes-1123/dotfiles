@@ -90,7 +90,7 @@ setup("octo", function(m)
 	-- レビュー開始 (VSCode: "Start Review")
 	map(
 		"n",
-		"<Leader>hprs",
+		"<Leader>gprs",
 		"<Cmd>Octo review start<CR>",
 		vim.tbl_extend("force", opts, { desc = "Octo: Start review" })
 	)
@@ -98,7 +98,7 @@ setup("octo", function(m)
 	-- レビュー再開 (VSCode: ローカルにキャッシュされた未送信コメントの再開)
 	map(
 		"n",
-		"<Leader>hprr",
+		"<Leader>gprr",
 		"<Cmd>Octo review resume<CR>",
 		vim.tbl_extend("force", opts, { desc = "Octo: Resume review" })
 	)
@@ -106,7 +106,7 @@ setup("octo", function(m)
 	-- レビュー送信
 	map(
 		"n",
-		"<Leader>hprx",
+		"<Leader>gprx",
 		"<Cmd>Octo review submit<CR>",
 		vim.tbl_extend("force", opts, { desc = "Octo: Submit review" })
 	)
@@ -114,7 +114,7 @@ setup("octo", function(m)
 	-- PR をマージ (VSCode: "Merge Pull Request")
 	map(
 		"n",
-		"<Leader>hpm",
+		"<Leader>gpm",
 		"<Cmd>Octo pr merge<CR>",
 		vim.tbl_extend("force", opts, { desc = "Octo: Merge pull request" })
 	)
@@ -122,7 +122,7 @@ setup("octo", function(m)
 	-- PR をチェックアウト (VSCode: "Checkout Pull Request")
 	map(
 		"n",
-		"<Leader>hpc",
+		"<Leader>gpc",
 		"<Cmd>Octo pr checkout<CR>",
 		vim.tbl_extend("force", opts, { desc = "Octo: Checkout pull request" })
 	)
@@ -134,7 +134,7 @@ setup("octo", function(m)
 	-- 新規 Issue 作成
 	map(
 		"n",
-		"<Leader>gim",
+		"<Leader>gic",
 		"<Cmd>Octo issue create<CR>",
 		vim.tbl_extend("force", opts, { desc = "Octo: Create issue" })
 	)
@@ -150,7 +150,7 @@ setup("octo", function(m)
 	-- リポジトリ一覧
 	map(
 		"n",
-		"<Leader>hR",
+		"<Leader>gR",
 		"<Cmd>Octo repo list<CR>",
 		vim.tbl_extend("force", opts, { desc = "Octo: List repositories" })
 	)
@@ -178,7 +178,7 @@ setup("octo", function(m)
 			-- コメント/レビューの送信
 			map(
 				"n",
-				"<Leader>hs",
+				"<Leader>rs",
 				"<Cmd>Octo review submit<CR>",
 				vim.tbl_extend("force", o, { desc = "Octo: Submit review" })
 			)
@@ -196,10 +196,7 @@ setup("octo", function(m)
 	local wk_ok, wk = pcall(require, "which-key")
 	if wk_ok then
 		wk.add({
-			{ "<Leader>h", group = "GitHub (Octo)" },
-			{ "<Leader>hp", group = "GitHub PR (Octo)" },
-			{ "<Leader>hi", group = "GitHub Issue (Octo)" },
-			{ "<Leader>hpr", group = "PR Review (Octo)" },
+			{ "<Leader>gpr", group = "PR Review " },
 		})
 	end
 end)

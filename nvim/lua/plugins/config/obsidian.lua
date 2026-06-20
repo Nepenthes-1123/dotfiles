@@ -274,8 +274,22 @@ setup("obsidian", function(m)
 		vim.tbl_extend("force", opts, { desc = "Obsidian: Follow link" })
 	)
 	-- gf でも追える (Neovim ネイティブな操作感)
-	map("n", "gf", "<Cmd>Obsidian follow_link<CR>", vim.tbl_extend("force", opts, { desc = "Follow wikilink" }))
-
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = "markdown",
+		group = vim.api.nvim_create_augroup("obsidian-gf", { clear = true }),
+		callback = function(ev)
+			map(
+				"n",
+				"gf",
+				"<Cmd>Obsidian follow_link<CR>",
+				vim.tbl_extend(
+					"force",
+					{ buffer = ev.buf, noremap = true, silent = true },
+					{ desc = "Follow wikilink" }
+				)
+			)
+		end,
+	})
 	-- バックリンク一覧 (Foam: "Foam: Show Backlinks")
 	map(
 		"n",

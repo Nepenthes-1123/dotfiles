@@ -267,6 +267,11 @@ setup("snacks", function(Snacks)
 	-- which-key グループ登録
 	local wk_ok, wk = pcall(require, "which-key")
 	if wk_ok then
-		wk.add({ { "<Leader>n", group = "Notifications" }, { "<Leader>f", group = "Find " } })
+		wk.add({
+			{ "<Leader>n", group = "Notifications" },
+			{ "<Leader>f", group = "Find" },
+			{ "<Leader>gi", group = "Issue" },
+			{ "<Leader>gp", group = "Pull Request" },
+		})
 	end
 end)

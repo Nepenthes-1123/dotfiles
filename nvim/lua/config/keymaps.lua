@@ -57,7 +57,7 @@ map("i", "<C-s>", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { de
 
 -- リネーム (VSCode: F2)
 map("n", "<F2>", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
-map("n", "<Leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
+map("n", "<Leader>cr", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
 
 -- コードアクション (VSCode: Ctrl+. → Quick Fix)
 map({ "n", "v" }, "<Leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
@@ -66,22 +66,18 @@ map({ "n", "v" }, "<Leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force",
 map("n", "<Leader>d", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Show diagnostic" }))
 map("n", "[d", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "Prev diagnostic" }))
 map("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
-map("n", "<Leader>dl", vim.diagnostic.setloclist, vim.tbl_extend("force", opts, { desc = "Diagnostic list" }))
 
 -- フォーマット (VSCode: formatOnSave は autocmds.lua, 手動は Alt+Shift+F)
-map("n", "<Leader>f", function()
+map("n", "<Leader>cf", function()
 	vim.lsp.buf.format({ async = true })
 end, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
 
-map("v", "<Leader>f", function()
+map("v", "<Leader>cf", function()
 	vim.lsp.buf.format({ async = true, range = true })
 end, vim.tbl_extend("force", opts, { desc = "Format selection" }))
 
 -- ── ファジーファインダー (blink) ─────────────────────────────────────────
 -- VSCode: Ctrl+P → ファイル検索
-
--- VSCode: Ctrl+Shift+F → グローバル検索
-map("n", "<C-S-f>", "<Cmd>Telescope live_grep<CR>", vim.tbl_extend("force", opts, { desc = "Live grep" }))
 
 -- ── ターミナル ────────────────────────────────────────────────────────────────
 map("n", "<Leader>t", "<Cmd>terminal<CR>", vim.tbl_extend("force", opts, { desc = "Open terminal" }))
