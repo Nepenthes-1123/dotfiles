@@ -88,3 +88,10 @@ map("t", "<Esc>", "<C-\\><C-n>", opts) -- ターミナルモードから抜け�
 
 -- ── コメント (comment.nvim) ───────────────────────────────────────────────────
 -- gcc / gc は comment.nvim のデフォルトに任せる (VSCode: Ctrl+/ と同等)
+
+-- ── インサートモードの挙動をVScode風に変更 ─────────────────────────────────────────────────────────────────
+map("i", "<C-s>", "<Cmd>w<CR>", vim.tbl_extend("force", opts, { desc = "Save file" }))
+map("i", "<C-z>", "<Cmd>undo<CR>", vim.tbl_extend("force", opts, { desc = "Undo" }))
+map("i", "<C-v>", "<C-r>+", vim.tbl_extend("force", opts, { desc = "Pasete from Clipblard" }))
+map({ "i", "v" }, "<C-a>", "<Esc>ggVG", vim.tbl_extend("force", opts, { desc = "Select All" }))
+map("n", "<C-a>", "ggVG", vim.tbl_extend("force", opts, { desc = "Select All" }))
