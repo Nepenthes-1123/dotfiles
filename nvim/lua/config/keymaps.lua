@@ -39,6 +39,9 @@ map("n", "<Leader>bd", "<Cmd>bdelete<CR>", vim.tbl_extend("force", opts, { desc 
 map("v", "<", "<gv", opts)
 map("v", ">", ">gv", opts)
 
+-- インサートモードからノーマルモードに変更
+map("i", "jj", "<Esc>", opts)
+
 -- ── LSP コードナビゲーション ─────────────────────────────────────────────────
 -- VSCode: F12 → 定義ジャンプ, Shift+F12 → 参照
 -- Neovim 標準 LSP キーマップ (LspAttach autocmd で上書きも可)
