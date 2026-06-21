@@ -29,7 +29,7 @@ au("BufWritePre", {
 local indent_group = aug("FiletypeIndent", { clear = true })
 au("FileType", {
 	group = indent_group,
-	pattern = { "tex", "latex", "bib", "plaintex", "markdown", "json", "jsonc", "yaml", "html", "css" },
+	pattern = { "latex", "bib", "plaintex", "jsonc", "yaml", "html", "css" },
 	callback = function()
 		vim.bo.tabstop = 2
 		vim.bo.shiftwidth = 2
@@ -62,7 +62,7 @@ au("TextYankPost", {
 local spell_group = aug("SpellSettings", { clear = true })
 au("FileType", {
 	group = spell_group,
-	pattern = { "markdown", "gitcommit" },
+	pattern = { "gitcommit" },
 	callback = function()
 		vim.wo.spell = true
 	end,
