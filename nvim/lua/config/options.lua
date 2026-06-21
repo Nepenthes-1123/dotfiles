@@ -11,8 +11,8 @@ if vim.g.neovide or vim.g.fvim_loaded or vim.g.goneovim then
 end
 
 -- 予測変換・フロートの透過度設定
-opt.pumblend = 40
-opt.winblend = 40
+opt.pumblend = 15
+opt.winblend = 15
 
 -- UI2: 実験的らしいので変更する必要が出てくる可能性がある
 pcall(function()
