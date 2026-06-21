@@ -45,6 +45,7 @@ return {
 	on_attach = function(_, bufnr)
 		-- ruff 経由で保存時に import 整理を行う code action
 		vim.api.nvim_create_autocmd("BufWritePre", {
+			group = vim.api.nvim_create_augroup("ruff-organize-imports-" .. bufnr, { clear = true }),
 			buffer = bufnr,
 			callback = function()
 				vim.lsp.buf.code_action({

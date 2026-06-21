@@ -11,6 +11,7 @@
 -- ── Treesitter ビルドフック ───────────────────────────────────────────────────
 -- PackChanged イベントは vim.pack.add() より前に登録する必要がある
 vim.api.nvim_create_autocmd("PackChanged", {
+	group = vim.api.nvim_create_augroup("pack-changed-hooks", { clear = true }),
 	callback = function(ev)
 		local name = ev.data.spec.name
 		local kind = ev.data.kind -- 'install' | 'update' | 'delete'

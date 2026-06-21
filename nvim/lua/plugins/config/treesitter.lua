@@ -40,6 +40,7 @@ setup("nvim-treesitter.configs", function(m)
 end)
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
+	group = vim.api.nvim_create_augroup("treesitter-vue-start", { clear = true }),
 	pattern = "vue",
 	callback = function()
 		pcall(vim.treesitter.start)

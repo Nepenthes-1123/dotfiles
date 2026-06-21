@@ -158,6 +158,7 @@ setup("octo", function(m)
 	-- ── レビューバッファ用キーマップ (Octo バッファ内のみ有効) ──────────────────
 	-- VSCode: 行コメント追加 (差分の +/- ガター上でクリック)
 	vim.api.nvim_create_autocmd("FileType", {
+		group = vim.api.nvim_create_augroup("octo-buffer-keymaps", { clear = true }),
 		pattern = "octo",
 		callback = function(ev)
 			local o = { buffer = ev.buf, noremap = true, silent = true }

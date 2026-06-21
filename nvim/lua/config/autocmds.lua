@@ -117,7 +117,9 @@ au("QuickFixCmdPost", {
 })
 
 -- 保存時に改行コードを絶対にLF(unix)に強制する
-vim.api.nvim_create_autocmd("BufWritePre", {
+local eol_group = aug("ForceUnixEol", { clear = true })
+au("BufWritePre", {
+	group = eol_group,
 	pattern = "*",
 	callback = function()
 		-- 現在のバッファの改行コードが unix でない場合のみ変更する
