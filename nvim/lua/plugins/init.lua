@@ -22,13 +22,6 @@ vim.api.nvim_create_autocmd("PackChanged", {
 			end
 			vim.cmd("TSUpdate")
 		end
-		-- LuaSnip: install 後に friendly-snippets を読み込む
-		if name == "LuaSnip" and kind == "install" then
-			if not ev.data.active then
-				vim.cmd.packadd("LuaSnip")
-			end
-			pcall(require, "luasnip.loaders.from_vscode")
-		end
 	end,
 })
 
