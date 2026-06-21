@@ -68,6 +68,7 @@
 !nvim/lua/config/options.lua
 !nvim/lua/config/shell.lua
 !nvim/lua/plugins/init.lua
+!nvim/lua/plugins/config/autopairs.lua
 !nvim/lua/plugins/config/blink.lua
 !nvim/lua/plugins/config/cmp.lua
 !nvim/lua/plugins/config/docker.lua
