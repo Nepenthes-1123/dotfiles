@@ -121,6 +121,9 @@ vim.pack.add({
 
 	-- コマンドラインのフローティング
 	"https://github.com/rachartier/tiny-cmdline.nvim",
+
+	-- ── AI 自動補完 ─────────────────────────────────────────────────────────────
+	"https://github.com/zbirenbaum/copilot.lua",
 })
 
 -- =============================================================================
@@ -136,3 +139,4 @@ require("plugins.config.obsidian")
 require("plugins.config.docker")
 require("plugins.config.octo")
 require("plugins.config.tiny-cmdline")
+require("plugins.config.ai")
