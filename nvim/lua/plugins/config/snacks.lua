@@ -114,6 +114,17 @@ setup("snacks", function(Snacks)
 				explorer = {
 					hidden = true,
 					ignored = true,
+					layout = {
+						preset = "sidebar",
+						hidden = { "input" },
+					},
+					win = {
+						list = {
+							keys = {
+								["/"] = false,
+							},
+						},
+					},
 				},
 			},
 		}, -- telescope.nvim を使用
