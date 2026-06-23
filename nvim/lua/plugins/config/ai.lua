@@ -21,7 +21,7 @@ setup("copilot", function(copilot)
 			},
 		},
 		filetypes = {
-			markdown = true, -- markdown でも有効化
+			markdown = false,
 			help = false,
 			gitcommit = true,
 			gitrebase = false,
@@ -30,6 +30,6 @@ setup("copilot", function(copilot)
 			cvs = false,
 			["."] = false,
 		},
-		copilot_node_command = "node", -- Node.js がパスに通っている必要があります
+		copilot_node_command = vim.env.COPILOT_NODE_CMD or "node", -- Node.js がパスに通っている必要があります
 	})
 end)
