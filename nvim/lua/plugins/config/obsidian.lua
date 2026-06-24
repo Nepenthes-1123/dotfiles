@@ -301,12 +301,96 @@ setup("obsidian", function(m)
 	-- タグ一覧 (Foam: "Foam: Show Tags")
 	map("n", "<Leader>ot", "<Cmd>Obsidian tags<CR>", vim.tbl_extend("force", opts, { desc = "Obsidian: Show tags" }))
 
-	-- テンプレートを現在のノートに挿入 (Foam: テンプレート挿入コマンド)
+	-- テンプレートを現在のノートに挿入 (Vault外のファイルにも対応)
+	local function insert_template()
+		-- 現在のバッファが Vault (workspace) 内にあるか確認
+		local is_in_vault = false
+		local current_buf_path = vim.api.nvim_buf_get_name(0)
+
+		if current_buf_path ~= "" and _G.Obsidian and _G.Obsidian.dir then
+			-- Obsidian.dir は obsidian.Path オブジェクト
+			local vault_dir = tostring(_G.Obsidian.dir)
+			-- パス区切り記号の正規化 (Windows向けに / と \ を統一)
+			local norm_vault = vault_dir:gsub("\\", "/"):lower()
+			local norm_buf = current_buf_path:gsub("\\", "/"):lower()
+
+			-- バッファパスが vault パスで始まっているか判定
+			if norm_buf:sub(1, #norm_vault) == norm_vault then
+				is_in_vault = true
+			end
+		end
+
+		if is_in_vault then
+			-- Vault内であれば、標準の Obsidian template コマンドを実行
+			vim.cmd("Obsidian template")
+		else
+			-- Vault外であれば、カスタム処理でテンプレートを挿入
+			local vault_path = vim.env.OBSIDIAN_VAULT_PATH or "~/Documents/slip-box"
+			local templates_dir = vim.fn.expand(vault_path .. "/Templates")
+			local files = vim.fn.globpath(templates_dir, "*.md", false, true)
+
+			if #files == 0 then
+				vim.notify("No templates found in " .. templates_dir, vim.log.levels.WARN)
+				return
+			end
+
+			local items = {}
+			local file_map = {}
+			for _, file in ipairs(files) do
+				local name = vim.fn.fnamemodify(file, ":t")
+				table.insert(items, name)
+				file_map[name] = file
+			end
+
+			vim.ui.select(items, { prompt = "Select template to insert (Vault outside fallback):" }, function(choice)
+				if not choice then
+					return
+				end
+				local file_path = file_map[choice]
+				local f = io.open(file_path, "r")
+				if not f then
+					return
+				end
+				local content = f:read("*all")
+				f:close()
+
+				-- テンプレート変数の置換
+				local date_str = os.date("%Y-%m-%d")
+				local time_str = os.date("%H:%M:%S")
+				local title_str = vim.fn.fnamemodify(current_buf_path, ":t:r")
+				if title_str == "" then
+					title_str = "Untitled"
+				end
+
+				content = content:gsub("{{date}}", date_str)
+				content = content:gsub("{{time}}", time_str)
+				content = content:gsub("{{title}}", title_str)
+				content = content:gsub("{{id}}", os.date("%Y%m%d%H%M%S"))
+				content = content:gsub("{{ymd}}", os.date("%Y%m%d"))
+				content = content:gsub("{{yesterday}}", os.date("%Y-%m-%d", os.time() - 86400))
+				content = content:gsub("{{tomorrow}}", os.date("%Y-%m-%d", os.time() + 86400))
+
+				-- カーソル位置に挿入
+				local lines = {}
+				for line in string.gmatch(content .. "\n", "([^\r\n]*)\r?\n") do
+					table.insert(lines, line)
+				end
+				-- 最後の余計な空行を削除
+				if #lines > 0 and lines[#lines] == "" then
+					table.remove(lines)
+				end
+
+				local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+				vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, lines)
+			end)
+		end
+	end
+
 	map(
 		"n",
 		"<Leader>oT",
-		"<Cmd>Obsidian template<CR>",
-		vim.tbl_extend("force", opts, { desc = "Obsidian: Insert template" })
+		insert_template,
+		vim.tbl_extend("force", opts, { desc = "Obsidian: Insert template (with outside vault support)" })
 	)
 
 	-- 目次 (Table of Contents) を表示
