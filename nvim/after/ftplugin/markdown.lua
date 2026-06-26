@@ -40,20 +40,30 @@ end, { buffer = true, desc = "Preview Markdown (glow)" })
 vim.keymap.set("i", "<CR>", function()
 	local line = vim.api.nvim_get_current_line()
 	local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
-	-- 現在行がリスト項目なら次行にも同じマーカーを挿入
-	local list_marker = line:match("^(%s*[-*+] )")
-	if list_marker and cursor_col >= #line then
-		-- 空のリスト項目では継続を終了
+
+	-- 現在行が記号リスト項目なら次行にも同じマーカーを挿入
+	local indent, list_marker = line:match("^(%s*)([-*+] )")
+	if indent and list_marker and cursor_col >= #line then
+		-- 空のリスト項目では継続を終了 (マーカー部分を削除して改行)
 		if line:match("^%s*[-*+] $") then
-			return "<BS><BS><BS>"
+			return string.rep("<BS>", #list_marker) .. "<CR>"
 		end
+		-- オートインデントでインデントは引き継がれるため、マーカーのみを挿入
 		return "<CR>" .. list_marker
 	end
-	local num_marker = line:match("^(%s*%d+%. )")
-	if num_marker and cursor_col >= #line then
-		local num = tonumber(line:match("(%d+)%.")) or 0
-		local indent = num_marker:match("^(%s*)") or ""
-		return "<CR>" .. indent .. (num + 1) .. ". "
+
+	-- 番号リスト項目
+	local indent_num, num_str = line:match("^(%s*)(%d+)%. ")
+	if indent_num and num_str and cursor_col >= #line then
+		-- 空の番号リスト項目では継続を終了
+		if line:match("^%s*%d+%. $") then
+			local marker_len = #num_str + 2 -- "数字" + "." + " "
+			return string.rep("<BS>", marker_len) .. "<CR>"
+		end
+		local num = tonumber(num_str) or 0
+		-- オートインデントでインデントは引き継がれるため、次の番号とドット・スペースのみを挿入
+		return "<CR>" .. (num + 1) .. ". "
 	end
+
 	return "<CR>"
 end, { buffer = true, expr = true, desc = "Continue list item" })
