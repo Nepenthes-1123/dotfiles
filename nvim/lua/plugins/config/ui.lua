@@ -115,10 +115,15 @@ setup("render-markdown", function(m)
 			enabled = true,
 			sign = true,
 			style = "full",
-			border = "thin",
+			width = "block",
+			border = "double",
 		},
 
-		dash = { enabled = true },
+		dash = {
+			enabled = true,
+			icon = "═",
+			width = "full",
+		},
 		bullet = { enabled = true },
 
 		checkbox = {
@@ -129,6 +134,7 @@ setup("render-markdown", function(m)
 
 		pipe_table = {
 			enabled = true,
+			preset = "round",
 			-- markdown.extension.tableFormatter.enabled: true 相当
 			style = "full",
 		},
