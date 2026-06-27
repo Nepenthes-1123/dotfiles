@@ -246,6 +246,14 @@ setup("snacks", function(Snacks)
 		Snacks.picker.git_diff()
 	end, vim.tbl_extend("force", opts, { desc = "Git diff" }))
 
+	-- スクラッチ（付箋）メモ
+	map("n", "<Leader>.", function()
+		Snacks.scratch()
+	end, vim.tbl_extend("force", opts, { desc = "Toggle Scratch Note" }))
+	map("n", "<Leader>S", function()
+		Snacks.scratch.select()
+	end, vim.tbl_extend("force", opts, { desc = "Select Scratch Note" }))
+
 	-- github情報
 	-- Issue 一覧 (VSCode: "Issues" サイドバー)
 	map("n", "<Leader>gil", function()

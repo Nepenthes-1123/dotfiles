@@ -181,6 +181,7 @@ nvim
 | GitHub Issues / PR 連携 | `Snacks.picker.gh_issue` / `gh_pr` | `<Leader>gil` / `<Leader>gpl` |
 | コメントトグル (Ctrl+/) | Neovim 0.10+ 組み込みコメント機能 | `gcc` (行) / `gc` (Visual) |
 | 保存時フォーマット | `autocmds.lua` + `conform.nvim` | 保存時自動 |
+| 付箋メモ (スクラッチバッファ) | `Snacks.scratch` / `select` | `<Leader>.` (開閉) / `<Leader>S` (履歴) |
 
 ---
 
