@@ -19,6 +19,7 @@ setup("nvim-treesitter.configs", function(m)
 			"markdown",
 			"markdown_inline",
 			"bash",
+			"zsh",
 			"yaml",
 			"toml",
 			"html",

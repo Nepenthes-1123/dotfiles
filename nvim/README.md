@@ -60,7 +60,7 @@ Neovim v0.12 向け設定。外部プラグインマネージャ不使用、Neov
 
 ### LSP サーバー
 
-```bash
+```zsh
 # Python
 pip install pyright
 pip install ruff          # black + flake8 + isort 統合
@@ -97,7 +97,7 @@ npm install -g @microsoft/compose-language-service
 
 ### フォーマッター・リンター
 
-```bash
+```zsh
 # Python フォーマッター (ruff が兼ねる)
 pip install ruff
 
@@ -145,7 +145,7 @@ npm install -g markdownlint-cli
 
 ## 初回起動手順
 
-```bash
+```zsh
 # 1. Neovim を起動 (初回起動時にプラグインの自動インストールダイアログが出ます)
 nvim
 
