@@ -71,6 +71,7 @@
 !nvim/lua/plugins/config/autopairs.lua
 !nvim/lua/plugins/config/ai.lua
 !nvim/lua/plugins/config/blink.lua
+!nvim/lua/plugins/config/bufferline.lua
 !nvim/lua/plugins/config/cmp.lua
 !nvim/lua/plugins/config/docker.lua
 !nvim/lua/plugins/config/editor.lua

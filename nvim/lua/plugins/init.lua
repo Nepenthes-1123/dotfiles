@@ -114,6 +114,9 @@ vim.pack.add({
 
 	"https://github.com/MeanderingProgrammer/render-markdown.nvim",
 
+	-- ── バッファライン (VSCode風のタブ表示) ──────────────────────────────────────
+	"https://github.com/akinsho/bufferline.nvim",
+
 	-- ── GitHub PR / Issue 連携 ───────────────────────────────────────────────
 	-- VSCode: GitHub.vscode-pull-request-github の代替
 	-- 要: GitHub CLI (gh) のインストールと `gh auth login`
@@ -140,3 +143,4 @@ require("plugins.config.docker")
 require("plugins.config.octo")
 require("plugins.config.tiny-cmdline")
 require("plugins.config.ai")
+require("plugins.config.bufferline")
