@@ -29,7 +29,6 @@ setup("lualine", function(m)
 		sections = {
 			lualine_a = { "mode" },
 			lualine_b = {
-				{ "branch", icon = "" },
 				{ "diff", symbols = { added = " ", modified = " ", removed = " " } },
 				{
 					"diagnostics",
@@ -37,9 +36,7 @@ setup("lualine", function(m)
 					symbols = { error = " ", warn = " ", info = " ", hint = "󰌵 " },
 				},
 			},
-			lualine_c = {
-				{ "filename", path = 1, symbols = { modified = "●", readonly = "" } },
-			},
+			lualine_c = {}, -- ファイル名は bufferline で表示するため空にする
 			lualine_x = {
 				{
 					function()
@@ -57,7 +54,7 @@ setup("lualine", function(m)
 					end,
 					color = { fg = "#c4a7e7" },
 				},
-				"encoding",
+				-- encoding は削除したまま、改行コード (fileformat) のみ復元
 				{ "fileformat", symbols = { unix = "LF", dos = "CRLF", mac = "CR" } },
 				"filetype",
 			},
