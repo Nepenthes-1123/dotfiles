@@ -36,19 +36,22 @@ function M.setup(wezterm, config)
     local foreground = "#dcc4cc"
 
     if tab.is_active then
-      background = "#b33c86"       -- アクティブタブは黄金色
+      background = "#b33c86"       -- アクティブタブ
       foreground = "#fee6ee"
     elseif hover then
-      background = "#8a3375"       -- ホバー時は少し明るく
+      background = "#8a3375"       -- ホバー時
       foreground = "#edd5dd"
     end
 
-    local title = tab.active_pane.title
+    local title = BaseName(tab.active_pane.title)
+    if tab.active_pane.is_zoomed then
+      title = title .. " 🔍"
+    end
 
     return {
       { Background = { Color = background } },
       { Foreground = { Color = foreground } },
-      { Text = BaseName(title) },
+      { Text = " " .. title .. " " },
     }
   end)
 end
