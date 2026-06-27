@@ -102,6 +102,24 @@ setup("snacks", function(Snacks)
 			enabled = true,
 			-- これ使えばlsp経由のrenameとかもそれっぽいUIで出来る
 			ui_select = true,
+			-- カスタムアクションの定義 (削除前の確認プロンプト)
+			actions = {
+				scratch_delete = function(picker, item)
+					if not item or not item.file then
+						return
+					end
+					local filename = vim.fn.fnamemodify(item.file, ":t")
+					local choice = vim.fn.confirm("本当にこのメモ (" .. filename .. ") を削除しますか？", "&Yes\n&No", 2)
+					if choice == 1 then
+						os.remove(item.file)
+						if vim.fn.filereadable(item.file .. ".meta") == 1 then
+							os.remove(item.file .. ".meta")
+						end
+						picker:refresh()
+						vim.notify("メモを削除しました: " .. filename, vim.log.levels.INFO)
+					end
+				end,
+			},
 			sources = {
 				files = {
 					hidden = true,
@@ -110,6 +128,16 @@ setup("snacks", function(Snacks)
 					hidden = true,
 					cmd = "rg",
 					regex = true,
+				},
+				scratch = {
+					win = {
+						input = {
+							keys = {
+								-- ノーマルモード時のみ、dキーで安全に削除アクションを実行
+								["d"] = { "scratch_delete", mode = { "n" } },
+							},
+						},
+					},
 				},
 				explorer = {
 					hidden = true,
