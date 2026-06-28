@@ -72,7 +72,6 @@ config.set_environment_variables = {
 local mux = wezterm.mux
 wezterm.on("gui-startup", function(cmd)
 	local tab, pane, window = mux.spawn_window(cmd or {})
-	window:gui_window():toggle_fullscreen()
 end)
 
 -- カラースキームの設定
@@ -84,7 +83,7 @@ config.macos_window_background_blur = 5
 
 -- フォントの設定
 config.font = wezterm.font_with_fallback({
-    "JetBrains Mono",
+	"JetBrains Mono",
 	"JetBrainsMono Nerd Font",
 	"游明朝",
 	"Hiragino Sans",
