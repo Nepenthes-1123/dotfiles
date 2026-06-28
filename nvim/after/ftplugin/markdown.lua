@@ -67,3 +67,23 @@ vim.keymap.set("i", "<CR>", function()
 
 	return "<CR>"
 end, { buffer = true, expr = true, desc = "Continue list item" })
+
+-- リスト行での Tab / Shift-Tab によるインデント調整
+vim.keymap.set("i", "<Tab>", function()
+	local col = vim.fn.col(".")
+	local line = vim.fn.getline(".")
+	local before_cursor = line:sub(1, col - 1)
+
+	-- カーソルがリスト記号の上（もしくはその直後）にあるか判定
+	if before_cursor:match("^%s*[%-%*%+]%s*$") or before_cursor:match("^%s*%d+%.%s*$") then
+		return "<C-t>" -- インデントを一段深くする
+	end
+	return "<Tab>"
+end, { expr = true, buffer = true, desc = "Indent list item" })
+
+vim.keymap.set("i", "<S-Tab>", function()
+	-- Shift-Tab はインデントを一段浅くする
+	return "<C-d>"
+end, { expr = true, buffer = true, desc = "Unindent list item" })
+
+
