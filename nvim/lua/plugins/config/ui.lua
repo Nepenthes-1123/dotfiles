@@ -16,11 +16,63 @@ setup("rose-pine", function(m)
 	vim.cmd("colorscheme rose-pine-moon")
 end)
 
+-- ── カラースキーム: catppucin ───────────────────────────────────────────
+setup("catppuccin", function(m)
+	m.setup({
+		flavour = "mocha", -- latte, frappe, macchiato, mocha から選択可能
+		transparent_background = true, -- 背景を透過
+		show_end_of_buffer = false,
+		term_colors = true,
+		dim_inactive = {
+			enabled = false,
+			shade = "dark",
+			percentage = 0.15,
+		},
+		integrations = {
+			cmp = true,
+			blink_cmp = true,
+			treesitter = true,
+			snacks = true,
+			mason = true,
+			native_lsp = {
+				enabled = true,
+				virtual_text = {
+					errors = { "italic" },
+					hints = { "italic" },
+					warnings = { "italic" },
+					information = { "italic" },
+				},
+				underlines = {
+					errors = { "underline" },
+					hints = { "underline" },
+					warnings = { "underline" },
+					information = { "underline" },
+				},
+			},
+			gitsigns = true,
+			which_key = true,
+		},
+		custom_highlights = function(colors)
+			return {
+				-- フローティングウィンドウ全体の透過（Snacks以外にも影響します）
+				NormalFloat = { bg = "NONE" },
+				FloatBorder = { bg = "NONE", fg = colors.overlay0 },
+
+				-- Snacks固有のUIを個別に透過したい場合
+				SnacksDashboardNormal = { bg = "NONE" },
+				SnacksPickerNormal = { bg = "NONE" },
+				SnacksPickerBorder = { bg = "NONE", fg = colors.overlay0 },
+				SnacksBackdrop = { bg = "NONE" },
+			}
+		end,
+	})
+	vim.cmd("colorscheme catppuccin")
+end)
+
 -- ── lualine ───────────────────────────────────────────────────────────────────
 setup("lualine", function(m)
 	m.setup({
 		options = {
-			theme = "rose-pine",
 			globalstatus = true,
 			component_separators = { left = "", right = "" },
 			section_separators = { left = "", right = "" },

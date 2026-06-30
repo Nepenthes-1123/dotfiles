@@ -36,6 +36,7 @@ vim.pack.add({
 	-- ── カラースキーム ──────────────────────────────────────────────────────────
 	-- VSCode: "workbench.colorTheme": "Rosé Pine Moon (no italics)"
 	"https://github.com/rose-pine/neovim",
+	"https://github.com/catppuccin/nvim",
 
 	-- ── アイコン (nvim-tree / lualine が依存) ────────────────────────────────
 	"https://github.com/nvim-tree/nvim-web-devicons",

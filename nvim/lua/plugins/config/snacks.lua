@@ -109,7 +109,11 @@ setup("snacks", function(Snacks)
 						return
 					end
 					local filename = vim.fn.fnamemodify(item.file, ":t")
-					local choice = vim.fn.confirm("本当にこのメモ (" .. filename .. ") を削除しますか？", "&Yes\n&No", 2)
+					local choice = vim.fn.confirm(
+						"本当にこのメモ (" .. filename .. ") を削除しますか？",
+						"&Yes\n&No",
+						2
+					)
 					if choice == 1 then
 						os.remove(item.file)
 						if vim.fn.filereadable(item.file .. ".meta") == 1 then
