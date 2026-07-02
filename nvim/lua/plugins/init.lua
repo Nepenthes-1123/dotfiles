@@ -128,6 +128,9 @@ vim.pack.add({
 
 	-- ── AI 自動補完 ─────────────────────────────────────────────────────────────
 	"https://github.com/zbirenbaum/copilot.lua",
+
+	-- ── GTD Todo 管理 ────────────────────────────────────────────────────────────
+	"https://github.com/Nepenthes-1123/gtodo-md.nvim",
 })
 
 -- =============================================================================
@@ -146,3 +149,4 @@ require("plugins.config.tiny-cmdline")
 require("plugins.config.ai")
 require("plugins.config.autopairs")
 require("plugins.config.bufferline")
+require("plugins.config.gtodo_md")
