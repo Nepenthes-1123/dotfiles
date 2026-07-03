@@ -75,6 +75,7 @@
 !nvim/lua/plugins/config/cmp.lua
 !nvim/lua/plugins/config/docker.lua
 !nvim/lua/plugins/config/editor.lua
+!nvim/lua/plugins/config/gtodo-md.lua
 !nvim/lua/plugins/config/lsp.lua
 !nvim/lua/plugins/config/obsidian.lua
 !nvim/lua/plugins/config/octo.lua
