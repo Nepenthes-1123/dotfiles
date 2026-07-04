@@ -82,10 +82,6 @@ end, vim.tbl_extend("force", opts, { desc = "Format selection" }))
 -- ── ファジーファインダー (blink) ─────────────────────────────────────────
 -- VSCode: Ctrl+P → ファイル検索
 
--- ── ターミナル ────────────────────────────────────────────────────────────────
-map("n", "<Leader>t", "<Cmd>terminal<CR>", vim.tbl_extend("force", opts, { desc = "Open terminal" }))
-map("t", "<Esc>", "<C-\\><C-n>", opts) -- ターミナルモードから抜ける
-
 -- ── コメント (comment.nvim) ───────────────────────────────────────────────────
 -- gcc / gc は comment.nvim のデフォルトに任せる (VSCode: Ctrl+/ と同等)
 
