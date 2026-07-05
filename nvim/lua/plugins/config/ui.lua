@@ -88,7 +88,15 @@ setup("lualine", function(m)
 					symbols = { error = " ", warn = " ", info = " ", hint = "󰌵 " },
 				},
 			},
-			lualine_c = {}, -- ファイル名は bufferline で表示するため空にする
+			lualine_c = {
+				function()
+					local ok, lualine = pcall(require, "gtodo-md.integrations.lualine")
+					if ok then
+						return lualine.component()[1]()
+					end
+					return ""
+				end,
+			}, -- ファイル名は bufferline で表示するため本来は空にしている枠を利用
 			lualine_x = {
 				{
 					function()
