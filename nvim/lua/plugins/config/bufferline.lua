@@ -21,6 +21,17 @@ setup("bufferline", function(m)
 			tab_size = 18,
 			diagnostics = "nvim_lsp",
 			diagnostics_update_in_insert = false,
+			custom_filter = function(buf_number, _)
+				local ft = vim.bo[buf_number].filetype
+				if ft == "octo" or ft == "octo_panel" then
+					return false
+				end
+				local name = vim.fn.bufname(buf_number)
+				if name:match("^octo://") then
+					return false
+				end
+				return true
+			end,
 			offsets = {
 				{
 					filetype = "NvimTree",
@@ -30,6 +41,11 @@ setup("bufferline", function(m)
 				{
 					filetype = "snacks_explorer",
 					text = "",
+					separator = true,
+				},
+				{
+					filetype = "octo_panel",
+					text = "Octo Review",
 					separator = true,
 				},
 			},

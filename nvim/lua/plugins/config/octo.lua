@@ -64,6 +64,26 @@ setup("octo", function(m)
 				merge_pr = { lhs = "<C-r>", desc = "merge pull request" },
 			},
 		},
+		mappings = {
+			issue = {
+				add_comment = { lhs = "<Leader>gprc", desc = "add comment" },
+				add_reaction = { lhs = "<Leader>gpra", desc = "add reaction" },
+			},
+			pull_request = {
+				add_comment = { lhs = "<Leader>gprc", desc = "add comment" },
+				add_reaction = { lhs = "<Leader>gpra", desc = "add reaction" },
+			},
+			review_diff = {
+				add_review_comment = { lhs = "<Leader>gprc", desc = "add a new review comment" },
+				add_review_suggestion = { lhs = "<Leader>gprs", desc = "add a new review suggestion" },
+				submit_review = { lhs = "<Leader>gprx", desc = "submit review" },
+			},
+			file_panel = {
+				add_review_comment = { lhs = "<Leader>gprc", desc = "add a new review comment" },
+				add_review_suggestion = { lhs = "<Leader>gprs", desc = "add a new review suggestion" },
+				submit_review = { lhs = "<Leader>gprx", desc = "submit review" },
+			},
+		},
 
 		-- アイコン (VSCode の PR タイムライン装飾相当)
 		comment_icon = "▎",
@@ -87,12 +107,20 @@ setup("octo", function(m)
 	local map = vim.keymap.set
 	local opts = { noremap = true, silent = true }
 
+	-- Octo 経由の PR 一覧 (レビュー画面へ移行しやすい)
+	map(
+		"n",
+		"<Leader>gpo",
+		"<Cmd>Octo pr list<CR>",
+		vim.tbl_extend("force", opts, { desc = "Octo: List pull requests" })
+	)
+
 	-- レビュー開始 (VSCode: "Start Review")
 	map(
 		"n",
-		"<Leader>gprs",
+		"<Leader>gprb",
 		"<Cmd>Octo review start<CR>",
-		vim.tbl_extend("force", opts, { desc = "Octo: Start review" })
+		vim.tbl_extend("force", opts, { desc = "Octo: Begin review" })
 	)
 
 	-- レビュー再開 (VSCode: ローカルにキャッシュされた未送信コメントの再開)
@@ -165,28 +193,28 @@ setup("octo", function(m)
 			-- コメント追加 (単一/複数行)
 			map(
 				{ "n", "v" },
-				"<Leader>ca",
+				"<Leader>gprc",
 				"<Cmd>Octo comment add<CR>",
 				vim.tbl_extend("force", o, { desc = "Octo: Add comment" })
 			)
 			-- 提案 (Suggestion) 追加
 			map(
 				{ "n", "v" },
-				"<Leader>sa",
+				"<Leader>gprs",
 				"<Cmd>Octo review comment suggest<CR>",
 				vim.tbl_extend("force", o, { desc = "Octo: Add suggestion" })
 			)
 			-- コメント/レビューの送信
 			map(
 				"n",
-				"<Leader>rs",
+				"<Leader>gprx",
 				"<Cmd>Octo review submit<CR>",
 				vim.tbl_extend("force", o, { desc = "Octo: Submit review" })
 			)
 			-- リアクション追加
 			map(
 				"n",
-				"<Leader>ra",
+				"<Leader>gpra",
 				"<Cmd>Octo reaction add<CR>",
 				vim.tbl_extend("force", o, { desc = "Octo: Add reaction" })
 			)
