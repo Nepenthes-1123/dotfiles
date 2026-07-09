@@ -81,6 +81,8 @@ config.color_scheme = "Sakura"
 config.window_background_opacity = 0.8
 config.macos_window_background_blur = 5
 
+config.native_macos_fullscreen_mode = true
+
 -- フォントの設定
 config.font = wezterm.font_with_fallback({
 	"JetBrains Mono",
