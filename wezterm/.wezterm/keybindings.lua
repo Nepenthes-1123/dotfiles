@@ -1,11 +1,15 @@
 local wezterm = require 'wezterm'
 local act = wezterm.action
 
+local utils = require 'utils'
+local conditional_action = utils.conditional_action
+local conditional_resize_action = utils.conditional_resize_action
+
 return {
   leader = { key = "Space", mods = "CTRL", timeout_milliseconds = 2000 },
   keys = {
-    { key = 'Tab', mods = 'CTRL', action = act.ActivateTabRelative(1) },
-    { key = 'Tab', mods = 'SHIFT|CTRL', action = act.ActivateTabRelative(-1) },
+    { key = 'Tab', mods = 'CTRL', action = conditional_action(act.ActivateTabRelative(1), 'n') },
+    { key = 'Tab', mods = 'SHIFT|CTRL', action = conditional_action(act.ActivateTabRelative(-1), 'p') },
     { key = 'Enter', mods = 'ALT', action = act.ToggleFullScreen },
     { key = '<', mods = 'CTRL|SHIFT', action = act.DecreaseFontSize },
     { key = '>', mods = 'CTRL|SHIFT', action = act.IncreaseFontSize },
@@ -26,48 +30,48 @@ return {
     { key = 'p', mods = 'SUPER', action = act.ActivateCommandPalette },
     { key = 'R', mods = 'SHIFT|CTRL', action = act.ReloadConfiguration },
     { key = 'r', mods = 'SUPER', action = act.ReloadConfiguration },
-    { key = 'T', mods = 'SHIFT|CTRL', action = act.SpawnTab 'CurrentPaneDomain' },
-    { key = 't', mods = 'SUPER', action = act.SpawnTab 'CurrentPaneDomain' },
+    { key = 'T', mods = 'SHIFT|CTRL', action = conditional_action(act.SpawnTab 'CurrentPaneDomain', 'c') },
+    { key = 't', mods = 'SUPER', action = conditional_action(act.SpawnTab 'CurrentPaneDomain', 'c') },
     { key = 'U', mods = 'SHIFT|CTRL', action = act.CharSelect{ copy_on_select =
 true, copy_to =  'ClipboardAndPrimarySelection' } },
     { key = 'u', mods = 'SHIFT|CTRL', action = act.CharSelect{ copy_on_select =
 true, copy_to =  'ClipboardAndPrimarySelection' } },
     { key = 'V', mods = 'SHIFT|CTRL', action = act.PasteFrom 'Clipboard' },
     { key = 'v', mods = 'SUPER', action = act.PasteFrom 'Clipboard' },
-    { key = 'W', mods = 'SHIFT|CTRL', action = act.CloseCurrentTab{ confirm = true } },
-    { key = 'w', mods = 'SUPER', action = act.CloseCurrentTab{ confirm = true } },
+    { key = 'W', mods = 'SHIFT|CTRL', action = conditional_action(act.CloseCurrentTab{ confirm = true }, 'X', 'SHIFT') },
+    { key = 'w', mods = 'SUPER', action = conditional_action(act.CloseCurrentTab{ confirm = true }, 'X', 'SHIFT') },
     { key = 'X', mods = 'SHIFT|CTRL', action = act.ActivateCopyMode },
     { key = 'x', mods = 'SUPER', action = act.ActivateCopyMode },
-    { key = 'Z', mods = 'SHIFT|CTRL', action = act.TogglePaneZoomState },
-    { key = 'z', mods = 'SUPER', action = act.TogglePaneZoomState },
+    { key = 'Z', mods = 'SHIFT|CTRL', action = conditional_action(act.TogglePaneZoomState, 'z') },
+    { key = 'z', mods = 'SUPER', action = conditional_action(act.TogglePaneZoomState, 'z') },
     { key = 'phys:Space', mods = 'SHIFT|CTRL', action = act.QuickSelect },
     { key = 'PageUp', mods = 'SHIFT', action = act.ScrollByPage(-1) },
     { key = 'PageUp', mods = 'SHIFT|CTRL', action = act.MoveTabRelative(-1) },
     { key = 'PageDown', mods = 'SHIFT', action = act.ScrollByPage(1) },
     { key = 'PageDown', mods = 'SHIFT|CTRL', action = act.MoveTabRelative(1) },
-    { key = 'LeftArrow', mods = 'SHIFT|CTRL', action = act.ActivatePaneDirection 'Left' },
-    { key = 'RightArrow', mods = 'SHIFT|CTRL', action = act.ActivatePaneDirection 'Right' },
-    { key = 'UpArrow', mods = 'SHIFT|CTRL', action = act.ActivatePaneDirection 'Up' },
-    { key = 'DownArrow', mods = 'SHIFT|CTRL', action = act.ActivatePaneDirection 'Down' },
-    { key = 'LeftArrow', mods = 'SHIFT|ALT|CTRL', action = act.AdjustPaneSize{ 'Left', 1 } },
-    { key = 'RightArrow', mods = 'SHIFT|ALT|CTRL', action = act.AdjustPaneSize{ 'Right', 1 } },
-    { key = 'UpArrow', mods = 'SHIFT|ALT|CTRL', action = act.AdjustPaneSize{ 'Up', 1 } },
-    { key = 'DownArrow', mods = 'SHIFT|ALT|CTRL', action = act.AdjustPaneSize{ 'Down', 1 } },
+    { key = 'LeftArrow', mods = 'SHIFT|CTRL', action = conditional_action(act.ActivatePaneDirection 'Left', 'h') },
+    { key = 'RightArrow', mods = 'SHIFT|CTRL', action = conditional_action(act.ActivatePaneDirection 'Right', 'l') },
+    { key = 'UpArrow', mods = 'SHIFT|CTRL', action = conditional_action(act.ActivatePaneDirection 'Up', 'k') },
+    { key = 'DownArrow', mods = 'SHIFT|CTRL', action = conditional_action(act.ActivatePaneDirection 'Down', 'j') },
+    { key = 'LeftArrow', mods = 'SHIFT|ALT|CTRL', action = conditional_resize_action(act.AdjustPaneSize{ 'Left', 1 }, 'h') },
+    { key = 'RightArrow', mods = 'SHIFT|ALT|CTRL', action = conditional_resize_action(act.AdjustPaneSize{ 'Right', 1 }, 'l') },
+    { key = 'UpArrow', mods = 'SHIFT|ALT|CTRL', action = conditional_resize_action(act.AdjustPaneSize{ 'Up', 1 }, 'k') },
+    { key = 'DownArrow', mods = 'SHIFT|ALT|CTRL', action = conditional_resize_action(act.AdjustPaneSize{ 'Down', 1 }, 'j') },
     -- hjklでのペーン移動 (SHIFT|CTRL)
-    { key = 'H', mods = 'SHIFT|CTRL', action = act.ActivatePaneDirection 'Left' },
-    { key = 'J', mods = 'SHIFT|CTRL', action = act.ActivatePaneDirection 'Down' },
-    { key = 'K', mods = 'SHIFT|CTRL', action = act.ActivatePaneDirection 'Up' },
-    { key = 'L', mods = 'SHIFT|CTRL', action = act.ActivatePaneDirection 'Right' },
+    { key = 'H', mods = 'SHIFT|CTRL', action = conditional_action(act.ActivatePaneDirection 'Left', 'h') },
+    { key = 'J', mods = 'SHIFT|CTRL', action = conditional_action(act.ActivatePaneDirection 'Down', 'j') },
+    { key = 'K', mods = 'SHIFT|CTRL', action = conditional_action(act.ActivatePaneDirection 'Up', 'k') },
+    { key = 'L', mods = 'SHIFT|CTRL', action = conditional_action(act.ActivatePaneDirection 'Right', 'l') },
     -- hjklでのペーン移動 (SUPER)
-    { key = 'h', mods = 'SUPER', action = act.ActivatePaneDirection 'Left' },
-    { key = 'j', mods = 'SUPER', action = act.ActivatePaneDirection 'Down' },
-    { key = 'k', mods = 'SUPER', action = act.ActivatePaneDirection 'Up' },
-    { key = 'l', mods = 'SUPER', action = act.ActivatePaneDirection 'Right' },
+    { key = 'h', mods = 'SUPER', action = conditional_action(act.ActivatePaneDirection 'Left', 'h') },
+    { key = 'j', mods = 'SUPER', action = conditional_action(act.ActivatePaneDirection 'Down', 'j') },
+    { key = 'k', mods = 'SUPER', action = conditional_action(act.ActivatePaneDirection 'Up', 'k') },
+    { key = 'l', mods = 'SUPER', action = conditional_action(act.ActivatePaneDirection 'Right', 'l') },
     -- hjklでのペーンサイズ変更 (SHIFT|ALT|CTRL)
-    { key = 'H', mods = 'SHIFT|ALT|CTRL', action = act.AdjustPaneSize{ 'Left', 1 } },
-    { key = 'J', mods = 'SHIFT|ALT|CTRL', action = act.AdjustPaneSize{ 'Down', 1 } },
-    { key = 'K', mods = 'SHIFT|ALT|CTRL', action = act.AdjustPaneSize{ 'Up', 1 } },
-    { key = 'L', mods = 'SHIFT|ALT|CTRL', action = act.AdjustPaneSize{ 'Right', 1 } },
+    { key = 'H', mods = 'SHIFT|ALT|CTRL', action = conditional_resize_action(act.AdjustPaneSize{ 'Left', 1 }, 'h') },
+    { key = 'J', mods = 'SHIFT|ALT|CTRL', action = conditional_resize_action(act.AdjustPaneSize{ 'Down', 1 }, 'j') },
+    { key = 'K', mods = 'SHIFT|ALT|CTRL', action = conditional_resize_action(act.AdjustPaneSize{ 'Up', 1 }, 'k') },
+    { key = 'L', mods = 'SHIFT|ALT|CTRL', action = conditional_resize_action(act.AdjustPaneSize{ 'Right', 1 }, 'l') },
     { key = 'Insert', mods = 'SHIFT', action = act.PasteFrom 'PrimarySelection' },
     { key = 'Insert', mods = 'CTRL', action = act.CopyTo 'PrimarySelection' },
     { key = 'Copy', mods = 'NONE', action = act.CopyTo 'Clipboard' },
@@ -100,67 +104,82 @@ true, copy_to =  'ClipboardAndPrimarySelection' } },
         },
     },
     -- Ctrl+数字でtab移動
-    { key = "1", mods = "CTRL", action = act.ActivateTab(0) },
-    { key = "2", mods = "CTRL", action = act.ActivateTab(1) },
-    { key = "3", mods = "CTRL", action = act.ActivateTab(2) },
-    { key = "4", mods = "CTRL", action = act.ActivateTab(3) },
-    { key = "5", mods = "CTRL", action = act.ActivateTab(4) },
-    { key = "6", mods = "CTRL", action = act.ActivateTab(5) },
-    { key = "7", mods = "CTRL", action = act.ActivateTab(6) },
-    { key = "8", mods = "CTRL", action = act.ActivateTab(7) },
-    { key = "9", mods = "CTRL", action = act.ActivateTab(-1) },
+    { key = "1", mods = "CTRL", action = conditional_action(act.ActivateTab(0), '1') },
+    { key = "2", mods = "CTRL", action = conditional_action(act.ActivateTab(1), '2') },
+    { key = "3", mods = "CTRL", action = conditional_action(act.ActivateTab(2), '3') },
+    { key = "4", mods = "CTRL", action = conditional_action(act.ActivateTab(3), '4') },
+    { key = "5", mods = "CTRL", action = conditional_action(act.ActivateTab(4), '5') },
+    { key = "6", mods = "CTRL", action = conditional_action(act.ActivateTab(5), '6') },
+    { key = "7", mods = "CTRL", action = conditional_action(act.ActivateTab(6), '7') },
+    { key = "8", mods = "CTRL", action = conditional_action(act.ActivateTab(7), '8') },
+    { key = "9", mods = "CTRL", action = conditional_action(act.ActivateTab(-1), '9') },
     -- ¥でバックスラッシュ・ALT + ¥で¥
     { key = "¥", action = act.SendKey({ key = "\\" }) },
     { key = "¥", mods = "ALT", action = act.SendKey( {key = "¥" }) },
     -- ctrl+,で下にpane ctrl+.で右にpane
-    { key = ",", mods = "CTRL", action = act.SplitVertical{ domain =  'CurrentPaneDomain' }},
-    { key = ".", mods = "CTRL", action = act.SplitHorizontal{ domain =  'CurrentPaneDomain' }},
+    { key = ",", mods = "CTRL", action = conditional_action(act.SplitVertical{ domain = 'CurrentPaneDomain' }, '-')},
+    { key = ".", mods = "CTRL", action = conditional_action(act.SplitHorizontal{ domain = 'CurrentPaneDomain' }, 'v')},
     -- leader + q で Pane を閉じる
-    { key = "Q", mods = "CTRL|SHIFT", action = act({ CloseCurrentPane = { confirm = true } }) },
-    { key = "q", mods = "SUPER", action = act({ CloseCurrentPane = { confirm = true } }) },
+    { key = "Q", mods = "CTRL|SHIFT", action = conditional_action(act({ CloseCurrentPane = { confirm = true } }), 'x') },
+    { key = "q", mods = "SUPER", action = conditional_action(act({ CloseCurrentPane = { confirm = true } }), 'x') },
     -- LEADERの後にsでワークスペース切り替え
     {
     mods = 'LEADER',
     key = 's',
-    action = act.ShowLauncherArgs { flags = 'WORKSPACES' , title = "Select workspace" },
+    action = conditional_action(act.ShowLauncherArgs { flags = 'WORKSPACES' , title = "Select workspace" }, 'g'),
     },
     -- LEADER+SHFIT+sでワークスペース作成
     {
     mods = 'LEADER|SHIFT',
     key = 'S',
-    action = act.PromptInputLine {
-      description = "(wezterm) Create new workspace:",
-      action = wezterm.action_callback(function(window, pane, line)
-        if line then
-          window:perform_action(
-            act.SwitchToWorkspace {
-              name = line,
-            },
-            pane
-          )
-        end
-      end),
-    },
+    action = conditional_action(act.PromptInputLine { description = "(wezterm) Create new workspace:", action = wezterm.action_callback(function(window, pane, line) if line then window:perform_action(act.SwitchToWorkspace { name = line }, pane) end end) }, 'N', 'SHIFT'),
     },
     -- LEADER+SHIFT+$でワークスペース名変更
     {
     mods = 'LEADER|SHIFT',
     key = '$',
-    action = act.PromptInputLine {
-      description = '(wezterm) Set workspace title:',
-      action = wezterm.action_callback(function(win,pane,line)
-        if line then
-          wezterm.mux.rename_workspace(
-            wezterm.mux.get_active_workspace(),
-            line
-          )
-        end
-      end),
+    action = conditional_action(act.PromptInputLine { description = '(wezterm) Set workspace title:', action = wezterm.action_callback(function(win,pane,line) if line then wezterm.mux.rename_workspace(wezterm.mux.get_active_workspace(), line) end end) }, 'W', 'SHIFT'),
     },
+    -- ペーンリサイズモード (LEADER + r)
+    {
+    mods = 'LEADER',
+    key = 'r',
+    action = conditional_action(act.ActivateKeyTable { name = 'resize_pane', one_shot = false }, 'r'),
+    },
+    -- herdr: セッションデタッチ (LEADER + d -> prefix+q)
+    {
+    mods = 'LEADER',
+    key = 'd',
+    action = conditional_action(act.DetachDomain 'CurrentPaneDomain', 'q'),
+    },
+    -- herdr: サイドバートグル (LEADER + e -> prefix+b)
+    {
+    mods = 'LEADER',
+    key = 'e',
+    action = conditional_action(nil, 'b'),
+    },
+    -- herdr: 最新の通知元へジャンプ (LEADER + n -> prefix+o)
+    {
+    mods = 'LEADER',
+    key = 'n',
+    action = conditional_action(nil, 'o'),
     },
   },
 
   key_tables = {
+    resize_pane = {
+      { key = 'LeftArrow', action = act.AdjustPaneSize { 'Left', 1 } },
+      { key = 'h', action = act.AdjustPaneSize { 'Left', 1 } },
+      { key = 'RightArrow', action = act.AdjustPaneSize { 'Right', 1 } },
+      { key = 'l', action = act.AdjustPaneSize { 'Right', 1 } },
+      { key = 'UpArrow', action = act.AdjustPaneSize { 'Up', 1 } },
+      { key = 'k', action = act.AdjustPaneSize { 'Up', 1 } },
+      { key = 'DownArrow', action = act.AdjustPaneSize { 'Down', 1 } },
+      { key = 'j', action = act.AdjustPaneSize { 'Down', 1 } },
+      { key = 'Escape', action = 'PopKeyTable' },
+      { key = 'Enter', action = 'PopKeyTable' },
+      { key = 'c', mods = 'CTRL', action = 'PopKeyTable' },
+    },
     copy_mode = {
       { key = 'Tab', mods = 'NONE', action = act.CopyMode 'MoveForwardWord' },
       { key = 'Tab', mods = 'SHIFT', action = act.CopyMode 'MoveBackwardWord' },

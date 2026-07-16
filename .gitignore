@@ -38,6 +38,7 @@
 !wezterm/WEZTERM_SETUP.md
 !wezterm/.wezterm.lua
 !wezterm/.wezterm/keybindings.lua
+!wezterm/.wezterm/utils.lua
 !wezterm/.wezterm/format.lua
 !wezterm/.wezterm/status.lua
 
