@@ -19,7 +19,7 @@ local function is_herdr_pane(pane)
 
   local is_herdr = false
   if pinfo then
-    if pinfo.name and pinfo.name:match('[/\\\\]?herdr%.exe$') then
+    if pinfo.name and (pinfo.name:match('[/\\\\]?herdr%.exe$') or pinfo.name:match('[/\\\\]?herdr$')) then
       is_herdr = true
     else
       local visited = {}
@@ -31,7 +31,7 @@ local function is_herdr_pane(pane)
         end
         visited[current_pinfo.ppid] = true
         current_pinfo = wezterm.procinfo.get_info_for_pid(current_pinfo.ppid)
-        if current_pinfo and current_pinfo.name and current_pinfo.name:match('[/\\\\]?herdr%.exe$') then
+        if current_pinfo and current_pinfo.name and (current_pinfo.name:match('[/\\\\]?herdr%.exe$') or current_pinfo.name:match('[/\\\\]?herdr$')) then
           is_herdr = true
           break
         end
