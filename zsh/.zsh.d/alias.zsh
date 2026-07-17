@@ -42,6 +42,7 @@ alias gph='git push'
 alias gpl='git pull'
 alias gco='git checkout'
 alias gf='git fetch'
+alias gl='git log'
 alias gc='git commit'
 alias gwt='git worktree'
 alias gwtip='git --git-dir=.bare worktree' # 親ディレクトリにいる時用
