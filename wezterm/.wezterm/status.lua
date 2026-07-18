@@ -1,26 +1,18 @@
 -- Color palette for the backgrounds of each cell
 local COLORS = {
-	"#8a3375",
-	"#b33c86",
+	"#8a3375", -- 1 (Mode)
+	"#9f377e", -- 2 (Battery etc.)
+	"#b33c86", -- 3 (Time etc.)
+	"#c54390", -- 4
+	"#d64b9f", -- 5
+	"#e55ea8", -- 6
+	"#f071b5", -- 7
 }
 
 -- Foreground color for the text across the fade
 local TEXT_FG = "#fee6ee"
 
--- 1. トライアングル（標準的な尖ったデザイン）
--- local SOLID_LEFT_ARROW = utf8.char(0xe0b2)
-
--- 2. ハーフサークル（丸みのあるピル型デザイン）
-local SOLID_LEFT_ARROW = utf8.char(0xe0b6)
-
--- 5. ピクセル（レトロ・ドット絵風）
--- local SOLID_LEFT_ARROW = utf8.char(0xe0c7)
-
--- 6. 炎（メラメラとした波打ち）
--- local SOLID_LEFT_ARROW = utf8.char(0xe0c2)
-
--- 7. トラペゾイド（台形・折り紙のようなデザイン）
--- local SOLID_LEFT_ARROW = utf8.char(0xe0d2)
+local SOLID_LEFT_ARROW = utf8.char(0xe0d2)
 
 local function getTime(elems, window, wezterm)
 	-- 時刻表示
@@ -28,8 +20,33 @@ local function getTime(elems, window, wezterm)
 	table.insert(elems, "  " .. date)
 end
 
+local function getBattery(elems, wezterm)
+	local b = wezterm.battery_info()
+	-- バッテリーが存在しない場合（デスクトップPCなど）は枠ごと非表示
+	if not b or #b == 0 then
+		return
+	end
+
+	local charge = b[1].state_of_charge * 100
+	local state = b[1].state
+
+	local state_text = ""
+	if state == "Charging" then
+		state_text = "AC "
+	elseif state == "Discharging" then
+		state_text = "BAT "
+	elseif state == "Full" then
+		state_text = "FULL "
+	end
+
+	-- アイコンを使わず、純粋なテキストでミニマルに表現
+	table.insert(elems, string.format("%s%.0f%%", state_text, charge))
+end
 local function rightUpdate(window, pane, wezterm)
 	local cells = {}
+
+	-- 情報を追加（追加した順に左から右へ並びます）
+	getBattery(cells, wezterm)
 	getTime(cells, window, wezterm)
 
 	local elements = {}
