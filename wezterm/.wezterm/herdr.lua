@@ -163,12 +163,18 @@ function M.session_selector_action()
 								description = "Enter new herdr session name:",
 								action = wezterm.action_callback(function(w, p, line)
 									if line and line ~= "" then
-										w:perform_action(
-											wezterm.action.SpawnCommandInNewTab({
+										local success, new_tab, new_pane, new_window = pcall(function()
+											return w:mux_window():spawn_tab({
 												args = { "herdr", "--session", line },
-											}),
-											p
-										)
+												cwd = wezterm.home_dir,
+												set_environment_variables = { HERDR_ENV = "0" },
+											})
+										end)
+										if success and new_tab then
+											pcall(function() new_tab:set_title(line) end)
+										else
+											wezterm.log_error("Failed to spawn tab for session: " .. tostring(new_tab))
+										end
 									end
 								end),
 							}),
@@ -176,12 +182,18 @@ function M.session_selector_action()
 						)
 					else
 						-- 既存セッションにアタッチ
-						inner_window:perform_action(
-							wezterm.action.SpawnCommandInNewTab({
+						local success, new_tab, new_pane, new_window = pcall(function()
+							return inner_window:mux_window():spawn_tab({
 								args = { "herdr", "--session", id },
-							}),
-							inner_pane
-						)
+								cwd = wezterm.home_dir,
+								set_environment_variables = { HERDR_ENV = "0" },
+							})
+						end)
+						if success and new_tab then
+							pcall(function() new_tab:set_title(id) end)
+						else
+							wezterm.log_error("Failed to spawn tab for session: " .. tostring(new_tab))
+						end
 					end
 				end),
 				title = "herdr Sessions",

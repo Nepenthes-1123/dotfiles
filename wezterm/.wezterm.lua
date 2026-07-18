@@ -67,6 +67,10 @@ config.set_environment_variables = {
 	HOME = wezterm.home_dir,
 	MSYS = "winsymlinks:nativestrict",
 }
+-- Windows環境でzshが見つかった場合、それをデフォルトシェル環境変数に設定し、herdrがそれを引き継ぐようにする
+if wezterm.target_triple == "x86_64-pc-windows-msvc" and config.default_prog then
+	config.set_environment_variables.SHELL = config.default_prog[1]
+end
 
 -- 最初からフルスクリーンで起動
 local mux = wezterm.mux
@@ -75,10 +79,13 @@ wezterm.on("gui-startup", function(cmd)
 	if cmd and cmd.args then
 		args = cmd.args
 	else
-		-- 引数がない場合はherdrを自動起動（前回のデフォルトセッションにアタッチ）
-		args = { "herdr" }
+		-- 起動時に直接 herdr を実行する（デタッチでタブが消える仕様）
+		args = { "herdr", "--session", "default" }
 	end
 	local tab, pane, window = mux.spawn_window({ args = args })
+	if not cmd or not cmd.args then
+		tab:set_title("default")
+	end
 end)
 
 -- カラースキームの設定
