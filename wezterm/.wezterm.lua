@@ -71,7 +71,14 @@ config.set_environment_variables = {
 -- 最初からフルスクリーンで起動
 local mux = wezterm.mux
 wezterm.on("gui-startup", function(cmd)
-	local tab, pane, window = mux.spawn_window(cmd or {})
+	local args = {}
+	if cmd and cmd.args then
+		args = cmd.args
+	else
+		-- 引数がない場合はherdrを自動起動（前回のデフォルトセッションにアタッチ）
+		args = { "herdr" }
+	end
+	local tab, pane, window = mux.spawn_window({ args = args })
 end)
 
 -- カラースキームの設定
