@@ -263,6 +263,12 @@ return {
 			key = "t",
 			action = herdr.session_selector_action(),
 		},
+		-- ネイティブWezTermシェル(herdr外)を新規タブで開く (LEADER + T)
+		{
+			mods = "LEADER|SHIFT",
+			key = "T",
+			action = act.SpawnTab("CurrentPaneDomain"),
+		},
 	},
 
 	key_tables = {
