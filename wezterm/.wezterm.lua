@@ -61,12 +61,12 @@ if wezterm.target_triple == "x86_64-pc-windows-msvc" then
 end
 
 -- 環境変数の設定
-config.set_environment_variables = {
-	MSYSTEM = "MINGW64",
-	MSYS2_PATH_TYPE = "inherit",
-	HOME = wezterm.home_dir,
-	MSYS = "winsymlinks:nativestrict",
-}
+config.set_environment_variables = config.set_environment_variables or {}
+config.set_environment_variables.MSYSTEM = "MINGW64"
+config.set_environment_variables.MSYS2_PATH_TYPE = "inherit"
+config.set_environment_variables.HOME = wezterm.home_dir
+config.set_environment_variables.MSYS = "winsymlinks:nativestrict"
+
 -- Windows環境でzshが見つかった場合、それをデフォルトシェル環境変数に設定し、herdrがそれを引き継ぐようにする
 if wezterm.target_triple == "x86_64-pc-windows-msvc" and config.default_prog then
 	config.set_environment_variables.SHELL = config.default_prog[1]
