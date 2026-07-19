@@ -154,6 +154,7 @@ setup("snacks", function(Snacks)
 						list = {
 							keys = {
 								["/"] = false,
+								["<CR>"] = "edit_tab", -- Enterキーで常に新しいタブで開く
 							},
 						},
 					},
