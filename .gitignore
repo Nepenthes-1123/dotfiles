@@ -102,6 +102,6 @@
 !nvim/after/ftplugin/python.lua
 !nvim/after/ftplugin/tex.lua
 
-# herdr セッティング
+# herdr 繧ｻ繝�繝�繧｣繝ｳ繧ｰ
 !herdr/config.toml
 !wezterm/.wezterm/herdr.lua
