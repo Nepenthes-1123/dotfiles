@@ -34,6 +34,8 @@ map("n", "<C-Right>", "<Cmd>vertical resize +2<CR>", opts)
 map("n", "<Tab>", "<Cmd>BufferLineCycleNext<CR>", opts)
 map("n", "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", opts)
 map("n", "<Leader>bd", "<Cmd>bdelete<CR>", vim.tbl_extend("force", opts, { desc = "Delete buffer" }))
+map("n", "]b", "<Cmd>bnext<CR>", vim.tbl_extend("force", opts, { desc = "Next buffer" }))
+map("n", "[b", "<Cmd>bprevious<CR>", vim.tbl_extend("force", opts, { desc = "Previous buffer" }))
 
 -- インデントを選択状態を保ったまま変更 (Visual モード)
 map("v", "<", "<gv", opts)
