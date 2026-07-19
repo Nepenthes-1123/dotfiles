@@ -132,14 +132,14 @@ function M.session_selector_action()
 		-- herdrのセッション一覧をJSONで取得
 		local success, stdout, stderr = wezterm.run_child_process({ "herdr", "session", "list", "--json" })
 		local choices = {
-			{ id = "NEW_SESSION_ID", label = "✨ 新しいセッションを作成..." },
+			{ id = "NEW_SESSION_ID", label = "  Create new session..." },
 		}
 
 		if success then
 			local parsed = wezterm.json_parse(stdout)
 			if parsed and parsed.sessions then
 				for _, session in ipairs(parsed.sessions) do
-					local status_icon = session.running and "🟢" or "⚪"
+					local status_icon = session.running and "" or ""
 					local label = string.format("%s %s", status_icon, session.name)
 					table.insert(choices, { id = session.name, label = label })
 				end
