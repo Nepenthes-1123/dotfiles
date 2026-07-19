@@ -43,7 +43,11 @@ function M.setup(wezterm, config)
       foreground = "#edd5dd"
     end
 
-    local title = BaseName(tab.active_pane.title)
+    local title = tab.tab_title
+    if not title or title == "" then
+      title = BaseName(tab.active_pane.title)
+    end
+
     if tab.active_pane.is_zoomed then
       title = title .. " 🔍"
     end

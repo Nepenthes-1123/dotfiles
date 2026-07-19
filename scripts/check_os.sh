@@ -17,7 +17,7 @@ function check_os() {
             uname -a
             return 1
         fi
-    elif [[ "$(expr substr $(uname -s) 1 6)" == 'CYGWIN' || "$(expr substr $(uname -s) 1 5)" == 'MINGW' ]]; then
+    elif [[ "$(uname -s)" == CYGWIN* || "$(uname -s)" == MINGW* || "$(uname -s)" == MSYS* ]]; then
         OS='Cygwin'
     else
         echo ${OS}
