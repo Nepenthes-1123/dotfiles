@@ -66,6 +66,10 @@ config.set_environment_variables.MSYSTEM = "MINGW64"
 config.set_environment_variables.MSYS2_PATH_TYPE = "inherit"
 config.set_environment_variables.HOME = wezterm.home_dir
 config.set_environment_variables.MSYS = "winsymlinks:nativestrict"
+-- Mac (darwin) 環境の場合、Homebrewのパスを追加
+if wezterm.target_triple:find("darwin") then
+	config.set_environment_variables.PATH = "/opt/homebrew/bin:" .. os.getenv("PATH")
+end
 
 -- Windows環境でzshが見つかった場合、それをデフォルトシェル環境変数に設定し、herdrがそれを引き継ぐようにする
 if wezterm.target_triple == "x86_64-pc-windows-msvc" and config.default_prog then
@@ -80,7 +84,12 @@ wezterm.on("gui-startup", function(cmd)
 		args = cmd.args
 	else
 		-- 起動時に直接 herdr を実行する（デタッチでタブが消える仕様）
-		args = { "herdr", "--session", "default" }
+		-- Macの場合はフルパスを指定して確実に起動させる
+		if wezterm.target_triple:find("darwin") then
+			args = { "/opt/homebrew/bin/herdr", "--session", "default" }
+		else
+			args = { "herdr", "--session", "default" }
+		end
 	end
 	local tab, pane, window = mux.spawn_window({ args = args })
 	if not cmd or not cmd.args then

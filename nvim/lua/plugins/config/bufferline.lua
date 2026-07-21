@@ -3,7 +3,7 @@ local setup = require("plugins.config.utils").setup
 setup("bufferline", function(m)
 	m.setup({
 		options = {
-			mode = "tabs", -- タブを表示するように変更
+			mode = "buffers", -- タブを表示するように変更
 			style_preset = m.style_preset.default,
 			numbers = "none",
 			close_command = "bdelete! %d",
