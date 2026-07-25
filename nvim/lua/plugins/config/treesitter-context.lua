@@ -9,8 +9,10 @@ setup("treesitter-context", function(m)
 		multiline_threshold = 20,
 		trim_scope = "outer",
 		mode = "topline",
-		separator = "─",
+		separator = "▔",
 		zindex = 10,
 		multiwindow = true,
 	})
+
+	vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { link = "DiagnosticInfo" })
 end)
