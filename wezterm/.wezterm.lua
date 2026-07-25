@@ -83,13 +83,8 @@ wezterm.on("gui-startup", function(cmd)
 	if cmd and cmd.args then
 		args = cmd.args
 	else
-		-- 起動時に直接 herdr を実行する（デタッチでタブが消える仕様）
-		-- Macの場合はフルパスを指定して確実に起動させる
-		if wezterm.target_triple:find("darwin") then
-			args = { "/opt/homebrew/bin/herdr", "--session", "default" }
-		else
-			args = { "herdr", "--session", "default" }
-		end
+		-- 起動時に zsh 経由で herdr を実行する（OSごとのPATH差分を吸収）
+		args = { "zsh", "-l", "-c", "herdr --session default" }
 	end
 	local tab, pane, window = mux.spawn_window({ args = args })
 	if not cmd or not cmd.args then
