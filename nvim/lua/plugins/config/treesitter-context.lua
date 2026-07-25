@@ -11,5 +11,6 @@ setup("treesitter-context", function(m)
 		mode = "topline",
 		separator = "─",
 		zindex = 10,
+		multiwindow = true,
 	})
 end)
