@@ -10,6 +10,6 @@ setup("treesitter-context", function(m)
 		trim_scope = "outer",
 		mode = "topline",
 		separator = "─",
-		zindex = 20,
+		zindex = 10,
 	})
 end)
