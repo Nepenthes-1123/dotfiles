@@ -8,6 +8,7 @@ setup("treesitter-context", function(m)
 		line_numbers = true,
 		multiline_threshold = 20,
 		trim_scope = "outer",
-		mode = "cursor",
+		mode = "topline",
+		separator = "─",
 	})
 end)
