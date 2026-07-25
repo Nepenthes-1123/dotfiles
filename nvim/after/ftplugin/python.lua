@@ -4,7 +4,7 @@
 -- =============================================================================
 
 -- インデント設定 (Python はスペース 4 が標準)
-vim.bo.tabstop   = 4
+vim.bo.tabstop = 4
 vim.bo.shiftwidth = 4
 vim.bo.expandtab = true
 
@@ -19,16 +19,16 @@ vim.wo.colorcolumn = "88"
 -- docstring 挿入コマンド (VSCode: njpwerner.autodocstring の簡易代替)
 -- カーソル行が関数/クラス定義なら """ を挿入するシンプルな補助
 vim.keymap.set("n", "<LocalLeader>d", function()
-  local line = vim.api.nvim_get_current_line()
-  if line:match("^%s*def ") or line:match("^%s*class ") then
-    local row = vim.api.nvim_win_get_cursor(0)[1]
-    local indent = line:match("^(%s*)") .. "    "
-    vim.api.nvim_buf_set_lines(0, row, row, false, {
-      indent .. '"""',
-      indent .. "",
-      indent .. '"""',
-    })
-    vim.api.nvim_win_set_cursor(0, { row + 2, #indent })
-    vim.cmd("startinsert!")
-  end
+	local line = vim.api.nvim_get_current_line()
+	if line:match("^%s*def ") or line:match("^%s*class ") then
+		local row = vim.api.nvim_win_get_cursor(0)[1]
+		local indent = line:match("^(%s*)") .. "    "
+		vim.api.nvim_buf_set_lines(0, row, row, false, {
+			indent .. '"""',
+			indent .. "",
+			indent .. '"""',
+		})
+		vim.api.nvim_win_set_cursor(0, { row + 2, #indent })
+		vim.cmd("startinsert!")
+	end
 end, { buffer = true, desc = "Insert docstring" })

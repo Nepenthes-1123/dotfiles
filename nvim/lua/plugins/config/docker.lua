@@ -45,7 +45,6 @@ setup("devcontainer", function(m)
 		compose_command = (function()
 			-- docker compose (v2) を優先、なければ docker-compose (v1) にフォールバック
 			if vim.fn.executable("docker") == 1 then
-				local result = vim.fn.system("docker compose version 2>/dev/null")
 				if vim.v.shell_error == 0 then
 					return "docker compose"
 				end
@@ -149,7 +148,8 @@ if vim.fn.executable("lazydocker") == 1 then
 			title = " lazydocker ",
 			title_pos = "center",
 		})
-		vim.fn.termopen("lazydocker", {
+		vim.fn.jobstart({ "lazydocker" }, {
+			term = true,
 			on_exit = function()
 				pcall(vim.api.nvim_buf_delete, buf, { force = true })
 			end,

@@ -307,9 +307,10 @@ setup("obsidian", function(m)
 		local is_in_vault = false
 		local current_buf_path = vim.api.nvim_buf_get_name(0)
 
-		if current_buf_path ~= "" and _G.Obsidian and _G.Obsidian.dir then
+		local obsidian_client = rawget(_G, "Obsidian")
+		if current_buf_path ~= "" and obsidian_client and obsidian_client.dir then
 			-- Obsidian.dir は obsidian.Path オブジェクト
-			local vault_dir = tostring(_G.Obsidian.dir)
+			local vault_dir = tostring(obsidian_client.dir)
 			-- パス区切り記号の正規化 (Windows向けに / と \ を統一)
 			local norm_vault = vault_dir:gsub("\\", "/"):lower()
 			local norm_buf = current_buf_path:gsub("\\", "/"):lower()

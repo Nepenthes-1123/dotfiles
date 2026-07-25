@@ -85,5 +85,3 @@ vim.keymap.set("i", "<S-Tab>", function()
 	-- Shift-Tab はインデントを一段浅くする
 	return "<C-d>"
 end, { expr = true, buffer = true, desc = "Unindent list item" })
-
-

@@ -41,7 +41,6 @@ return {
 				onEdit = false,
 			},
 			-- BibTeX ソート (VSCode: "latex-workshop.bibtex-format.sort.enabled": true)
-			bibtexFormatter = "texlab",
 			formatterLineLength = 80,
 			latexFormatter = "latexindent",
 			latexindent = {

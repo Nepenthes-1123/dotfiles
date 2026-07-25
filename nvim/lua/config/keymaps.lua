@@ -69,8 +69,13 @@ map({ "n", "v" }, "<Leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force",
 
 -- 診断 (VSCode: ErrorLens の下線 → diagnostic float)
 map("n", "<Leader>d", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Show diagnostic" }))
-map("n", "[d", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "Prev diagnostic" }))
-map("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
+map("n", "[d", function()
+	vim.diagnostic.jump({ count = -1 })
+end, vim.tbl_extend("force", opts, { desc = "Prev diagnostic" }))
+
+map("n", "]d", function()
+	vim.diagnostic.jump({ count = 1 })
+end, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
 
 -- フォーマット (VSCode: formatOnSave は autocmds.lua, 手動は Alt+Shift+F)
 map("n", "<Leader>cf", function()
@@ -78,7 +83,7 @@ map("n", "<Leader>cf", function()
 end, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
 
 map("v", "<Leader>cf", function()
-	vim.lsp.buf.format({ async = true, range = true })
+	vim.lsp.buf.format({ async = true })
 end, vim.tbl_extend("force", opts, { desc = "Format selection" }))
 
 -- ── ファジーファインダー (blink) ─────────────────────────────────────────

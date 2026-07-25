@@ -48,17 +48,20 @@ vim.diagnostic.config({
 	},
 })
 
--- ── ホバー / LSP ウィンドウのボーダー ────────────────────────────────────────
--- Neovim v0.12: vim.lsp.with() は deprecated。
--- 代わりに各 handler の第3引数 opts で border を指定する。
+local default_hover_handler = vim.lsp.handlers["textDocument/hover"]
 vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
 	config = vim.tbl_deep_extend("force", config or {}, { border = "rounded" })
-	vim.lsp.handlers.hover(err, result, ctx, config)
+	if default_hover_handler then
+		default_hover_handler(err, result, ctx, config)
+	end
 end
 
+local default_sig_handler = vim.lsp.handlers["textDocument/signatureHelp"]
 vim.lsp.handlers["textDocument/signatureHelp"] = function(err, result, ctx, config)
 	config = vim.tbl_deep_extend("force", config or {}, { border = "rounded" })
-	vim.lsp.handlers.signature_help(err, result, ctx, config)
+	if default_sig_handler then
+		default_sig_handler(err, result, ctx, config)
+	end
 end
 
 -- ── LSP サーバー有効化 ───────────────────────────────────────────────────────
