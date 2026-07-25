@@ -3,7 +3,6 @@ local act = wezterm.action
 
 local herdr = require("herdr")
 local conditional_action = herdr.conditional_action
-local conditional_raw_action = herdr.conditional_raw_action
 local conditional_resize_action = herdr.conditional_resize_action
 
 return {
@@ -228,7 +227,7 @@ return {
 			action = conditional_action(
 				act.PromptInputLine({
 					description = "(wezterm) Set workspace title:",
-					action = wezterm.action_callback(function(win, pane, line)
+					action = wezterm.action_callback(function(_, _, line)
 						if line then
 							wezterm.mux.rename_workspace(wezterm.mux.get_active_workspace(), line)
 						end

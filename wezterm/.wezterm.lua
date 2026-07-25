@@ -79,14 +79,8 @@ end
 -- 最初からフルスクリーンで起動
 local mux = wezterm.mux
 wezterm.on("gui-startup", function(cmd)
-	local args = {}
-	if cmd and cmd.args then
-		args = cmd.args
-	else
-		-- 起動時に zsh 経由で herdr を実行する（OSごとのPATH差分を吸収）
-		args = { "zsh", "-l", "-c", "herdr --session default" }
-	end
-	local tab, pane, window = mux.spawn_window({ args = args })
+	local args = (cmd and cmd.args) or { "zsh", "-l", "-c", "herdr --session default" }
+	local tab = mux.spawn_window({ args = args })
 	if not cmd or not cmd.args then
 		tab:set_title("default")
 	end

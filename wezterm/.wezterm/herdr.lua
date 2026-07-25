@@ -130,8 +130,7 @@ function M.session_selector_action()
 		end
 
 		-- herdrのセッション一覧をJSONで取得（zsh -l -c 経由でPATH差分を吸収）
-		local success, stdout, stderr =
-			wezterm.run_child_process({ "zsh", "-l", "-c", "herdr session list --json" })
+		local success, stdout, stderr = wezterm.run_child_process({ "zsh", "-l", "-c", "herdr session list --json" })
 		local choices = {
 			{ id = "NEW_SESSION_ID", label = "  Create new session..." },
 		}
@@ -162,17 +161,19 @@ function M.session_selector_action()
 						inner_window:perform_action(
 							wezterm.action.PromptInputLine({
 								description = "Enter new herdr session name:",
-								action = wezterm.action_callback(function(w, p, line)
+								action = wezterm.action_callback(function(w, _, line)
 									if line and line ~= "" then
-										local success, new_tab, new_pane, new_window = pcall(function()
+										local spawn_ok, new_tab = pcall(function()
 											return w:mux_window():spawn_tab({
 												args = { "zsh", "-l", "-c", "herdr --session " .. line },
 												cwd = wezterm.home_dir,
 												set_environment_variables = { HERDR_ENV = "0" },
 											})
 										end)
-										if success and new_tab then
-											pcall(function() new_tab:set_title(line) end)
+										if spawn_ok and new_tab then
+											pcall(function()
+												new_tab:set_title(line)
+											end)
 										else
 											wezterm.log_error("Failed to spawn tab for session: " .. tostring(new_tab))
 										end
@@ -183,15 +184,17 @@ function M.session_selector_action()
 						)
 					else
 						-- 既存セッションにアタッチ
-						local success, new_tab, new_pane, new_window = pcall(function()
+						local spawn_ok, new_tab = pcall(function()
 							return inner_window:mux_window():spawn_tab({
 								args = { "zsh", "-l", "-c", "herdr --session " .. id },
 								cwd = wezterm.home_dir,
 								set_environment_variables = { HERDR_ENV = "0" },
 							})
 						end)
-						if success and new_tab then
-							pcall(function() new_tab:set_title(id) end)
+						if spawn_ok and new_tab then
+							pcall(function()
+								new_tab:set_title(id)
+							end)
 						else
 							wezterm.log_error("Failed to spawn tab for session: " .. tostring(new_tab))
 						end
