@@ -83,6 +83,8 @@
 !nvim/lua/plugins/config/snacks.lua
 !nvim/lua/plugins/config/tiny-cmdline.lua
 !nvim/lua/plugins/config/treesitter.lua
+!nvim/lua/plugins/config/treesitter-context.lua
+!nvim/lua/plugins/config/dropbar.lua
 !nvim/lua/plugins/config/ui.lua
 !nvim/lua/plugins/config/utils.lua
 !nvim/lsp/clangd.lua

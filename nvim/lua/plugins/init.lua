@@ -61,6 +61,10 @@ vim.pack.add({
 
 	-- ── シンタックスハイライト ──────────────────────────────────────────────────
 	"https://github.com/nvim-treesitter/nvim-treesitter",
+	"https://github.com/nvim-treesitter/nvim-treesitter-context",
+
+	-- ── パンくずリスト ──────────────────────────────────────────────────────────
+	"https://github.com/Bekaboo/dropbar.nvim",
 
 	-- ── ブラケットペアのカラー化 ────────────────────────────────────────────────
 	-- VSCode: "editor.bracketPairColorization.independentColorPoolPerBracketType": true
@@ -142,6 +146,8 @@ require("plugins.config.editor")
 require("plugins.config.lsp")
 require("plugins.config.blink")
 require("plugins.config.treesitter")
+require("plugins.config.treesitter-context")
+require("plugins.config.dropbar")
 require("plugins.config.obsidian")
 require("plugins.config.docker")
 require("plugins.config.octo")
