@@ -11,6 +11,7 @@ return {
 		{ key = "Tab", mods = "CTRL", action = conditional_action(act.ActivateTabRelative(1), "n") },
 		{ key = "Tab", mods = "SHIFT|CTRL", action = conditional_action(act.ActivateTabRelative(-1), "p") },
 		{ key = "Enter", mods = "ALT", action = act.ToggleFullScreen },
+		{ key = "b", mods = "CTRL|SHIFT|ALT", action = act.EmitEvent("toggle-bg-image") },
 		{ key = "<", mods = "CTRL|SHIFT", action = act.DecreaseFontSize },
 		{ key = ">", mods = "CTRL|SHIFT", action = act.IncreaseFontSize },
 		{ key = "0", mods = "CTRL", action = act.ResetFontSize },

@@ -89,9 +89,9 @@ end)
 -- カラースキームの設定
 config.color_scheme = "Sakura"
 
--- 背景透過
-config.window_background_opacity = 0.8
-config.macos_window_background_blur = 5
+-- 背景透過・背景画像の設定を読み込む
+local background = require("background")
+background.setup(wezterm, config)
 
 config.native_macos_fullscreen_mode = true
 
