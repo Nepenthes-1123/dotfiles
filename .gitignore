@@ -43,6 +43,7 @@
 !wezterm/.wezterm/status.lua
 !wezterm/.wezterm/background.lua
 !wezterm/.wezterm/kuyozakura.png
+!wezterm/.wezterm/background_image.png
 
 # vscode セッティング
 !vscode/settings.json
