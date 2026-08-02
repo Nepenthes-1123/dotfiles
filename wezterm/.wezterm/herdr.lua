@@ -81,7 +81,7 @@ function M.conditional_action(wezterm_action, herdr_key, herdr_mods)
 		if M.ENABLE_HERDR_INTEGRATION and is_herdr_pane(pane) then
 			window:perform_action(
 				act.Multiple({
-					act.SendKey({ key = "b", mods = "CTRL" }),
+					act.SendKey({ key = "a", mods = "CTRL" }),
 					act.SendKey({ key = herdr_key, mods = herdr_mods }),
 				}),
 				pane
@@ -108,7 +108,7 @@ function M.conditional_resize_action(wezterm_action, resize_key)
 		if M.ENABLE_HERDR_INTEGRATION and is_herdr_pane(pane) then
 			window:perform_action(
 				act.Multiple({
-					act.SendKey({ key = "b", mods = "CTRL" }),
+					act.SendKey({ key = "a", mods = "CTRL" }),
 					act.SendKey({ key = "r", mods = "NONE" }),
 					act.SendKey({ key = resize_key, mods = "NONE" }),
 					act.SendKey({ key = "Escape", mods = "NONE" }),
