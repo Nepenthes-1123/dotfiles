@@ -238,6 +238,16 @@ return {
 				"SHIFT"
 			),
 		},
+		-- herdr: LEADER+数字でworkspace切替 (-> prefix+shift+1..9)
+		{ mods = "LEADER", key = "1", action = conditional_action(nil, "1", "SHIFT") },
+		{ mods = "LEADER", key = "2", action = conditional_action(nil, "2", "SHIFT") },
+		{ mods = "LEADER", key = "3", action = conditional_action(nil, "3", "SHIFT") },
+		{ mods = "LEADER", key = "4", action = conditional_action(nil, "4", "SHIFT") },
+		{ mods = "LEADER", key = "5", action = conditional_action(nil, "5", "SHIFT") },
+		{ mods = "LEADER", key = "6", action = conditional_action(nil, "6", "SHIFT") },
+		{ mods = "LEADER", key = "7", action = conditional_action(nil, "7", "SHIFT") },
+		{ mods = "LEADER", key = "8", action = conditional_action(nil, "8", "SHIFT") },
+		{ mods = "LEADER", key = "9", action = conditional_action(nil, "9", "SHIFT") },
 		-- ペーンリサイズモード (LEADER + r)
 		{
 			mods = "LEADER",
