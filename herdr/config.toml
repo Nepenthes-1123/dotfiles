@@ -123,9 +123,9 @@ switch_workspace = "prefix+shift+1..9"
 [[keys.command]]
 key = "prefix+ctrl+g"
 type = "popup"
-command = "lazygit"
-width = "80%"
-height = "80%"
+command = "zsh -lc 'lazygit'"
+width = "95%"
+height = "95%"
 
 # Legacy indexed shortcut config is still parsed for compatibility.
 # Prefer switch_tab, switch_workspace, and focus_agent for new configs.
