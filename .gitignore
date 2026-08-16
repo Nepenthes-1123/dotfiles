@@ -110,3 +110,6 @@
 # herdr セッティング
 !herdr/config.toml
 !wezterm/.wezterm/herdr.lua
+
+# starship セッティング
+!starship/starship.toml

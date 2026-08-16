@@ -1,0 +1,104 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+palette = "sakura"
+
+add_newline = false
+
+format = "[╭─](gray)[](root)$os[](fg:root bg:trunk)$hostname$directory$git_branch$git_status$time$nodejs$python$rust$golang$lua$line_break[╰─](gray)$status$character"
+
+# WezTerm の color_scheme = "Sakura" (iTerm2-Color-Schemes) と同じ配色
+[palettes.sakura]
+pink         = "#dd7bdc"
+bright_pink  = "#ff65fd"
+purple       = "#9892f1"
+green        = "#41af1a"
+bright_green = "#22e529"
+muted_green  = "#96ac8e" # grayと同等の彩度・明度に合わせた成功色(character用)
+red          = "#d52370"
+bright_red   = "#f41d99"
+muted_red    = "#ac8e9b" # grayと同等の彩度・明度に合わせた失敗色(character用)
+peach        = "#bc7053"
+root         = "#412d1b" # 根: 木質のグラデーション(os用)
+trunk        = "#7a522e" # 幹: 同上(hostname/directory用)
+gray         = "#998eac"
+white        = "#eeeeee"
+dark         = "#24242e" # selection_fg / cursor_fg: 明るい背景の上に乗せる文字色
+
+# hostname自身が矢印を持つことで、hostname非表示時(通常のローカルセッション)は
+# 矢印も一緒に消え、ディレクトリの幹(trunk)帯がそのまま始まる
+[os]
+disabled = false
+style = "bg:root fg:white"
+format = "[ $symbol ]($style)"
+
+[os.symbols]
+Windows = ""
+Macos    = ""
+Linux    = ""
+Ubuntu   = ""
+
+[hostname]
+ssh_only = true
+format = "[$hostname ]($style)[](fg:gray bg:trunk) "
+style = "bold gray"
+
+[directory]
+style = "bg:trunk fg:white"
+format = "[ $path$read_only ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+truncate_to_repo = false
+use_os_path_sep = false
+read_only = " "
+read_only_style = "bright_red"
+
+[time]
+disabled = false
+style = "bg:pink fg:dark"
+format = "[ $time ]($style)"
+time_format = "%H:%M:%S"
+
+[git_branch]
+format = "[$symbol$branch ](bg:green fg:dark)"
+
+[git_status]
+format = "[$all_status$ahead_behind ](bg:green)"
+conflicted = "[=](bg:green fg:bright_pink)"
+ahead = "[⇡](bg:green fg:gray)"
+behind = "[⇣](bg:green fg:gray)"
+diverged = "[⇕](bg:green fg:bright_pink)"
+untracked = "[?](bg:green fg:peach)"
+stashed = "[$](bg:green fg:purple)"
+modified = "[!](bg:green fg:red)"
+staged = "[+$count](bg:green fg:bright_green)"
+renamed = "[»](bg:green fg:white)"
+deleted = "[✘](bg:green fg:bright_red)"
+
+[nodejs]
+style = "bg:bright_pink fg:dark"
+format = "[$symbol($version) ]($style)"
+
+[python]
+style = "bg:bright_pink fg:dark"
+format = "[$symbol($version) ]($style)"
+
+[rust]
+style = "bg:bright_pink fg:dark"
+format = "[$symbol($version) ]($style)"
+
+[golang]
+style = "bg:bright_pink fg:dark"
+format = "[$symbol($version) ]($style)"
+
+[lua]
+style = "bg:bright_pink fg:dark"
+format = "[$symbol($version) ]($style)"
+
+[status]
+disabled = false
+format = "[$symbol$status]($style) "
+style = "bold red"
+
+[character]
+success_symbol = "[](muted_green)"
+error_symbol = "[](muted_red)"
