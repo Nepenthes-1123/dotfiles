@@ -10,4 +10,5 @@ end
 gtodo_md.setup({
 	use_default_keymaps = true,
 	picker = "auto",
+	conceal_tags = { "id", "created" },
 })
