@@ -95,6 +95,13 @@ Signed-By: /usr/share/keyrings/microsoft.gpg" | sudo tee /etc/apt/sources.list.d
         && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
     fi
 
+    # starship
+    # apt公式リポジトリにはUbuntu 25.04未満では存在しないため公式インストールスクリプトを使用
+    if ! type starship > /dev/null 2>&1; then
+        echo "Installing starship..."
+        curl -sS https://starship.rs/install.sh | sh -s -- -y || echo "Warning: Failed to install starship."
+    fi
+
     for pkg in "${ubuntu_packages[@]}"; do
         if ! type "$pkg" > /dev/null 2>&1; then
             echo "Installing $pkg..."
