@@ -74,17 +74,21 @@ Signed-By: /usr/share/keyrings/microsoft.gpg" | sudo tee /etc/apt/sources.list.d
     # TODO: JetBrains Mono Nerd Fontのインストールを追記
     if [[ ! -d ~/.local/share/fonts/JetBrainsMono ]] || [[ -z "$(ls -A ~/.local/share/fonts/JetBrainsMono 2>/dev/null)" ]]; then
         echo "Installing JetBrains Mono Nerd Font..."
+        sudo apt install -y unzip fontconfig || echo "Warning: Failed to install unzip/fontconfig."
+
         # フォント用のディレクトリを作成
         mkdir -p ~/.local/share/fonts/JetBrainsMono
 
         # Nerd Fontsの公式リポジトリからJetBrains MonoのZIPをダウンロード (v3.2.1の例)
-        wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.zip
+        local font_tmpdir
+        font_tmpdir="$(mktemp -d)"
+        wget -P "$font_tmpdir" https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.zip
 
         # ディレクトリに展開
-        unzip JetBrainsMono.zip -d ~/.local/share/fonts/JetBrainsMono
+        unzip "${font_tmpdir}/JetBrainsMono.zip" -d ~/.local/share/fonts/JetBrainsMono
 
-        # 不要になったZIPファイルを削除
-        rm JetBrainsMono.zip
+        # 不要になった一時ディレクトリを削除
+        rm -rf "$font_tmpdir"
 
         # フォントキャッシュを更新してシステムに認識させる
         fc-cache -fv
