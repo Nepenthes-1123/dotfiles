@@ -31,7 +31,7 @@ function update_win() {
     if [[ -d "${HOME}/.fzf" ]]; then
         echo "Updating fzf..."
         git -C "${HOME}/.fzf" pull
-        "${HOME}/.fzf/install" --all
+        "${HOME}/.fzf/install" --key-bindings --completion --no-update-rc
     fi
 
     # Neovim plugins
@@ -84,7 +84,7 @@ function update_mac() {
     if [[ -d "${HOME}/.fzf" ]]; then
         echo "Updating fzf..."
         git -C "${HOME}/.fzf" pull
-        "${HOME}/.fzf/install" --all
+        "${HOME}/.fzf/install" --key-bindings --completion --no-update-rc
     fi
 
     # Neovim plugins
@@ -134,7 +134,7 @@ function update_ubuntu() {
     if [[ -d "${HOME}/.fzf" ]]; then
         echo "Updating fzf..."
         git -C "${HOME}/.fzf" pull
-        "${HOME}/.fzf/install" --all
+        "${HOME}/.fzf/install" --key-bindings --completion --no-update-rc
     fi
 
     # Neovim plugins

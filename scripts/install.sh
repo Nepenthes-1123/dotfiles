@@ -152,7 +152,7 @@ function install_fzf() {
         fi
         if [[ -d "${HOME}/.fzf" ]]; then
             echo "Installing fzf..."
-            "${HOME}/.fzf/install" || echo "Warning: fzf installation script failed."
+            "${HOME}/.fzf/install" --key-bindings --completion --no-update-rc || echo "Warning: fzf installation script failed."
         fi
     fi
 }
