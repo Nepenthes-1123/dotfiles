@@ -22,7 +22,14 @@ function install_win() {
 function install_mac() {
     # install homebrew
     if ! type brew > /dev/null 2>&1; then
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || echo "Warning: Failed to install Homebrew."
+        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || echo "Warning: Failed to install Homebrew."
+
+        # インストーラーはシェルのPATHを自動更新しないため、このプロセス内で明示的に通す
+        if [[ -x /opt/homebrew/bin/brew ]]; then
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+        elif [[ -x /usr/local/bin/brew ]]; then
+            eval "$(/usr/local/bin/brew shellenv)"
+        fi
     fi
 
     script_dir="$(dirname "${BASH_SOURCE:-$0}")"
