@@ -113,6 +113,31 @@ function select_gitconfig() {
                 break
                 ;;
             "make")
+                if [[ -e "${HOME}/.gitconfig.local" ]]; then
+                    echo "Target file already exists: ${HOME}/.gitconfig.local"
+                    prompt_read _replace_gitconfig "Do you want to replace the file? [Yes / No]:"
+                    case "$_replace_gitconfig" in
+                        [Yy] | [Yy][Ee][Ss] )
+                            ;;
+                        [Nn] | [Nn][Oo] )
+                            prompt_read _backup_gitconfig "Do you want to make backup file? [Yes / No]:"
+                            case "$_backup_gitconfig" in
+                                [Yy] | [Yy][Ee][Ss] )
+                                    mv "${HOME}/.gitconfig.local" "${HOME}/.gitconfig.local.bak"
+                                    ;;
+                                * )
+                                    echo "skip ${HOME}/.gitconfig.local"
+                                    break
+                                    ;;
+                            esac
+                            ;;
+                        * )
+                            echo "skip ${HOME}/.gitconfig.local"
+                            break
+                            ;;
+                    esac
+                fi
+
                 read -p "Input Git User Name" -r GIT_NAME
                 read -p "Input Git User Email" -r GIT_MAIL
                 # ファイル書き込み
