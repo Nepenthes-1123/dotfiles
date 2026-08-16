@@ -1,33 +1,3 @@
-## gitのbranch名とstatus表示
-function check_git_status() {
-  local name st color
-
-  # .gitディレクトリ内での実行をスキップ
-  if [[ "$PWD" =~ '/\.git(/.*)?$' ]]; then
-    return 0
-  fi
-
-  # gitのbranch名を取得
-  name=$(git symbolic-ref HEAD 2> /dev/null | sed 's!refs/heads/!!')
-
-  # ブランチ名が空の場合はスキップ
-  if [[ -z $name ]]; then
-    return 0
-  fi
-
-  # gitのステータスを取得
-  st=$(git status --short 2> /dev/null)
-  # ステータスに応じた色を設定
-  case "$st" in
-    "") color=${fg[green]} ;;           # Status clean
-    *"\?\? "* ) color=${fg[yellow]} ;;  # Untracked
-    *"\ M "* ) color=${fg[red]} ;;      # Modified
-    * ) color=${fg[cyan]} ;;            # Added to commit
-  esac
-
-  echo "[%{$color%}$name%{$reset_color%}]"
-}
-
 ## ヒストリ設定
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=100000
@@ -44,24 +14,7 @@ zstyle ':completion:*' history-size $HISTSIZE
 zstyle ':completion:*' save-history $SAVEHIST
 
 
-## プロンプトにカラーを使用する
-autoload -U colors; colors
-
-## 表示毎にPROMPTで設定されている文字列を評価する
-setopt prompt_subst
-
-
-## プロンプト表示設定
-function {
-  # ホスト名とディレクトリ名を表示
-  #   PROMPT="%{${fg[green]}%}%n@%m %{${fg[yellow]}%}%3~%{${reset_color}%} "
-  # $ のみを表示
-  PROMPT="%{${fg[yellow]}%}%3~%{${reset_color}%} %{${fg[green]}%}%#%{${reset_color}%} "
-  # コマンドの続きを表示する際のプロンプト
-  PROMPT2="%{${fg[green]}%}%_%%%{${reset_color}%} "
-  # スペルミスを修正する際のプロンプト
-  SPROMPT="%{${fg[green]}%}%r is correct? [n,y,a,e]:%{${reset_color}%} "
-  # リモートホストの場合はホスト名を表示
-  [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] && PROMPT="%{${fg[white]}%}${HOST%%.*} ${PROMPT}"
-  RPROMPT='`check_git_status`'
-}
+## プロンプト表示設定 (starship に委譲)
+# Windows版starship.exeがzsh(MSYS2/Git Bash)配下で自身のパスをバックスラッシュ形式のまま
+# 埋め込み、コマンドとして解決できずエラーになるため、フォワードスラッシュに変換する
+eval "$(starship init zsh | sed 's/\\/\//g')"
