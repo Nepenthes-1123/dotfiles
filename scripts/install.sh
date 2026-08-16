@@ -72,20 +72,25 @@ Signed-By: /usr/share/keyrings/microsoft.gpg" | sudo tee /etc/apt/sources.list.d
     fi
 
     # TODO: JetBrains Mono Nerd Fontのインストールを追記
-    # フォント用のディレクトリを作成
-    mkdir -p ~/.local/share/fonts/JetBrainsMono
+    if [[ ! -d ~/.local/share/fonts/JetBrainsMono ]] || [[ -z "$(ls -A ~/.local/share/fonts/JetBrainsMono 2>/dev/null)" ]]; then
+        echo "Installing JetBrains Mono Nerd Font..."
+        # フォント用のディレクトリを作成
+        mkdir -p ~/.local/share/fonts/JetBrainsMono
 
-    # Nerd Fontsの公式リポジトリからJetBrains MonoのZIPをダウンロード (v3.2.1の例)
-    wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.zip
+        # Nerd Fontsの公式リポジトリからJetBrains MonoのZIPをダウンロード (v3.2.1の例)
+        wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.zip
 
-    # ディレクトリに展開
-    unzip JetBrainsMono.zip -d ~/.local/share/fonts/JetBrainsMono
+        # ディレクトリに展開
+        unzip JetBrainsMono.zip -d ~/.local/share/fonts/JetBrainsMono
 
-    # 不要になったZIPファイルを削除
-    rm JetBrainsMono.zip
+        # 不要になったZIPファイルを削除
+        rm JetBrainsMono.zip
 
-    # フォントキャッシュを更新してシステムに認識させる
-    fc-cache -fv
+        # フォントキャッシュを更新してシステムに認識させる
+        fc-cache -fv
+    else
+        echo "JetBrains Mono Nerd Font is already installed."
+    fi
 
     # gh コマンドのインストール
     if ! type gh > /dev/null 2>&1; then
