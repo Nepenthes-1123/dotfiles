@@ -98,6 +98,8 @@ format = "[$symbol($version) ]($style)"
 disabled = false
 format = "[$symbol$status]($style) "
 style = "bold red"
+sigint_symbol = "\n"
+recognize_signal_code = true
 
 [character]
 success_symbol = "[](muted_green)"
