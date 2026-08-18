@@ -33,3 +33,8 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 setopt auto_param_keys
 ## --prefix=/usr などの = 以降も補完
 setopt magic_equal_subst
+
+# herdrの補完スクリプト有効化
+if type herdr > /dev/null 2>&1; then
+    source <(herdr completion zsh)
+fi
