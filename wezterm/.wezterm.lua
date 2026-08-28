@@ -104,7 +104,8 @@ config.font = wezterm.font_with_fallback({
 })
 
 -- フォントサイズの設定
-config.font_size = 12
+config.font_size = 13
+config.line_height = 0.9
 
 -- IMEの設定
 config.use_ime = true
