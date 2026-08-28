@@ -11,4 +11,6 @@ gtodo_md.setup({
 	use_default_keymaps = true,
 	picker = "auto",
 	conceal_tags = { "id", "created", "completed_at" },
+	float_ratio = { width = 0.95, height = 0.95 },
+	kanban_ratio = { width = 1, height = 1 },
 })
