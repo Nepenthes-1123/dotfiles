@@ -64,35 +64,44 @@ function gwt-init() {
     project_name=$(basename "$repo_url" .git)
   fi
 
+  # herdr・lazygit・gwt-initで作成先を揃えるため、共有ルート配下に固定する。
+  # herdrの [worktrees].directory と同じ値にすること
+  local gwt_root="$HOME/.worktree"
+  local project_dir="$gwt_root/$project_name"
+
   # 既に同名のディレクトリが存在しないかチェック
-  if [[ -d "$project_name" ]]; then
-    echo "エラー: ディレクトリ '$project_name' は既に存在します。"
+  if [[ -d "$project_dir" ]]; then
+    echo "エラー: ディレクトリ '$project_dir' は既に存在します。"
     return 1
   fi
 
-  echo "プロジェクトディレクトリ '$project_name' を作成中..."
-  mkdir "$project_name"
-  cd "$project_name" || return 1
+  echo "プロジェクトディレクトリ '$project_dir' を作成中..."
+  mkdir -p "$project_dir" || return 1
 
   echo "ベアリポジトリを .bare にクローン中..."
-  git clone --bare "$repo_url" .bare
+  git clone --bare "$repo_url" "$project_dir/.bare"
 
   # クローンに失敗した場合は作成したディレクトリを消して終了
   if [[ $? -ne 0 ]]; then
     echo "エラー: クローンに失敗しました。"
-    cd ..
-    rm -rf "$project_name"
+    rm -rf "$project_dir"
     return 1
   fi
 
+  # herdrがembedded bareレイアウトとして認識するためのマーカー。
+  # これが無いとherdr側のリポジトリ名が".bare"になり、worktreeがプロジェクト外に作られる
+  printf 'gitdir: ./.bare\n' > "$project_dir/.git"
+
   echo "⚙️ fetch設定を修正中..."
   # .bareディレクトリに入らずに直接設定を書き換える
-  git --git-dir=.bare config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+  git --git-dir="$project_dir/.bare" config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+
+  cd "$project_dir" || return 1
 
   echo "セットアップが完了しました！"
   echo "現在のディレクトリ: $(pwd)"
   echo ""
   echo "続けて、以下のコマンドでメインのブランチを展開できます:"
-  echo "  git --git-dir=.bare worktree add main main"
+  echo "  git worktree add main main"
 }
 
