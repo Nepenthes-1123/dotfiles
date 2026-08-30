@@ -238,6 +238,24 @@ return {
 				"SHIFT"
 			),
 		},
+		-- herdr: 新規ワークツリーを作成して開く (LEADER + n -> prefix+shift+g)
+		{
+			mods = "LEADER",
+			key = "n",
+			action = conditional_action(nil, "g", "SHIFT"),
+		},
+		-- herdr: 既存ワークツリーを開く (LEADER + o -> prefix+shift+o)
+		{
+			mods = "LEADER",
+			key = "o",
+			action = conditional_action(nil, "o", "SHIFT"),
+		},
+		-- herdr: ワークツリーを削除 (LEADER + x -> prefix+shift+k)
+		{
+			mods = "LEADER",
+			key = "x",
+			action = conditional_action(nil, "k", "SHIFT"),
+		},
 		-- herdr: LEADER+数字でworkspace切替 (-> prefix+shift+1..9)
 		{ mods = "LEADER", key = "1", action = conditional_action(nil, "1", "SHIFT") },
 		{ mods = "LEADER", key = "2", action = conditional_action(nil, "2", "SHIFT") },
