@@ -141,7 +141,7 @@ resize_pane_right = ["ctrl+shift+alt+right", "ctrl+shift+alt+l"]
 [[keys.command]]
 key = "prefix+ctrl+g"
 type = "popup"
-command = "zsh -lc 'lazygit'"
+command = "zsh -lc 'cd ${HERDR_ACTIVE_PANE_CWD:-.}; lazygit'"
 width = "95%"
 height = "95%"
 
