@@ -74,8 +74,11 @@ function gwt-init() {
   mkdir "$project_name"
   cd "$project_name" || return 1
 
-  echo "ベアリポジトリを .bare にクローン中..."
-  git clone --bare "$repo_url" .bare
+  # bareリポジトリを .bare ではなく .git の実体として置く。
+  # herdrは .git が実体のbareディレクトリである場合のみ、ここをworktreeの親ワークスペースとして
+  # 認識する。.bare + `gitdir: ./.bare` ファイル方式では親として扱われない
+  echo "ベアリポジトリを .git にクローン中..."
+  git clone --bare "$repo_url" .git
 
   # クローンに失敗した場合は作成したディレクトリを消して終了
   if [[ $? -ne 0 ]]; then
@@ -85,14 +88,17 @@ function gwt-init() {
     return 1
   fi
 
+  # bare cloneはremote-trackingのrefspecを張らないため、自分で設定してfetchし直す
   echo "⚙️ fetch設定を修正中..."
-  # .bareディレクトリに入らずに直接設定を書き換える
-  git --git-dir=.bare config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+  git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+  if ! git fetch origin; then
+    echo "警告: fetchに失敗しました。リポジトリは作成済みなので、後で 'git fetch origin' を再実行してください。"
+  fi
 
   echo "セットアップが完了しました！"
   echo "現在のディレクトリ: $(pwd)"
   echo ""
   echo "続けて、以下のコマンドでメインのブランチを展開できます:"
-  echo "  git --git-dir=.bare worktree add main main"
+  echo "  git worktree add main main"
 }
 
