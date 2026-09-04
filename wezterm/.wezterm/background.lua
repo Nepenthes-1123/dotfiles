@@ -47,8 +47,8 @@ function M.setup(wezterm, config)
 			-- 3層目: 右下のアニメーション
 			table.insert(layers, {
 				source = { File = anim_path },
-				width = 480,
-				height = 640,
+				width = 360,
+				height = 480,
 				horizontal_align = "Right",
 				vertical_align = "Bottom",
 				repeat_x = "NoRepeat",
