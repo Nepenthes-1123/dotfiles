@@ -159,8 +159,10 @@ function select_gitconfig() {
 function setup(){
     script_dir="$(dirname "${BASH_SOURCE:-$0}")"
     source "${script_dir}/install.sh"
+    source "${script_dir}/fetch_assets.sh"
 
     install
+    fetch_assets
     symlink
     select_gitconfig
 

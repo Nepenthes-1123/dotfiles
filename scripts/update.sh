@@ -157,6 +157,7 @@ function update_ubuntu() {
 function update() {
     script_dir="$(dirname "${BASH_SOURCE:-$0}")"
     source "${script_dir}/check_os.sh"
+    source "${script_dir}/fetch_assets.sh"
 
     OS=$(check_os)
 
@@ -170,6 +171,8 @@ function update() {
         echo "Unsupported OS for package update: $OS"
         return 1
     fi
+
+    fetch_assets
 
     echo "Update process completed!"
     return 0

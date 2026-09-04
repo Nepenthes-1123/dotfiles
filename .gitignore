@@ -17,6 +17,7 @@
 !scripts/setup.sh
 !scripts/add_symlink.sh
 !scripts/check_os.sh
+!scripts/fetch_assets.sh
 !scripts/update.sh
 !scripts/props/symlink_win_list.conf
 !scripts/props/symlink_mac_list.conf
@@ -44,6 +45,9 @@
 !wezterm/.wezterm/background.lua
 !wezterm/.wezterm/kuyozakura.png
 !wezterm/.wezterm/background_image.png
+
+# 素材は非公開リポジトリ (dotfiles-assets) で管理するため追跡しない
+wezterm/.wezterm/assets/
 
 # vscode セッティング
 !vscode/settings.json
