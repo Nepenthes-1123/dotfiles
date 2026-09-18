@@ -40,24 +40,12 @@ return {
 			organizeImports = true,
 		},
 	},
-	-- ruff はフォーマットと診断を提供するが型チェックは pyright に任せる
-	-- 保存時に organizeImports (source.organizeImports) を実行
-	on_attach = function(_, bufnr)
-		-- ruff 経由で保存時に import 整理を行う code action
-		vim.api.nvim_create_autocmd("BufWritePre", {
-			group = vim.api.nvim_create_augroup("ruff-organize-imports-" .. bufnr, { clear = true }),
-			buffer = bufnr,
-			callback = function()
-				vim.lsp.buf.code_action({
-					context = { only = { "source.organizeImports" }, diagnostics = {} },
-					apply = true,
-					-- ruff のみに絞る
-					filter = function(action)
-						return action.kind == "source.organizeImports"
-					end,
-				})
-			end,
-		})
-	end,
+	-- ruff はフォーマットと診断を提供するが型チェックは pyright に任せる。
+	--
+	-- 保存時の import 整列は conform の ruff_organize_imports (CLI) が担う。
+	-- ここで BufWritePre + code_action({ apply = true }) を張らないこと:
+	-- code_action は非同期なので書き込みまでに完了せず、編集が書き込み後に
+	-- 適用されてバッファが再び modified になる。augroup をバッファごとに
+	-- 作る実装だったため増え続ける問題もあった。
 	capabilities = capabilities,
 }
