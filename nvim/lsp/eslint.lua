@@ -3,8 +3,8 @@
 -- VSCode: dbaeumer.vscode-eslint
 -- =============================================================================
 -- 診断に加えて textDocument/formatting も提供する (settings.format = true)。
--- conform.nvim の lsp_format = "prefer" 経由で保存時整形に使うため、
--- LspEslintFixAll 相当のコマンドは定義していない (vim.lsp.buf.format で足りる)。
+-- conform.nvim 経由で保存時整形に使うため、LspEslintFixAll 相当のコマンドは
+-- 定義していない (整形の入口は conform に一本化している)。
 -- =============================================================================
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 local ok, blink = pcall(require, "blink.cmp")
@@ -32,6 +32,15 @@ return {
 	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
 	workspace_required = true,
 	capabilities = capabilities,
+
+	-- vscode-eslint は textDocument/formatting を処理できるが、capability として申告しない。
+	-- VSCode では拡張 (クライアント側) がフォーマッタを登録する設計のため、サーバが
+	-- 申告する必要がないから。Neovim では誰も登録しないので自分で立てる。
+	-- これが無いと conform の get_format_clients() が候補に入れられず、整形が走らない。
+	on_attach = function(client)
+		client.server_capabilities.documentFormattingProvider = true
+		client.server_capabilities.documentRangeFormattingProvider = true
+	end,
 
 	-- ESLint 設定が存在するプロジェクトでのみ起動する。
 	-- root は node_modules の解決基点となるロックファイルの位置に合わせる。

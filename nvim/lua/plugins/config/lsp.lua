@@ -68,8 +68,8 @@ local function has_config(bufnr, tool)
 end
 
 -- ESLint 設定があれば ESLint LSP に、無ければ prettier に整形させる。
--- ESLint LSP は textDocument/formatting を動的登録するため attach 直後は使えないが、
--- その間は整形が走らないだけなのでフォールバックは置かない。
+-- ESLint LSP は capability を申告しないため lsp/eslint.lua の on_attach で立てている。
+-- それが無いと整形は一時的にではなく恒久的に走らないので、あちらを消さないこと。
 local function web_formatters(bufnr)
 	if has_config(bufnr, "eslint") then
 		return { lsp_format = "prefer" }
