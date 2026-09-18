@@ -78,12 +78,16 @@ map("n", "]d", function()
 end, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
 
 -- フォーマット (VSCode: formatOnSave は autocmds.lua, 手動は Alt+Shift+F)
+-- 整形の入口は conform に一本化する。vim.lsp.buf.format() を直接呼ぶと
+-- format_on_save の lsp_format = "fallback" を経由せず、保存時と手動で
+-- 別のエンジンが走る (例: lua は保存時 stylua / 手動 lua_ls でインデントが食い違う)。
 map("n", "<Leader>cf", function()
-	vim.lsp.buf.format({ async = true })
+	require("conform").format({ async = true, lsp_format = "fallback" })
 end, vim.tbl_extend("force", opts, { desc = "Format buffer" }))
 
+-- conform は visual モードなら選択範囲を range として自動で拾う
 map("v", "<Leader>cf", function()
-	vim.lsp.buf.format({ async = true })
+	require("conform").format({ async = true, lsp_format = "fallback" })
 end, vim.tbl_extend("force", opts, { desc = "Format selection" }))
 
 -- ── ファジーファインダー (blink) ─────────────────────────────────────────
