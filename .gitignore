@@ -97,6 +97,7 @@ wezterm/.wezterm/assets/
 !nvim/lsp/clangd.lua
 !nvim/lsp/docker_compose_language_service.lua
 !nvim/lsp/dockerls.lua
+!nvim/lsp/eslint.lua
 !nvim/lsp/jsonls.lua
 !nvim/lsp/lua_ls.lua
 !nvim/lsp/marksman.lua
