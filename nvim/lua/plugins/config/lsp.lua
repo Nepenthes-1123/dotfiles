@@ -46,7 +46,6 @@ setup("mason-tool-installer", function(m)
 			"ruff",
 			"stylua",
 			"prettier",
-			"clang-format",
 			"markdownlint",
 		},
 		auto_update = false,
@@ -81,7 +80,11 @@ end
 setup("conform", function(m)
 	m.setup({
 		formatters_by_ft = {
-			python = { "ruff_format", "ruff_organize_imports" },
+			-- ruff format 相当は ruff LSP が textDocument/formatting で返すので CLI は不要。
+			-- ただし import 整列は formatting に含まれない (isort 相当は別機能) ため
+			-- ruff_organize_imports だけ CLI に残し、lsp_format = "last" で
+			-- 「CLI で import 整列 → LSP で整形」の順に流す。
+			python = { "ruff_organize_imports", lsp_format = "last" },
 			javascript = web_formatters,
 			typescript = web_formatters,
 			javascriptreact = web_formatters,
@@ -90,15 +93,16 @@ setup("conform", function(m)
 			json = { "prettier" },
 			jsonc = { "prettier" },
 			markdown = { "markdownlint" },
-			c = { "clang_format" },
-			cpp = { "clang_format" },
+			-- c / cpp は clangd が .clang-format を読んで整形するため CLI を置かない。
+			-- 設定ファイルが無いプロジェクトは lsp/clangd.lua の --fallback-style=Google に従う。
 			lua = { "stylua" },
 		},
-		formatters = {
-			clang_format = { prepend_args = { "--style={BasedOnStyle: Google, IndentWidth: 4}" } },
-		},
+		-- lsp_format は default_format_opts に置く。format_on_save に直接書くと
+		-- conform の merge 順 (呼び出し時 opts > filetype 設定) により
+		-- formatters_by_ft 側の lsp_format が上書きされて効かなくなるため。
+		default_format_opts = { lsp_format = "fallback" },
 		-- eslint_d はデーモン未起動時の初回のみ 3〜4 秒かかるため余裕を持たせる
-		format_on_save = { timeout_ms = 5000, lsp_format = "fallback" },
+		format_on_save = { timeout_ms = 5000 },
 	})
 end)
 
