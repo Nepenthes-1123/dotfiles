@@ -102,12 +102,28 @@ setup("conform", function(m)
 			markdown = { "markdownlint" },
 			-- yaml / html は LSP も整形できるが、yamlls は .prettierrc を読まず
 			-- html LSP は js-beautify 系で prettier と別実装のため CLI に寄せる。
+			-- yaml.docker-compose は conform が "." で分割して yaml に落ちる。
 			yaml = { "prettier" },
 			html = { "prettier" },
 			-- sh / toml は LSP (bashls / taplo) が正規 CLI を内部で呼ぶため CLI を置かない。
 			-- c / cpp は clangd が .clang-format を読んで整形するため CLI を置かない。
 			-- 設定ファイルが無いプロジェクトは lsp/clangd.lua の --fallback-style=Google に従う。
 			lua = { "stylua" },
+			-- zsh は LSP が存在しないため整形も診断も CLI に頼る。
+			-- shfmt の方言自動判定は shebang 依存で .zsh.d/*.zsh には shebang が無いため、
+			-- -ln zsh を明示した専用定義を使う (下の formatters を参照)。
+			zsh = { "shfmt_zsh" },
+		},
+		formatters = {
+			-- sh は bashls 経由なので shiftwidth が自動で渡るが、conform は渡さない。
+			-- bashls と挙動を揃えるためバッファの shiftwidth を -i に反映する。
+			shfmt_zsh = {
+				command = "shfmt",
+				args = function(_, ctx)
+					return { "-ln", "zsh", "-ci", "-bn", "-i", tostring(vim.bo[ctx.buf].shiftwidth) }
+				end,
+				stdin = true,
+			},
 		},
 		-- lsp_format は default_format_opts に置く。format_on_save に直接書くと
 		-- conform の merge 順 (呼び出し時 opts > filetype 設定) により
@@ -120,10 +136,15 @@ end)
 
 -- ── nvim-lint ─────────────────────────────────────────────────────────────────
 setup("lint", function(lint)
-	-- python は ruff LSP、javascript / typescript / vue は ESLint LSP が診断を出すため
-	-- ここに残すのは LSP の無い markdownlint だけ
+	-- python は ruff LSP、javascript / typescript / vue は ESLint LSP が、
+	-- sh は bashls が内部で呼ぶ shellcheck が診断を出すため、ここに置くのは
+	-- 対応する LSP が無いものだけ。
+	--
+	-- zsh は同梱リンタが `zsh --no-exec` で構文チェックする (スクリプトは実行されない)。
+	-- shellcheck は zsh 非対応なので、検出できるのは構文エラーのみ。
 	lint.linters_by_ft = {
 		markdown = { "markdownlint" },
+		zsh = { "zsh" },
 	}
 	vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
 		group = vim.api.nvim_create_augroup("nvim-lint", { clear = true }),
