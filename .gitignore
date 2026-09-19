@@ -106,6 +106,10 @@ wezterm/.wezterm/assets/
 !nvim/lsp/texlab.lua
 !nvim/lsp/vtsls.lua
 !nvim/lsp/vue_ls.lua
+!nvim/lsp/bashls.lua
+!nvim/lsp/taplo.lua
+!nvim/lsp/yamlls.lua
+!nvim/lsp/html.lua
 !nvim/after/ftplugin/dockerfile.lua
 !nvim/after/ftplugin/json.lua
 !nvim/after/ftplugin/markdown.lua

@@ -26,10 +26,14 @@ au("BufWritePre", {
 
 -- ── 言語別インデント設定 ─────────────────────────────────────────────────────
 -- VSCode: "[tex]": { "editor.tabSize": 2 }, "[latex]": { "editor.tabSize": 2 }
+--
+-- sh / bash も 2 にする。bash-language-server は shfmt 固有のインデント設定を
+-- 持たず、textDocument/formatting の tabSize (= バッファの shiftwidth) に従うため、
+-- ここを変えると保存時整形の結果もそのまま 2 スペースになる。
 local indent_group = aug("FiletypeIndent", { clear = true })
 au("FileType", {
 	group = indent_group,
-	pattern = { "latex", "bib", "plaintex", "jsonc", "yaml", "html", "css" },
+	pattern = { "latex", "bib", "plaintex", "jsonc", "yaml", "html", "css", "sh", "bash" },
 	callback = function()
 		vim.bo.tabstop = 2
 		vim.bo.shiftwidth = 2

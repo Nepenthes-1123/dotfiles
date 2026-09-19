@@ -34,6 +34,10 @@ setup("mason-lspconfig", function(m)
 			"jsonls",
 			"dockerls",
 			"docker_compose_language_service",
+			"bashls",
+			"taplo",
+			"yamlls",
+			"html",
 		},
 		automatic_enable = true,
 	})
@@ -47,6 +51,9 @@ setup("mason-tool-installer", function(m)
 			"stylua",
 			"prettier",
 			"markdownlint",
+			-- bashls が整形 / lint に使う外部バイナリ。サーバ本体には同梱されない。
+			"shfmt",
+			"shellcheck",
 		},
 		auto_update = false,
 		run_on_start = true,
@@ -93,6 +100,11 @@ setup("conform", function(m)
 			json = { "prettier" },
 			jsonc = { "prettier" },
 			markdown = { "markdownlint" },
+			-- yaml / html は LSP も整形できるが、yamlls は .prettierrc を読まず
+			-- html LSP は js-beautify 系で prettier と別実装のため CLI に寄せる。
+			yaml = { "prettier" },
+			html = { "prettier" },
+			-- sh / toml は LSP (bashls / taplo) が正規 CLI を内部で呼ぶため CLI を置かない。
 			-- c / cpp は clangd が .clang-format を読んで整形するため CLI を置かない。
 			-- 設定ファイルが無いプロジェクトは lsp/clangd.lua の --fallback-style=Google に従う。
 			lua = { "stylua" },
