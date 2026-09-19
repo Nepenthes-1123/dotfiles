@@ -6,6 +6,25 @@
 local aug = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
 
+-- ── filetype 判定の追加 ───────────────────────────────────────────────────────
+-- Neovim は docker-compose.yml を素の "yaml" と判定するため、compose 専用の
+-- LSP (lsp/docker_compose_language_service.lua) が要求する複合 filetype に
+-- 振り直す。複合 filetype なので yaml 用の ftplugin や conform の yaml 設定も
+-- そのまま効く (conform は filetype を "." で分割して照合する)。
+vim.filetype.add({
+	filename = {
+		["docker-compose.yml"] = "yaml.docker-compose",
+		["docker-compose.yaml"] = "yaml.docker-compose",
+		["compose.yml"] = "yaml.docker-compose",
+		["compose.yaml"] = "yaml.docker-compose",
+	},
+	pattern = {
+		-- docker-compose.override.yml / compose.prod.yaml のような派生も拾う
+		[".*/docker%-compose%..*%.ya?ml"] = "yaml.docker-compose",
+		[".*/compose%..*%.ya?ml"] = "yaml.docker-compose",
+	},
+})
+
 -- ── 末尾空白の自動削除 (trimTrailingWhitespace) ───────────────────────────────
 -- VSCode: "files.trimTrailingWhitespace": true
 -- markdown は除外 (VSCode: "[markdown]": { "files.trimTrailingWhitespace": false })
