@@ -34,6 +34,7 @@
 !zsh/.zsh.d/completion.zsh
 !zsh/.zsh.d/prompt.zsh
 !zsh/.zsh.d/wezterm.zsh
+!zsh/.zsh.d/mise.zsh
 
 # wezterm セッティング
 !wezterm/WEZTERM_SETUP.md
@@ -122,3 +123,7 @@ wezterm/.wezterm/assets/
 
 # starship セッティング
 !starship/starship.toml
+
+# mise セッティング
+!mise/config.toml
+!mise/mise.lock

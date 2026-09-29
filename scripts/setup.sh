@@ -164,6 +164,8 @@ function setup(){
     install
     fetch_assets
     symlink
+    # mise の設定 (~/.config/mise) はリンク後でないと読めないため symlink の後に実行する
+    install_mise_tools
     select_gitconfig
 
     return 0

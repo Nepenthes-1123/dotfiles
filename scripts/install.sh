@@ -17,6 +17,16 @@ function install_win() {
             echo "$pkg is already installed."
         fi
     done
+
+    # winget でインストールしたコマンドは新しいシェルを開くまで PATH に反映されないため、
+    # 後続の mise install 用に winget のコマンドリンク置き場をこのプロセスの PATH に通す
+    if [[ -n "${LOCALAPPDATA-}" ]]; then
+        local winget_links
+        winget_links="$(cygpath -u "${LOCALAPPDATA}")/Microsoft/WinGet/Links"
+        if [[ -d "$winget_links" ]]; then
+            export PATH="${winget_links}:${PATH}"
+        fi
+    fi
 }
 
 function install_mac() {
@@ -103,21 +113,15 @@ Signed-By: /usr/share/keyrings/microsoft.gpg" | sudo tee /etc/apt/sources.list.d
         echo "JetBrains Mono Nerd Font is already installed."
     fi
 
-    # gh コマンドのインストール
-    if ! type gh > /dev/null 2>&1; then
-        echo "Setting up GitHub CLI repository..."
-        type -p curl >/dev/null || sudo apt install curl -y
-        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-        && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-        && sudo apt update || echo "Warning: Failed to set up GitHub CLI repository."
-    fi
-
-    # starship
-    # apt公式リポジトリにはUbuntu 25.04未満では存在しないため公式インストールスクリプトを使用
-    if ! type starship > /dev/null 2>&1; then
-        echo "Installing starship..."
-        curl -sS https://starship.rs/install.sh | sh -s -- -y || echo "Warning: Failed to install starship."
+    # mise
+    # Ubuntu 公式リポジトリには無いため、mise 公式の apt リポジトリを追加する
+    if ! type mise > /dev/null 2>&1; then
+        echo "Setting up mise repository..."
+        type -p curl > /dev/null || sudo apt install curl -y
+        sudo install -dm 755 /etc/apt/keyrings
+        curl -fsSL https://mise.jdx.dev/gpg-key.pub | sudo tee /etc/apt/keyrings/mise-archive-keyring.asc > /dev/null || echo "Warning: Failed to add mise GPG key."
+        echo 'deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.asc] https://mise.jdx.dev/deb stable main' | sudo tee /etc/apt/sources.list.d/mise.list
+        sudo apt update || echo "Warning: apt update failed after adding mise repo."
     fi
 
     for pkg in "${ubuntu_packages[@]}"; do
@@ -149,19 +153,15 @@ function install_zsh_plugins() {
     done
 }
 
-function install_fzf() {
-    if ! type fzf > /dev/null 2>&1; then
-        if [[ ! -d "${HOME}/.fzf" ]]; then
-            echo "Cloning fzf..."
-            git clone --depth 1 https://github.com/junegunn/fzf.git "${HOME}/.fzf" || { echo "Warning: Failed to clone fzf."; return 0; }
-        else
-            echo "Directory already exists: ${HOME}/.fzf"
-        fi
-        if [[ -d "${HOME}/.fzf" ]]; then
-            echo "Installing fzf..."
-            "${HOME}/.fzf/install" --key-bindings --completion --no-update-rc || echo "Warning: fzf installation script failed."
-        fi
+function install_mise_tools() {
+    # ~/.config/mise (mise/config.toml) がリンクされた後に実行する
+    if ! command -v mise > /dev/null 2>&1; then
+        echo "Warning: mise is not available in PATH. Open a new shell and run 'mise install' manually."
+        return 0
     fi
+
+    echo "Installing tools via mise..."
+    mise install || echo "Warning: Failed to install some tools via mise. Please run 'mise install' manually."
 }
 
 function install() {
@@ -187,7 +187,6 @@ function install() {
         return 1
     fi
 
-    install_fzf
     install_zsh_plugins
 
     return 0

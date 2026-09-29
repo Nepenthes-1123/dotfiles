@@ -26,18 +26,18 @@ function update_win() {
         fi
     done
 
-    # fzf
-    echo "--- Updating fzf ---"
-    if [[ -d "${HOME}/.fzf" ]]; then
-        echo "Updating fzf..."
-        git -C "${HOME}/.fzf" pull
-        "${HOME}/.fzf/install" --key-bindings --completion --no-update-rc
+    # mise で管理している CLI ツール (mise/config.toml)
+    # 更新すると mise/mise.lock が書き換わるので、差分をコミットして他の環境にも反映する
+    echo "--- Updating mise tools ---"
+    if command -v mise > /dev/null 2>&1; then
+        mise upgrade || echo "Warning: Failed to upgrade some tools via mise."
     fi
 
-    # Neovim plugins
+    # Neovim plugins (vim.pack)
+    # force = true で確認バッファを出さずに更新し、nvim-pack-lock.json を書き換える
     echo "--- Updating Neovim plugins ---"
     if command -v nvim > /dev/null 2>&1; then
-        nvim --headless "+Lazy! sync" +qa
+        nvim --headless "+lua vim.pack.update(nil, { force = true })" +qa
     fi
 
     # VSCode extensions
@@ -79,18 +79,18 @@ function update_mac() {
         fi
     done
 
-    # fzf
-    echo "--- Updating fzf ---"
-    if [[ -d "${HOME}/.fzf" ]]; then
-        echo "Updating fzf..."
-        git -C "${HOME}/.fzf" pull
-        "${HOME}/.fzf/install" --key-bindings --completion --no-update-rc
+    # mise で管理している CLI ツール (mise/config.toml)
+    # 更新すると mise/mise.lock が書き換わるので、差分をコミットして他の環境にも反映する
+    echo "--- Updating mise tools ---"
+    if command -v mise > /dev/null 2>&1; then
+        mise upgrade || echo "Warning: Failed to upgrade some tools via mise."
     fi
 
-    # Neovim plugins
+    # Neovim plugins (vim.pack)
+    # force = true で確認バッファを出さずに更新し、nvim-pack-lock.json を書き換える
     echo "--- Updating Neovim plugins ---"
     if command -v nvim > /dev/null 2>&1; then
-        nvim --headless "+Lazy! sync" +qa
+        nvim --headless "+lua vim.pack.update(nil, { force = true })" +qa
     fi
 
     # VSCode extensions
@@ -129,18 +129,18 @@ function update_ubuntu() {
         fi
     done
 
-    # fzf
-    echo "--- Updating fzf ---"
-    if [[ -d "${HOME}/.fzf" ]]; then
-        echo "Updating fzf..."
-        git -C "${HOME}/.fzf" pull
-        "${HOME}/.fzf/install" --key-bindings --completion --no-update-rc
+    # mise で管理している CLI ツール (mise/config.toml)
+    # 更新すると mise/mise.lock が書き換わるので、差分をコミットして他の環境にも反映する
+    echo "--- Updating mise tools ---"
+    if command -v mise > /dev/null 2>&1; then
+        mise upgrade || echo "Warning: Failed to upgrade some tools via mise."
     fi
 
-    # Neovim plugins
+    # Neovim plugins (vim.pack)
+    # force = true で確認バッファを出さずに更新し、nvim-pack-lock.json を書き換える
     echo "--- Updating Neovim plugins ---"
     if command -v nvim > /dev/null 2>&1; then
-        nvim --headless "+Lazy! sync" +qa
+        nvim --headless "+lua vim.pack.update(nil, { force = true })" +qa
     fi
 
     # VSCode extensions
