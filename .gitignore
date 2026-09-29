@@ -10,20 +10,10 @@
 ### not ignore ###
 !README.md
 !.gitignore
+!.shellcheckrc
 
 # scripts セッティング
-!scripts/install.sh
-!scripts/install_vscode_exts.sh
-!scripts/setup.sh
-!scripts/add_symlink.sh
-!scripts/check_os.sh
-!scripts/fetch_assets.sh
-!scripts/update.sh
-!scripts/props/symlink_win_list.conf
-!scripts/props/symlink_mac_list.conf
-!scripts/props/symlink_ubuntu_list.conf
-!scripts/props/zsh_plugins.conf
-!scripts/props/packages.conf
+!scripts/**
 
 # zsh セッティング
 !zsh/.zshrc
@@ -67,6 +57,7 @@ wezterm/.wezterm/assets/
 
 # github セッティング
 !.github/workflows/normalize-eol.yml
+!.github/workflows/scripts.yml
 
 # neovim セッティング
 !nvim/init.lua

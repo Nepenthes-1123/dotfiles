@@ -102,17 +102,17 @@ dir C:\msys64\usr\bin\zsh.exe
 
 ### 取得方法
 
-取得処理は `scripts/fetch_assets.sh` に切り出してあり、次の2つから呼ばれます。
+取得処理は `scripts/lib/tools.sh` の `assets_fetch` にまとめてあり、次の2つから呼ばれます。
 
-| スクリプト | 挙動 |
+| コマンド | 挙動 |
 | --- | --- |
-| `scripts/setup.sh` | 初回セットアップ時に clone |
-| `scripts/update.sh` | 更新時に `git pull --ff-only` |
+| `scripts/dot.sh setup` | 初回セットアップ時に clone |
+| `scripts/dot.sh update` | 更新時に `git pull --ff-only` |
 
 未取得なら clone、取得済みなら pull と、どちらの経路でも同じ関数が処理します。単独実行も可能です。
 
 ```bash
-bash scripts/fetch_assets.sh
+scripts/dot.sh assets
 ```
 
 手動で取得する場合は次のとおりです。
@@ -125,7 +125,7 @@ git clone git@github.com:Nepenthes-1123/dotfiles-assets.git wezterm/.wezterm/ass
 
 `background.lua` はファイルの存在を確認し、**素材が無ければ3層目を省略します**。1層目と2層目は通常どおり表示され、他の設定にも影響しません。
 
-非公開リポジトリへアクセスできない環境（社用端末など）では、この状態で問題なく動作します。`setup.sh` も clone 失敗を握りつぶして処理を継続します。
+非公開リポジトリへアクセスできない環境（社用端末など）では、この状態で問題なく動作します。`scripts/dot.sh setup` も clone 失敗を握りつぶして処理を継続します。
 
 ### 素材の再生成
 

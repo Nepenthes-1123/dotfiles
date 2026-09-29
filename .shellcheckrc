@@ -1,0 +1,2 @@
+# scripts/dot.sh が source する scripts/lib/*.sh も解析対象にする
+external-sources=true

@@ -1,0 +1,119 @@
+# shellcheck shell=bash
+# パッケージマネージャー以外で入れるもの: mise のツール・zsh プラグイン・Neovim プラグイン・
+# VSCode 拡張・非公開素材・git のユーザー設定
+
+# --- mise (mise/config.toml, ~/.config/mise にリンク済みであること) ---
+
+mise_install() {
+  if ! has mise; then
+    warn "mise が見つかりません。新しいシェルを開いて 'mise install' を実行してください"
+    return 0
+  fi
+  mise install || warn "mise でのインストールに一部失敗しました。'mise install' を再実行してください"
+}
+
+mise_upgrade() {
+  has mise || return 0
+  # 更新すると mise/mise.lock が書き換わるので、差分をコミットして他の環境にも反映する
+  mise upgrade || warn "mise でのツール更新に一部失敗しました"
+}
+
+# --- zsh プラグイン (scripts/zsh_plugins.conf) ---
+
+zsh_plugins_sync() {
+  local line name url ref dir
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    line="${line%%#*}"
+    [[ -n "$(trim "$line")" ]] || continue
+    IFS='|' read -r name url ref <<<"$line"
+    name="$(trim "$name")"
+    url="$(trim "$url")"
+    ref="$(trim "$ref")"
+    dir="${HOME}/.zsh/${name}"
+
+    if [[ ! -d "${dir}/.git" ]]; then
+      git clone --quiet "$url" "$dir" || {
+        warn "${name} の clone に失敗しました"
+        continue
+      }
+    fi
+    # 指定のタグ・コミットが手元に無ければ取得する
+    git -C "$dir" rev-parse -q --verify "${ref}^{commit}" >/dev/null ||
+      git -C "$dir" fetch --quiet --tags origin ||
+      warn "${name} の fetch に失敗しました"
+    if git -C "$dir" -c advice.detachedHead=false checkout --quiet "$ref"; then
+      info "${name} @ ${ref}"
+    else
+      warn "${name} を ${ref} に切り替えられませんでした"
+    fi
+  done <"${SCRIPTS_DIR}/zsh_plugins.conf"
+}
+
+# --- Neovim プラグイン (vim.pack) ---
+
+nvim_plugins_update() {
+  has nvim || return 0
+  # force = true で確認バッファを出さずに更新し、nvim-pack-lock.json を書き換える
+  nvim --headless "+lua vim.pack.update(nil, { force = true })" +qa ||
+    warn "Neovim プラグインの更新に失敗しました"
+}
+
+# --- VSCode 拡張 (vscode/extensions.txt) ---
+
+vscode_extensions_install() {
+  if ! has code; then
+    warn "code コマンドが見つからないため VSCode 拡張のインストールを省略します"
+    return 0
+  fi
+  local ext
+  while IFS= read -r ext || [[ -n "$ext" ]]; do
+    ext="$(trim "$ext")"
+    [[ -n "$ext" ]] || continue
+    code --install-extension "$ext" --force >/dev/null || warn "${ext} のインストールに失敗しました"
+  done <"${DOT_DIR}/vscode/extensions.txt"
+}
+
+# --- 非公開素材 (wezterm の背景アニメーション) ---
+
+assets_fetch() {
+  # 素材は配布元のガイドラインが再配布を想定していないため、公開リポジトリである
+  # dotfiles 本体には含めず非公開リポジトリで管理している。
+  # 取得できない環境では背景アニメーションが省略されるだけで、他の設定には影響しない。
+  local dir="${DOT_DIR}/wezterm/.wezterm/assets"
+  local url="git@github.com:Nepenthes-1123/dotfiles-assets.git"
+  if [[ -d "${dir}/.git" ]]; then
+    git -C "$dir" pull --quiet --ff-only || warn "素材の更新に失敗しました"
+  elif ! git clone --quiet "$url" "$dir" 2>/dev/null; then
+    info "素材を取得できないため、背景アニメーションは省略されます"
+  fi
+}
+
+# --- git のユーザー設定 (~/.gitconfig.local。git/.gitconfig から include される) ---
+
+gitconfig_local_setup() {
+  local dst="${HOME}/.gitconfig.local"
+  if [[ -e "$dst" || -L "$dst" ]]; then
+    info "exists   ${dst}"
+    return 0
+  fi
+  local choice name email
+  echo "git のユーザー設定を選んでください"
+  echo "  1) 個人用 (git/.gitconfig.private をリンク)"
+  echo "  2) 名前とメールアドレスを入力して作成"
+  echo "  3) スキップ"
+  # 標準入力が無い (非対話) 場合はスキップ扱いにする
+  read -r -p "> " choice || choice=3
+  case "$choice" in
+  1)
+    ln -s "${DOT_DIR}/git/.gitconfig.private" "$dst"
+    info "linked   ${dst}"
+    ;;
+  2)
+    read -r -p "user.name: " name
+    read -r -p "user.email: " email
+    printf '[user]\n\tname = %s\n\temail = %s\n' "$name" "$email" >"$dst"
+    info "created  ${dst}"
+    ;;
+  *) info "skip     ${dst}" ;;
+  esac
+}
