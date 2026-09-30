@@ -18,7 +18,7 @@
 #           続けて WSL の中で bootstrap.sh (zsh・mise・CLI ツールとその設定) を実行する
 #
 # 環境変数
-#   DOTFILES_BRANCH     clone するブランチ (既定: main)
+#   DOTFILES_BRANCH     使うブランチ (既定: main)。指定すると、既存の clone もこのブランチに切り替える
 #   DOTFILES_WSL_DISTRO 使う WSL のディストリビューション (既定: Ubuntu)
 
 $ErrorActionPreference = 'Stop'
@@ -40,13 +40,27 @@ function Get-WslDistros {
     return @($out | ForEach-Object { ($_ -replace "`0", '').Trim() } | Where-Object { $_ })
 }
 
+# ディストリビューションの既定ユーザー。初回起動でユーザーを作成していなければ root になる
+function Get-WslDefaultUser([string]$Distro) {
+    # Windows PowerShell 5.1 では Stop のまま外部コマンドの標準エラーを捨てると例外になるため Continue にする
+    $ErrorActionPreference = 'Continue'
+    $out = & wsl.exe -d $Distro -e whoami 2>$null
+    if ($LASTEXITCODE -ne 0 -or -not $out) {
+        return ''
+    }
+    return (($out | Select-Object -First 1) -replace "`0", '').Trim()
+}
+
 function Test-Administrator {
     $identity = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
     return $identity.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
 function Invoke-Bootstrap {
-    $branch = if ($env:DOTFILES_BRANCH) { $env:DOTFILES_BRANCH } else { 'main' }
+    # DOTFILES_BRANCH を指定したときだけ、既存の clone のブランチも切り替える
+    # (未指定なら既存の clone は今のブランチのまま更新する)
+    $branchSpecified = [bool]$env:DOTFILES_BRANCH
+    $branch = if ($branchSpecified) { $env:DOTFILES_BRANCH } else { 'main' }
     $distro = if ($env:DOTFILES_WSL_DISTRO) { $env:DOTFILES_WSL_DISTRO } else { 'Ubuntu' }
     $repoUrl = 'https://github.com/Nepenthes-1123/dotfiles.git'
     $rawUrl = "https://raw.githubusercontent.com/Nepenthes-1123/dotfiles/$branch/bootstrap.sh"
@@ -79,19 +93,43 @@ function Invoke-Bootstrap {
     }
 
     # 3. WSL とディストリビューション
-    # --no-launch で入れたディストリビューションは、初回起動でユーザーを作成するまで一覧に出ない
     if ((Get-WslDistros) -notcontains $distro) {
         Write-Step "WSL と $distro をインストール"
         wsl.exe --install -d $distro --no-launch
+        if ($LASTEXITCODE -ne 0) {
+            throw "wsl --install が終了コード $LASTEXITCODE で失敗しました。上の出力を確認してください"
+        }
         Write-Host ''
         Write-Host '次の手順のあと、このスクリプトをもう一度実行してください:' -ForegroundColor Yellow
         Write-Host '  1. 再起動する (WSL を初めて入れた場合)'
         Write-Host "  2. スタートメニューから $distro を開き、ユーザー名とパスワードを作成する"
         return
     }
+    # WSL のバージョンによっては --no-launch の直後から一覧に出るため、一覧だけでなく
+    # ユーザーが作成済みか (既定ユーザーが root でないか) も確認する。
+    # root のまま進むと、WSL の中の setup が /root に対して行われてしまう
+    $wslUser = Get-WslDefaultUser $distro
+    if (-not $wslUser -or $wslUser -eq 'root') {
+        Write-Host ''
+        Write-Host "$distro のユーザーがまだ作成されていません (既定ユーザー: $(if ($wslUser) { $wslUser } else { '不明' }))" -ForegroundColor Yellow
+        Write-Host "スタートメニューから $distro を開くか、wsl -d $distro を実行してユーザー名とパスワードを作成し、"
+        Write-Host 'このスクリプトをもう一度実行してください'
+        return
+    }
 
     # 4. dotfiles (Windows 側)
     if (Test-Path (Join-Path $dotfilesDir '.git')) {
+        $current = & $gitExe -C $dotfilesDir rev-parse --abbrev-ref HEAD
+        if ($branchSpecified -and $current -ne $branch) {
+            Write-Step "ブランチを切り替え: $current -> $branch"
+            & $gitExe -C $dotfilesDir fetch origin $branch
+            if ($LASTEXITCODE -eq 0) {
+                & $gitExe -C $dotfilesDir switch $branch
+            }
+            if ($LASTEXITCODE -ne 0) {
+                throw "$branch に切り替えられませんでした。$dotfilesDir の未コミットの変更などを確認してください"
+            }
+        }
         Write-Step "既存の dotfiles を更新: $dotfilesDir"
         & $gitExe -C $dotfilesDir pull --ff-only
     } else {
@@ -123,7 +161,9 @@ function Invoke-Bootstrap {
     Write-Step "WSL ($distro) の中で bootstrap.sh を実行"
     # setup は対話で入力を受け付けるため、パイプで渡さずファイルに保存してから実行する。
     # -e は既定のシェルを経由せずに実行する (-- は PowerShell が自分の記号として取り除くことがあるため使わない)
-    wsl.exe -d $distro -e bash -c "curl -fsSL '$rawUrl' -o /tmp/dotfiles-bootstrap.sh && DOTFILES_BRANCH='$branch' bash /tmp/dotfiles-bootstrap.sh"
+    # DOTFILES_BRANCH は指定されたときだけ渡す (渡すと WSL の中の既存の clone もそのブランチに切り替わる)
+    $branchEnv = if ($branchSpecified) { "DOTFILES_BRANCH='$branch' " } else { '' }
+    wsl.exe -d $distro -e bash -c "curl -fsSL '$rawUrl' -o /tmp/dotfiles-bootstrap.sh && ${branchEnv}bash /tmp/dotfiles-bootstrap.sh"
     if ($LASTEXITCODE -ne 0) {
         throw 'WSL の中の setup に失敗しました'
     }

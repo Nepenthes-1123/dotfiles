@@ -86,9 +86,13 @@ assets_fetch() {
   # 取得できない環境では背景アニメーションが省略されるだけで、他の設定には影響しない。
   local dir="${DOT_DIR}/wezterm/.wezterm/assets"
   local url="git@github.com:Nepenthes-1123/dotfiles-assets.git"
+  # 新しい PC では ~/.ssh/known_hosts が空で、ssh がホスト鍵の確認を求めて入力待ちになる。
+  # その確認は下の 2>/dev/null で見えないため、画面に何も出ないまま止まってしまう。
+  # 未知のホスト鍵は確認なしで登録し (accept-new)、鍵が無いなどで認証できなければ待たずに失敗させる (BatchMode)
+  local ssh_cmd="ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10"
   if [[ -d "${dir}/.git" ]]; then
-    git -C "$dir" pull --quiet --ff-only || warn "素材の更新に失敗しました"
-  elif ! git clone --quiet "$url" "$dir" 2>/dev/null; then
+    GIT_SSH_COMMAND="$ssh_cmd" git -C "$dir" pull --quiet --ff-only || warn "素材の更新に失敗しました"
+  elif ! GIT_SSH_COMMAND="$ssh_cmd" git clone --quiet "$url" "$dir" 2>/dev/null; then
     info "素材を取得できないため、背景アニメーションは省略されます"
   fi
 }

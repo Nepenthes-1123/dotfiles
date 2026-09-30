@@ -9,11 +9,14 @@
 #
 # 環境変数
 #   DOTFILES_DIR    clone 先 (既定: ~/dotfiles)
-#   DOTFILES_BRANCH clone するブランチ (既定: main)
+#   DOTFILES_BRANCH 使うブランチ (既定: main)。指定すると、既存の clone もこのブランチに切り替える
 #   DOTFILES_REPO   clone 元 (既定: GitHub の HTTPS。新しい PC では SSH 鍵が未設定のことが多いため)
 set -euo pipefail
 
 DOTFILES_DIR="${DOTFILES_DIR:-${HOME}/dotfiles}"
+# DOTFILES_BRANCH を指定したときだけ、既存の clone のブランチも切り替える
+# (未指定なら既存の clone は今のブランチのまま更新する)
+DOTFILES_BRANCH_SPECIFIED="${DOTFILES_BRANCH:+1}"
 DOTFILES_BRANCH="${DOTFILES_BRANCH:-main}"
 DOTFILES_REPO="${DOTFILES_REPO:-https://github.com/Nepenthes-1123/dotfiles.git}"
 
@@ -54,6 +57,15 @@ main() {
   ensure_git
 
   if [[ -d "${DOTFILES_DIR}/.git" ]]; then
+    local current
+    current="$(git -C "$DOTFILES_DIR" rev-parse --abbrev-ref HEAD)"
+    if [[ -n "$DOTFILES_BRANCH_SPECIFIED" && "$current" != "$DOTFILES_BRANCH" ]]; then
+      log "ブランチを切り替え: ${current} -> ${DOTFILES_BRANCH}"
+      if ! git -C "$DOTFILES_DIR" fetch origin "$DOTFILES_BRANCH" ||
+        ! git -C "$DOTFILES_DIR" switch "$DOTFILES_BRANCH"; then
+        die "${DOTFILES_BRANCH} に切り替えられませんでした。${DOTFILES_DIR} の未コミットの変更などを確認してください"
+      fi
+    fi
     log "既存の dotfiles を更新: ${DOTFILES_DIR}"
     git -C "$DOTFILES_DIR" pull --ff-only || die "更新に失敗しました。${DOTFILES_DIR} の変更を確認してください"
   elif [[ -e "$DOTFILES_DIR" ]]; then

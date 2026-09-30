@@ -34,7 +34,12 @@ function Invoke-Scenario {
         [string]$Root,
         [bool]$IsAdmin = $true,
         [bool]$WingetFails = $false,
-        [bool]$WslInstalled = $false
+        [bool]$WslInstalled = $false,
+        [bool]$WslInstallFails = $false,
+        # WSL の既定ユーザー (ユーザー作成前は root)
+        [string]$WslUser = 'taro',
+        # DOTFILES_BRANCH ($null なら未指定)
+        [string]$Branch = 'test-branch'
     )
     New-Item -ItemType Directory -Force -Path (Join-Path $Root 'home') | Out-Null
     $calls = Join-Path $Root 'calls.log'
@@ -42,7 +47,7 @@ function Invoke-Scenario {
     $env:CALLS = $calls
     $env:USERPROFILE = Join-Path $Root 'home'
     $env:ProgramFiles = Join-Path $Root 'ProgramFiles'
-    $env:DOTFILES_BRANCH = 'test-branch'
+    $env:DOTFILES_BRANCH = if ($Branch) { $Branch } else { $null }
     $env:DOTFILES_WSL_DISTRO = $null
 
     # テストの本体は別のスコープで実行し、モックが他のシナリオに漏れないようにする
@@ -71,8 +76,19 @@ function Invoke-Scenario {
             if ($WingetFails) { $global:LASTEXITCODE = 1; return }
             $git = Join-Path $env:ProgramFiles 'Git'
             New-Stub (Join-Path $git 'bin/bash.exe') ''
-            # clone は wsl/.wslconfig.example だけを持つディレクトリを作るだけにする (ネットワークを使わない)
-            New-Stub (Join-Path $git 'cmd/git.exe') 'if [ "$1" = clone ]; then eval "d=\${$#}"; mkdir -p "$d/.git" "$d/wsl"; echo example > "$d/wsl/.wslconfig.example"; fi'
+            # ネットワークを使わない偽の git。clone は wsl/.wslconfig.example だけを持つディレクトリを作り、
+            # 今のブランチ名を .git/branch に記録する (rev-parse / switch はそれを読み書きする)
+            New-Stub (Join-Path $git 'cmd/git.exe') @'
+case "$1" in
+clone) d="$5"; mkdir -p "$d/.git" "$d/wsl"; echo example > "$d/wsl/.wslconfig.example"; echo "$3" > "$d/.git/branch" ;;
+-C)
+  case "$3" in
+  rev-parse) cat "$2/.git/branch" ;;
+  switch) echo "$4" > "$2/.git/branch" ;;
+  esac
+  ;;
+esac
+'@
             $global:LASTEXITCODE = 0
         }
         function wsl.exe {
@@ -82,6 +98,14 @@ function Invoke-Scenario {
                 # 本物の wsl.exe の出力は UTF-16 のため、PowerShell で読むと 1 文字ごとに NUL が混ざる
                 $global:LASTEXITCODE = 0
                 return @("U`0b`0u`0n`0t`0u`0", "d`0o`0c`0k`0e`0r`0-`0d`0e`0s`0k`0t`0o`0p`0", '')
+            }
+            if ($args[0] -eq '--install') {
+                $global:LASTEXITCODE = if ($WslInstallFails) { 1 } else { 0 }
+                return
+            }
+            if ($args[2] -eq '-e' -and $args[3] -eq 'whoami') {
+                $global:LASTEXITCODE = 0
+                return $WslUser
             }
             $global:LASTEXITCODE = 0
         }
@@ -110,23 +134,36 @@ function Assert-Calls([string]$Name, [string[]]$Actual, [string[]]$Expected) {
 
 $work = Join-Path ([IO.Path]::GetTempPath()) "bootstrap-test-$PID"
 $reg = 'reg AllowDevelopmentWithoutDevLicense=1'
-$wslSetup = "wsl.exe -d Ubuntu -e bash -c curl -fsSL 'https://raw.githubusercontent.com/Nepenthes-1123/dotfiles/test-branch/bootstrap.sh' -o /tmp/dotfiles-bootstrap.sh && DOTFILES_BRANCH='test-branch' bash /tmp/dotfiles-bootstrap.sh"
+$wingetGit = 'winget install --id Git.Git -e --source winget --accept-package-agreements --accept-source-agreements'
+$whoami = 'wsl.exe -d Ubuntu -e whoami'
+function WslSetup([string]$Branch) {
+    $url = "https://raw.githubusercontent.com/Nepenthes-1123/dotfiles/$(if ($Branch) { $Branch } else { 'main' })/bootstrap.sh"
+    $envPart = if ($Branch) { "DOTFILES_BRANCH='$Branch' " } else { '' }
+    "wsl.exe -d Ubuntu -e bash -c curl -fsSL '$url' -o /tmp/dotfiles-bootstrap.sh && ${envPart}bash /tmp/dotfiles-bootstrap.sh"
+}
 try {
-    # 新しい PC: 1 回目 (Git も WSL も無い) → 2 回目 (再起動・ユーザー作成後) → 3 回目 (再実行)
+    # 新しい PC: 1 回目 (Git も WSL も無い) → 2 回目 (再起動・ユーザー作成後) → 3 回目以降 (再実行)
     $root = Join-Path $work 'pc'
     Assert-Calls '1 回目: Git と WSL を入れて止まる' (Invoke-Scenario -Root $root) @(
         $reg
-        'winget install --id Git.Git -e --source winget --accept-package-agreements --accept-source-agreements'
+        $wingetGit
         'wsl.exe --list --quiet'
         'wsl.exe --install -d Ubuntu --no-launch'
+        'RESULT ok'
+    )
+    Assert-Calls 'WSL の一覧に出ていても既定ユーザーが root なら、ユーザー作成を促して止まる' (Invoke-Scenario -Root $root -WslInstalled $true -WslUser 'root') @(
+        $reg
+        'wsl.exe --list --quiet'
+        $whoami
         'RESULT ok'
     )
     Assert-Calls '2 回目: clone・Windows 側の setup・WSL の中の bootstrap.sh' (Invoke-Scenario -Root $root -WslInstalled $true) @(
         $reg
         'wsl.exe --list --quiet'
+        $whoami
         'git.exe clone --branch test-branch https://github.com/Nepenthes-1123/dotfiles.git <root>/home/dotfiles'
         'bash.exe -lc ~/dotfiles/scripts/dot.sh setup'
-        $wslSetup
+        (WslSetup 'test-branch')
         'RESULT ok'
     )
     $wslconfig = Join-Path $root 'home/.wslconfig'
@@ -135,20 +172,51 @@ try {
     Assert-Calls '3 回目: 既存の clone を更新し、.wslconfig は変えない' (Invoke-Scenario -Root $root -WslInstalled $true) @(
         $reg
         'wsl.exe --list --quiet'
+        $whoami
+        'git.exe -C <root>/home/dotfiles rev-parse --abbrev-ref HEAD'
         'git.exe -C <root>/home/dotfiles pull --ff-only'
         'bash.exe -lc ~/dotfiles/scripts/dot.sh setup'
-        $wslSetup
+        (WslSetup 'test-branch')
         'RESULT ok'
     )
     if ((Get-Content $wslconfig) -ne 'edited') { Write-Host 'FAIL 編集済みの .wslconfig が上書きされた' -ForegroundColor Red; $failures++ }
+    Assert-Calls 'DOTFILES_BRANCH を変えると、既存の clone のブランチを切り替える' (Invoke-Scenario -Root $root -WslInstalled $true -Branch 'feature-x') @(
+        $reg
+        'wsl.exe --list --quiet'
+        $whoami
+        'git.exe -C <root>/home/dotfiles rev-parse --abbrev-ref HEAD'
+        'git.exe -C <root>/home/dotfiles fetch origin feature-x'
+        'git.exe -C <root>/home/dotfiles switch feature-x'
+        'git.exe -C <root>/home/dotfiles pull --ff-only'
+        'bash.exe -lc ~/dotfiles/scripts/dot.sh setup'
+        (WslSetup 'feature-x')
+        'RESULT ok'
+    )
+    Assert-Calls 'DOTFILES_BRANCH が未指定なら、既存の clone は今のブランチのまま更新し、WSL にも渡さない' (Invoke-Scenario -Root $root -WslInstalled $true -Branch $null) @(
+        $reg
+        'wsl.exe --list --quiet'
+        $whoami
+        'git.exe -C <root>/home/dotfiles rev-parse --abbrev-ref HEAD'
+        'git.exe -C <root>/home/dotfiles pull --ff-only'
+        'bash.exe -lc ~/dotfiles/scripts/dot.sh setup'
+        (WslSetup $null)
+        'RESULT ok'
+    )
 
     Assert-Calls '管理者でなければ何もしない' (Invoke-Scenario -Root (Join-Path $work 'not-admin') -IsAdmin $false) @(
         'RESULT error: 管理者の PowerShell で実行してください (開発者モードの設定と WSL のインストールに必要)'
     )
     Assert-Calls 'winget が失敗したら止まる' (Invoke-Scenario -Root (Join-Path $work 'winget-fails') -WingetFails $true) @(
         $reg
-        'winget install --id Git.Git -e --source winget --accept-package-agreements --accept-source-agreements'
+        $wingetGit
         'RESULT error: Git for Windows のインストールに失敗しました'
+    )
+    Assert-Calls 'wsl --install が失敗したら、再実行を促さずに止まる' (Invoke-Scenario -Root (Join-Path $work 'wsl-install-fails') -WslInstallFails $true) @(
+        $reg
+        $wingetGit
+        'wsl.exe --list --quiet'
+        'wsl.exe --install -d Ubuntu --no-launch'
+        'RESULT error: wsl --install が終了コード 1 で失敗しました。上の出力を確認してください'
     )
 } finally {
     Remove-Item -Recurse -Force $work -ErrorAction SilentlyContinue
