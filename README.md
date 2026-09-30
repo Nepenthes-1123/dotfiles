@@ -42,7 +42,7 @@ Windows では GUI アプリだけを Windows 側に置き、シェルと CLI �
 
 1. OS のパッケージ (brew / winget / apt) → 2. 非公開素材 → 3. シンボリックリンク → 4. mise の CLI ツール →
 5. zsh プラグイン → 6. git のユーザー設定 → 7. ログインシェルを zsh に切り替え (`chsh`) →
-8. GitHub CLI のログイン (任意) → 9. リンクの状態の確認
+8. GitHub CLI のログイン状態の確認 → 9. リンクの状態の確認
 
 ### macOS / Ubuntu
 
@@ -82,6 +82,7 @@ irm https://raw.githubusercontent.com/Nepenthes-1123/dotfiles/main/bootstrap.ps1
 
 1. 新しいシェルを開く (ログインシェルの切り替えと mise のツールは新しいシェルから反映される)
 2. `nvim` を起動する。初回はプラグインのインストール確認が出て、その後 Mason が LSP を入れる
+3. GitHub CLI を使う場合は `gh auth login` でログインする (setup では聞かない)
 
 ### 環境変数
 

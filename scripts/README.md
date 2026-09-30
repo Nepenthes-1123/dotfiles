@@ -12,7 +12,7 @@ git clone git@github.com:Nepenthes-1123/dotfiles.git ~/dotfiles
 
 | コマンド | 内容 |
 | --- | --- |
-| `setup` | 新しい環境を構築する (OS のパッケージ → 非公開素材 → リンク → mise → zsh プラグイン → git のユーザー設定 → ログインシェルを zsh に切り替え → GitHub CLI のログイン → リンクの状態の確認)。新しい PC ではリポジトリ直下の `bootstrap.sh` / `bootstrap.ps1` から呼ばれる |
+| `setup` | 新しい環境を構築する (OS のパッケージ → 非公開素材 → リンク → mise → zsh プラグイン → git のユーザー設定 → ログインシェルを zsh に切り替え → GitHub CLI のログイン状態の確認 → リンクの状態の確認)。新しい PC ではリポジトリ直下の `bootstrap.sh` / `bootstrap.ps1` から呼ばれる |
 | `update` | OS のパッケージ・mise のツール・Neovim プラグイン・VSCode 拡張・非公開素材を更新し、zsh プラグインを固定タグに合わせる |
 | `link` | `links.conf` のリンクを作成する。何度実行してもよい。既存の実ファイルは `<元の名前>.bak.<日時>` に退避する |
 | `status` | 各リンクの状態を表示する。すべて正常なら終了コード 0 |

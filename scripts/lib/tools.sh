@@ -151,19 +151,15 @@ login_shell_setup() {
   chsh -s "$zsh_path" || warn "切り替えに失敗しました。後で 'chsh -s ${zsh_path}' を実行してください"
 }
 
-# --- GitHub CLI のログイン (octo.nvim で使う) ---
+# --- GitHub CLI のログイン状態 (octo.nvim で使う) ---
 
-gh_login() {
+gh_auth_check() {
   has gh || return 0
   if gh auth status >/dev/null 2>&1; then
     info "ok       GitHub CLI にログイン済み"
     return 0
   fi
-  local answer
-  # 標準入力が無い (非対話) 場合はスキップ扱いにする
-  read -r -p "GitHub CLI にログインしますか (ブラウザが開きます) [y/N] " answer || answer=n
-  case "$answer" in
-  y | Y | yes) gh auth login || warn "ログインに失敗しました。後で 'gh auth login' を実行してください" ;;
-  *) info "skip     後で 'gh auth login' を実行してください" ;;
-  esac
+  # gh auth login はブラウザの起動やデバイス認可の完了を待つため、環境によっては
+  # setup 全体が止まったままになる。setup の時点では gh は不要なので案内だけにする
+  info "skip     GitHub CLI は未ログインです。使う前に 'gh auth login' を実行してください"
 }

@@ -57,7 +57,7 @@ cmd_setup() {
     log "ログインシェル"
     login_shell_setup
     log "GitHub CLI"
-    gh_login
+    gh_auth_check
   fi
   log "リンクの状態"
   links_status || warn "正常でないリンクがあります。'scripts/dot.sh link' で修復できます"
