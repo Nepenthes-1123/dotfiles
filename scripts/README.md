@@ -12,7 +12,7 @@ git clone git@github.com:Nepenthes-1123/dotfiles.git ~/dotfiles
 
 | コマンド | 内容 |
 | --- | --- |
-| `setup` | 新しい環境を構築する (OS のパッケージ → 非公開素材 → リンク → mise → zsh プラグイン → git のユーザー設定) |
+| `setup` | 新しい環境を構築する (OS のパッケージ → 非公開素材 → リンク → mise → zsh プラグイン → git のユーザー設定 → ログインシェルを zsh に切り替え → GitHub CLI のログイン → リンクの状態の確認)。新しい PC ではリポジトリ直下の `bootstrap.sh` / `bootstrap.ps1` から呼ばれる |
 | `update` | OS のパッケージ・mise のツール・Neovim プラグイン・VSCode 拡張・非公開素材を更新し、zsh プラグインを固定タグに合わせる |
 | `link` | `links.conf` のリンクを作成する。何度実行してもよい。既存の実ファイルは `<元の名前>.bak.<日時>` に退避する |
 | `status` | 各リンクの状態を表示する。すべて正常なら終了コード 0 |
@@ -62,11 +62,8 @@ dotfiles は Windows 側と WSL の中にそれぞれ clone し、両方で `dot
 
 ### 初回の手順
 
-1. 管理者の PowerShell で `wsl --install -d Ubuntu` を実行して再起動する
-2. `wsl/.wslconfig.example` を `%UserProfile%\.wslconfig` にコピーし、PC に合わせてメモリの上限などを変える
-3. Windows 側 (Git Bash) で clone して `scripts/dot.sh setup`
-4. WSL の中で clone して `scripts/dot.sh setup`。slip-box などのリポジトリも WSL の中 (`~/` 以下) に clone する
-   (Windows 側のファイルを `/mnt/c/...` から扱うと遅い)
+管理者の PowerShell で `bootstrap.ps1` を実行する (手順はルートの [README](../README.md#windows))。
+開発者モード・Git for Windows・WSL の導入、Windows 側と WSL の中の両方の `dot.sh setup` をまとめて行う。
 
 WezTerm は WSL を見つけると WSL の中の zsh を開く (`wezterm/.wezterm/shell.lua`)。WSL が無い場合は Windows 側の zsh (MSYS2 など) を探す。
 

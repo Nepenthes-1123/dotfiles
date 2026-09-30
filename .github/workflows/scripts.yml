@@ -4,10 +4,14 @@ on:
   push:
     paths:
       - "scripts/**"
+      - "bootstrap.sh"
+      - "bootstrap.ps1"
       - ".github/workflows/scripts.yml"
   pull_request:
     paths:
       - "scripts/**"
+      - "bootstrap.sh"
+      - "bootstrap.ps1"
       - ".github/workflows/scripts.yml"
 
 jobs:
@@ -15,7 +19,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: shellcheck scripts/dot.sh
+      - run: shellcheck scripts/dot.sh bootstrap.sh
+
+  # bootstrap.ps1 は Windows PowerShell 5.1 (Windows 標準) で実行されるため、5.1 で構文を確認する
+  powershell:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: powershell
+        run: |
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile("$PWD\bootstrap.ps1", [ref]$null, [ref]$errors) | Out-Null
+          if ($errors) {
+            $errors | ForEach-Object { Write-Host "$($_.Extent.StartLineNumber): $($_.Message)" }
+            exit 1
+          }
+          Write-Host "bootstrap.ps1: no syntax errors"
 
   # 使い捨ての HOME に対して link / status / prune が各 OS で動くことを確認する
   links:

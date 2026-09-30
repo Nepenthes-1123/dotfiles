@@ -35,52 +35,53 @@ Windows では GUI アプリだけを Windows 側に置き、シェルと CLI �
 
 ## セットアップ
 
-どの OS でも、`dot.sh setup` は既定のシェルを変えない。zsh への切り替え (`chsh`) は手動で行う。
+新しい PC では bootstrap スクリプトを 1 行実行する。git の導入・clone・`scripts/dot.sh setup` までをまとめて行う。
+既に clone してある場合は `scripts/dot.sh setup` を直接実行してもよい (中身は同じ)。
 
-### macOS
+`setup` は次の順に進む。途中でパスワードや選択肢を対話で聞く。
 
-```bash
-xcode-select --install          # git が入る (git を初めて実行したときのダイアログからでもよい)
-git clone https://github.com/Nepenthes-1123/dotfiles.git ~/dotfiles
-~/dotfiles/scripts/dot.sh setup # Homebrew が無ければ自動で入れる
-```
+1. OS のパッケージ (brew / winget / apt) → 2. 非公開素材 → 3. シンボリックリンク → 4. mise の CLI ツール →
+5. zsh プラグイン → 6. git のユーザー設定 → 7. ログインシェルを zsh に切り替え (`chsh`) →
+8. GitHub CLI のログイン (任意) → 9. リンクの状態の確認
 
-zsh は macOS の既定のシェルなので切り替えは不要。
-
-### Ubuntu
+### macOS / Ubuntu
 
 ```bash
-sudo apt update && sudo apt install -y git
-git clone https://github.com/Nepenthes-1123/dotfiles.git ~/dotfiles
-~/dotfiles/scripts/dot.sh setup # 途中で sudo のパスワードを聞かれる
-chsh -s "$(which zsh)"          # 既定のシェルを zsh にする (再ログイン後に反映)
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/Nepenthes-1123/dotfiles/main/bootstrap.sh)"
 ```
+
+- macOS では Homebrew (Xcode Command Line Tools = git を含む) を先に入れる
+- Ubuntu では apt で git を入れる
+- setup が対話で入力を受け付けるため、`curl ... | bash` ではなく上の形で実行する
 
 ### Windows
 
-Windows 側では GUI アプリとその設定だけを、WSL の中ではシェルと CLI ツールを扱う。dotfiles はそれぞれに clone する。
+管理者の PowerShell で次を実行する。
 
-1. 管理者の PowerShell で `wsl --install -d Ubuntu` を実行して再起動する
-2. 設定 → システム → 開発者向け で **開発者モード** を有効にする (Windows 側でシンボリックリンクを作るのに必要)
-3. PowerShell で `winget install Git.Git` を実行する (clone と `dot.sh` の実行に使う Git Bash が入る)
-4. `wsl/.wslconfig.example` を `%UserProfile%\.wslconfig` にコピーし、PC に合わせてメモリの上限などを変える
-5. Git Bash で次を実行する (WezTerm / VSCode / フォントと、その設定のリンク)
+```powershell
+irm https://raw.githubusercontent.com/Nepenthes-1123/dotfiles/main/bootstrap.ps1 | iex
+```
 
-   ```bash
-   git clone https://github.com/Nepenthes-1123/dotfiles.git ~/dotfiles
-   ~/dotfiles/scripts/dot.sh setup
-   ```
+1. 1 回目は開発者モード・Git for Windows・WSL (Ubuntu) を入れて止まる
+2. 再起動し、スタートメニューから Ubuntu を開いてユーザー名とパスワードを作成する
+3. 同じコマンドをもう一度実行する。Windows 側の setup (WezTerm / VSCode / フォントと、その設定のリンク) と、
+   WSL の中の setup (zsh・mise・CLI ツールとその設定) を続けて行う
 
-6. WSL の中 (Ubuntu) で、上の「Ubuntu」と同じ手順を実行する (zsh・mise・CLI ツールとその設定)。
-   WezTerm は WSL の既定のシェルを開くため、`chsh` で zsh に切り替えておく。
-   作業用のリポジトリも WSL の中 (`~/` 以下) に clone する (Windows 側のファイルを `/mnt/c/...` から扱うと遅い)
+`%UserProfile%\.wslconfig` は雛形 (`wsl/.wslconfig.example`) からコピーされるので、PC に合わせてメモリの上限などを変える。
+作業用のリポジトリは WSL の中 (`~/` 以下) に clone する (Windows 側のファイルを `/mnt/c/...` から扱うと遅い)。
 
 ### セットアップの後
 
-1. 新しいシェルを開く (mise で入れたツールは新しいシェルから使える)
-2. `scripts/dot.sh status` ですべて `ok` になっていることを確認する
-3. `gh auth login` で GitHub CLI にログインする (octo.nvim で使う)
-4. `nvim` を起動する。初回はプラグインのインストール確認が出て、その後 Mason が LSP を入れる
+1. 新しいシェルを開く (ログインシェルの切り替えと mise のツールは新しいシェルから反映される)
+2. `nvim` を起動する。初回はプラグインのインストール確認が出て、その後 Mason が LSP を入れる
+
+### 環境変数
+
+| 変数 | 対象 | 内容 |
+| --- | --- | --- |
+| `DOTFILES_BRANCH` | 両方 | clone するブランチ (既定: `main`)。PR のブランチを試すときに使う |
+| `DOTFILES_DIR` | `bootstrap.sh` | clone 先 (既定: `~/dotfiles`)。Windows 側は `%UserProfile%\dotfiles` 固定 |
+| `DOTFILES_WSL_DISTRO` | `bootstrap.ps1` | 使う WSL のディストリビューション (既定: `Ubuntu`) |
 
 ## 日常の操作
 

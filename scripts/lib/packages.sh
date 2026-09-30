@@ -57,6 +57,8 @@ _win_install() {
 
 _mac_install() {
   if ! has brew; then
+    # NONINTERACTIVE では sudo のパスワードを聞けずに失敗するため、先に認証しておく
+    sudo -v || die "Homebrew のインストールには管理者のパスワードが必要です"
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" ||
       die "Homebrew のインストールに失敗しました"
   fi

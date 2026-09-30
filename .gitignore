@@ -12,6 +12,8 @@
 !.gitignore
 !.shellcheckrc
 !.gitattributes
+!bootstrap.sh
+!bootstrap.ps1
 
 # scripts セッティング
 !scripts/**

@@ -12,9 +12,14 @@ mise_install() {
   mise install || warn "mise でのインストールに一部失敗しました。'mise install' を再実行してください"
 }
 
+# mise で入れたツールを、このプロセス (setup の残りの手順) から使えるようにする
+mise_activate_shims() {
+  has mise || return 0
+  eval "$(mise activate bash --shims)"
+}
+
 mise_upgrade() {
   has mise || return 0
-  # 更新すると mise/mise.lock が書き換わるので、差分をコミットして他の環境にも反映する
   mise upgrade || warn "mise でのツール更新に一部失敗しました"
 }
 
@@ -115,5 +120,46 @@ gitconfig_local_setup() {
     info "created  ${dst}"
     ;;
   *) info "skip     ${dst}" ;;
+  esac
+}
+
+# --- ログインシェル (zsh に切り替える) ---
+
+login_shell_setup() {
+  has zsh || return 0
+  local user current zsh_path
+  user="$(id -un)"
+  if [[ "$OS" == mac ]]; then
+    current="$(dscl . -read "/Users/${user}" UserShell 2>/dev/null | awk '{print $2}')"
+  else
+    current="$(getent passwd "$user" | cut -d: -f7)"
+  fi
+  if [[ "$(basename "${current:-}")" == zsh ]]; then
+    info "ok       ログインシェルは zsh (${current})"
+    return 0
+  fi
+  zsh_path="$(command -v zsh)"
+  if ! grep -qx "$zsh_path" /etc/shells 2>/dev/null; then
+    warn "${zsh_path} が /etc/shells に無いため切り替えられません"
+    return 0
+  fi
+  info "ログインシェルを ${current:-不明} から ${zsh_path} に切り替えます (パスワードを聞かれます)"
+  chsh -s "$zsh_path" || warn "切り替えに失敗しました。後で 'chsh -s ${zsh_path}' を実行してください"
+}
+
+# --- GitHub CLI のログイン (octo.nvim で使う) ---
+
+gh_login() {
+  has gh || return 0
+  if gh auth status >/dev/null 2>&1; then
+    info "ok       GitHub CLI にログイン済み"
+    return 0
+  fi
+  local answer
+  # 標準入力が無い (非対話) 場合はスキップ扱いにする
+  read -r -p "GitHub CLI にログインしますか (ブラウザが開きます) [y/N] " answer || answer=n
+  case "$answer" in
+  y | Y | yes) gh auth login || warn "ログインに失敗しました。後で 'gh auth login' を実行してください" ;;
+  *) info "skip     後で 'gh auth login' を実行してください" ;;
   esac
 }
