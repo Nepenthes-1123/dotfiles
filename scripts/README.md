@@ -40,7 +40,7 @@ CLI ツール (ripgrep / gh / starship / fzf / herdr / neovim / node) は `packa
 
 - 新しい設定ファイルをリンクする: `links.conf` に 1 行追加して `dot.sh link`。既存の設定ファイルを取り込むなら `dot.sh adopt`
 - OS ごとに配置先が違う場合: `lib/common.sh` に変数を追加し、`PATH_VARS` にも登録する
-- CLI ツールを追加する: `mise use -g <tool>` (`mise/config.toml` と `mise/mise.lock` が更新される)
+- CLI ツールを追加する: `mise use -g <tool>` (`mise/config.toml` に追記される)
 - zsh プラグインを更新する: `zsh_plugins.conf` のタグを書き換えて `dot.sh update`
 
 `.gitignore` はホワイトリスト方式のため、新しく追加したファイルは `.gitignore` にも追記する。

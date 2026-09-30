@@ -79,7 +79,7 @@ ruff, stylua, prettier, eslint_d, clang-format, markdownlint
 
 ### mise が自動インストールするもの
 
-`scripts/dot.sh setup` を実行すると、dotfiles の `mise/config.toml` (`~/.config/mise` にリンク) に従って mise が以下をインストールする。バージョンは `mise/mise.lock` で固定される。
+`scripts/dot.sh setup` を実行すると、dotfiles の `mise/config.toml` (`~/.config/mise` にリンク) に従って mise が以下をインストールする。バージョンは固定せず、常に最新を使う。
 
 ```
 neovim, node (LTS), ripgrep, github-cli (gh), starship, fzf, herdr

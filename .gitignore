@@ -117,4 +117,3 @@ wezterm/.wezterm/assets/
 
 # mise セッティング
 !mise/config.toml
-!mise/mise.lock
