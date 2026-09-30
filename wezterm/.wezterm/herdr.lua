@@ -1,5 +1,6 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
+local shell = require("shell")
 
 local M = {}
 local pane_state_cache = {}
@@ -129,8 +130,8 @@ function M.session_selector_action()
 			return
 		end
 
-		-- herdrのセッション一覧をJSONで取得（zsh -l -c 経由でPATH差分を吸収）
-		local success, stdout, stderr = wezterm.run_child_process({ "zsh", "-l", "-c", "herdr session list --json" })
+		-- herdrのセッション一覧をJSONで取得（zsh -l -c 経由でPATH差分を吸収。Windows では WSL の中で実行）
+		local success, stdout, stderr = wezterm.run_child_process(shell.run_args("herdr session list --json"))
 		local choices = {
 			{ id = "NEW_SESSION_ID", label = "  Create new session..." },
 		}
@@ -165,8 +166,8 @@ function M.session_selector_action()
 									if line and line ~= "" then
 										local spawn_ok, new_tab = pcall(function()
 											return w:mux_window():spawn_tab({
-												args = { "zsh", "-l", "-c", "herdr --session " .. line },
-												cwd = wezterm.home_dir,
+												args = shell.spawn_args("herdr --session " .. line),
+												cwd = shell.spawn_cwd(),
 												set_environment_variables = { HERDR_ENV = "0" },
 											})
 										end)
@@ -186,8 +187,8 @@ function M.session_selector_action()
 						-- 既存セッションにアタッチ
 						local spawn_ok, new_tab = pcall(function()
 							return inner_window:mux_window():spawn_tab({
-								args = { "zsh", "-l", "-c", "herdr --session " .. id },
-								cwd = wezterm.home_dir,
+								args = shell.spawn_args("herdr --session " .. id),
+								cwd = shell.spawn_cwd(),
 								set_environment_variables = { HERDR_ENV = "0" },
 							})
 						end)

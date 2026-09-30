@@ -19,6 +19,9 @@ usage() {
 
   setup      新しい環境を構築する (packages → assets → link → mise → zsh-plugins → gitconfig)
   update     インストール済みのものを更新する
+
+  Windows では Windows 側 (Git Bash) と WSL の中の両方で実行する。
+  Windows 側は GUI アプリ (WezTerm / VSCode / フォント) だけ、WSL の中はシェルと CLI ツールだけを扱う
   link       scripts/links.conf のリンクを作成する (既存の実ファイルは .bak.<日時> に退避)
   status     各リンクの状態を表示する (すべて正常なら終了コード 0)
   prune [-n|--dry-run]
@@ -32,38 +35,61 @@ usage() {
 EOF
 }
 
+# 実行する環境の表示名
+env_label() {
+  if [[ "$OS" == windows ]]; then
+    echo "windows: GUI アプリのみ"
+  elif [[ "$IS_WSL" -eq 1 ]]; then
+    echo "wsl: シェルと CLI ツールのみ"
+  else
+    echo "$OS"
+  fi
+}
+
 cmd_setup() {
   require_supported_os
-  log "OS のパッケージをインストール (${OS})"
+  log "OS のパッケージをインストール ($(env_label))"
   packages_install
-  log "非公開素材を取得"
-  assets_fetch
+  if want_gui; then
+    log "非公開素材を取得"
+    assets_fetch
+  fi
   log "シンボリックリンクを作成"
   links_apply
-  # mise の設定 (~/.config/mise) はリンク後でないと読めないため link の後に実行する
-  log "mise でツールをインストール"
-  mise_install
-  log "zsh プラグインを取得"
-  zsh_plugins_sync
-  log "git のユーザー設定"
-  gitconfig_local_setup
-  log "完了しました。新しいシェルを開いてください"
+  if want_cli; then
+    # mise の設定 (~/.config/mise) はリンク後でないと読めないため link の後に実行する
+    log "mise でツールをインストール"
+    mise_install
+    log "zsh プラグインを取得"
+    zsh_plugins_sync
+    log "git のユーザー設定"
+    gitconfig_local_setup
+  fi
+  if [[ "$OS" == windows ]]; then
+    log "Windows 側の設定が完了しました。続けて WSL の中で dotfiles を clone し、'scripts/dot.sh setup' を実行してください"
+  else
+    log "完了しました。新しいシェルを開いてください"
+  fi
 }
 
 cmd_update() {
   require_supported_os
-  log "OS のパッケージを更新 (${OS})"
+  log "OS のパッケージを更新 ($(env_label))"
   packages_upgrade
-  log "mise のツールを更新"
-  mise_upgrade
-  log "zsh プラグインを zsh_plugins.conf のタグに合わせる"
-  zsh_plugins_sync
-  log "Neovim プラグインを更新"
-  nvim_plugins_update
-  log "VSCode 拡張を更新"
-  vscode_extensions_install
-  log "非公開素材を更新"
-  assets_fetch
+  if want_cli; then
+    log "mise のツールを更新"
+    mise_upgrade
+    log "zsh プラグインを zsh_plugins.conf のタグに合わせる"
+    zsh_plugins_sync
+    log "Neovim プラグインを更新"
+    nvim_plugins_update
+  fi
+  if want_gui; then
+    log "VSCode 拡張を更新"
+    vscode_extensions_install
+    log "非公開素材を更新"
+    assets_fetch
+  fi
   log "リンクの状態"
   links_status || warn "正常でないリンクがあります。'scripts/dot.sh link' で修復できます"
 }

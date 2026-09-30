@@ -14,7 +14,7 @@ die() {
 }
 has() { command -v "$1" >/dev/null 2>&1; }
 
-# mac / ubuntu (Debian 系) / windows (Git Bash・MSYS2) / unsupported
+# mac / ubuntu (Debian 系。WSL の中も含む) / windows (Git Bash) / unsupported
 detect_os() {
   case "$(uname -s)" in
   Darwin) echo mac ;;
@@ -32,26 +32,34 @@ detect_os() {
 
 OS="$(detect_os)"
 
+# WSL の中の Ubuntu かどうか
+IS_WSL=0
+if [[ "$OS" == ubuntu ]] && grep -qi microsoft /proc/sys/kernel/osrelease 2>/dev/null; then
+  IS_WSL=1
+fi
+
+# この環境が担当する範囲
+#   gui: GUI アプリとその設定 (WezTerm / VSCode / フォント)
+#   cli: シェルと CLI ツール (zsh / mise / Neovim / git の設定など)
+# Windows では GUI アプリだけを Windows 側に入れ、シェルと CLI ツールは WSL の中で使う。
+# そのため Windows 側 (Git Bash) は gui だけ、WSL の中は cli だけを扱う。mac と Ubuntu は両方を扱う
+want_gui() { [[ "$IS_WSL" -eq 0 ]]; }
+want_cli() { [[ "$OS" != windows ]]; }
+
 # links.conf で使える配置先の変数。OS ごとの違いはここだけで吸収する
 CONFIG_DIR="${HOME}/.config"
+VSCODE_USER_DIR="${CONFIG_DIR}/Code/User"
+NVIM_DIR="${CONFIG_DIR}/nvim"
+HERDR_DIR="${CONFIG_DIR}/herdr"
 case "$OS" in
 mac)
   VSCODE_USER_DIR="${HOME}/Library/Application Support/Code/User"
-  NVIM_DIR="${CONFIG_DIR}/nvim"
-  HERDR_DIR="${CONFIG_DIR}/herdr"
   ;;
 windows)
   VSCODE_USER_DIR="$(cygpath -u "${APPDATA}")/Code/User"
-  NVIM_DIR="$(cygpath -u "${LOCALAPPDATA}")/nvim"
-  HERDR_DIR="$(cygpath -u "${APPDATA}")/herdr"
   # Git Bash の ln -s は既定だと失敗時にコピーで済ませてしまうため、
   # 本物のシンボリックリンクだけを作り、作れなければエラーにする
   export MSYS=winsymlinks:nativestrict
-  ;;
-*)
-  VSCODE_USER_DIR="${CONFIG_DIR}/Code/User"
-  NVIM_DIR="${CONFIG_DIR}/nvim"
-  HERDR_DIR="${CONFIG_DIR}/herdr"
   ;;
 esac
 

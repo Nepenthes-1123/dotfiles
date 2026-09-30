@@ -111,9 +111,13 @@ wezterm/.wezterm/assets/
 # herdr セッティング
 !herdr/config.toml
 !wezterm/.wezterm/herdr.lua
+!wezterm/.wezterm/shell.lua
 
 # starship セッティング
 !starship/starship.toml
 
 # mise セッティング
 !mise/config.toml
+
+# WSL セッティング (雛形のみ。実際の .wslconfig は PC ごとに置く)
+!wsl/.wslconfig.example

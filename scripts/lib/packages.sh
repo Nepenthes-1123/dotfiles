@@ -32,8 +32,9 @@ packages_upgrade() {
     done
     ;;
   ubuntu)
+    _ubuntu_select
     sudo apt-get update
-    sudo apt-get install --only-upgrade -y "${ubuntu_packages[@]}" || warn "apt パッケージの更新に失敗しました"
+    sudo apt-get install --only-upgrade -y "${UBUNTU_PKGS[@]}" || warn "apt パッケージの更新に失敗しました"
     ;;
   esac
 }
@@ -49,10 +50,9 @@ _win_install() {
     winget install --id "$p" -e --source winget --accept-package-agreements --accept-source-agreements ||
       warn "${p} のインストールに失敗しました"
   done
-  # winget で入れたコマンドは新しいシェルを開くまで PATH に入らないため、このプロセスにだけ通す
-  local links
-  links="$(cygpath -u "${LOCALAPPDATA}")/Microsoft/WinGet/Links"
-  [[ ! -d "$links" ]] || export PATH="${links}:${PATH}"
+  if ! has wsl.exe || ! wsl.exe --list --quiet >/dev/null 2>&1; then
+    warn "WSL が見つかりません。管理者の PowerShell で 'wsl --install -d Ubuntu' を実行し、再起動してください"
+  fi
 }
 
 _mac_install() {
@@ -79,12 +79,24 @@ _mac_install() {
   done
 }
 
+# この環境で入れる apt パッケージ (UBUNTU_PKGS) とリポジトリ (UBUNTU_REPOS) を決める。
+# WSL の中では GUI アプリを入れない
+_ubuntu_select() {
+  UBUNTU_PKGS=("${ubuntu_packages[@]}")
+  UBUNTU_REPOS=("${ubuntu_apt_repos[@]}")
+  if want_gui; then
+    UBUNTU_PKGS+=("${ubuntu_gui_packages[@]}")
+    UBUNTU_REPOS+=("${ubuntu_gui_apt_repos[@]}")
+  fi
+}
+
 _ubuntu_install() {
+  _ubuntu_select
   sudo apt-get update
   sudo apt-get install -y curl gpg unzip fontconfig
 
   local repo file keyring key_url content added=0
-  for repo in "${ubuntu_apt_repos[@]}"; do
+  for repo in "${UBUNTU_REPOS[@]}"; do
     IFS='|' read -r file keyring key_url content <<<"$repo"
     [[ ! -e "/etc/apt/sources.list.d/${file}" ]] || continue
     info "apt リポジトリを追加: ${file}"
@@ -96,7 +108,7 @@ _ubuntu_install() {
   [[ "$added" -eq 0 ]] || sudo apt-get update
 
   local p
-  for p in "${ubuntu_packages[@]}"; do
+  for p in "${UBUNTU_PKGS[@]}"; do
     if dpkg -s "$p" >/dev/null 2>&1; then
       info "installed ${p}"
       continue
@@ -104,7 +116,10 @@ _ubuntu_install() {
     sudo apt-get install -y "$p" || warn "${p} のインストールに失敗しました"
   done
 
-  _ubuntu_install_nerd_font
+  # WSL の中ではフォントは Windows 側 (winget) で入れる
+  if want_gui; then
+    _ubuntu_install_nerd_font
+  fi
 }
 
 _ubuntu_install_nerd_font() {

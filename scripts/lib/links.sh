@@ -42,17 +42,26 @@ trim() {
   printf '%s' "$s"
 }
 
-# links.conf を読み込み LINK_SRC (絶対パス) と LINK_DST (絶対パス) に格納する
+# links.conf を読み込み、この環境が担当する行 (want_gui / want_cli) だけを
+# LINK_SRC (絶対パス) と LINK_DST (絶対パス) に格納する
 load_links() {
   LINK_SRC=()
   LINK_DST=()
-  local line src dst
+  local line src rest dst scope
   while IFS= read -r line || [[ -n "$line" ]]; do
     line="${line%%#*}"
     [[ -n "$(trim "$line")" ]] || continue
     [[ "$line" == *'|'* ]] || die "links.conf の形式が不正です (区切りは |): $line"
     src="$(trim "${line%%|*}")"
-    dst="$(trim "${line#*|}")"
+    rest="${line#*|}"
+    dst="$(trim "${rest%%|*}")"
+    scope=cli
+    [[ "$rest" != *'|'* ]] || scope="$(trim "${rest#*|}")"
+    case "$scope" in
+    gui) want_gui || continue ;;
+    cli) want_cli || continue ;;
+    *) die "links.conf の 3 列目は gui か cli です: $line" ;;
+    esac
     LINK_SRC+=("${DOT_DIR}/${src}")
     LINK_DST+=("$(expand_path_vars "$dst")")
   done <"$LINKS_CONF"
@@ -183,7 +192,10 @@ links_adopt() {
   mkdir -p "$(dirname "$src")"
   mv "$dst" "$src"
   ln -s "$src" "$dst"
-  printf '%s | %s\n' "$src_rel" "$(collapse_path_vars "$dst")" >>"$LINKS_CONF"
+  # Windows 側で取り込むのは GUI アプリの設定だけなので gui を付ける (省略時は cli)
+  local scope=""
+  [[ "$OS" != windows ]] || scope=" | gui"
+  printf '%s | %s%s\n' "$src_rel" "$(collapse_path_vars "$dst")" "$scope" >>"$LINKS_CONF"
   info "adopted  ${dst} -> ${src}"
   warn ".gitignore はホワイトリスト方式のため、${src_rel} を追跡するには .gitignore に追記してください"
 }
