@@ -35,6 +35,23 @@ jobs:
             exit 1
           }
           Write-Host "bootstrap.ps1: no syntax errors"
+      - name: PSScriptAnalyzer
+        shell: powershell
+        run: |
+          if (-not (Get-Module -ListAvailable PSScriptAnalyzer)) {
+            Write-Host "PSScriptAnalyzer is not installed on this runner. skip"
+            exit 0
+          }
+          $results = Invoke-ScriptAnalyzer -Path bootstrap.ps1 -Severity Error, Warning
+          $results | Format-Table -AutoSize RuleName, Severity, Line, Message | Out-String -Width 200 | Write-Host
+          if ($results | Where-Object Severity -eq 'Error') { exit 1 }
+
+  # bootstrap.ps1 の手順の順番・分岐・外部コマンドに渡す引数を、Windows 固有の部分をモックにして確認する
+  bootstrap-ps1-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pwsh -NoProfile -File scripts/tests/bootstrap.test.ps1
 
   # 使い捨ての HOME に対して link / status / prune が各 OS で動くことを確認する
   links:

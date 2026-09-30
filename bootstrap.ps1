@@ -31,6 +31,11 @@ function Get-WslDistros {
     return @($out | ForEach-Object { ($_ -replace "`0", '').Trim() } | Where-Object { $_ })
 }
 
+function Test-Administrator {
+    $identity = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
+    return $identity.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
 function Invoke-Bootstrap {
     $branch = if ($env:DOTFILES_BRANCH) { $env:DOTFILES_BRANCH } else { 'main' }
     $distro = if ($env:DOTFILES_WSL_DISTRO) { $env:DOTFILES_WSL_DISTRO } else { 'Ubuntu' }
@@ -41,8 +46,7 @@ function Invoke-Bootstrap {
     $gitExe = Join-Path $env:ProgramFiles 'Git\cmd\git.exe'
     $bashExe = Join-Path $env:ProgramFiles 'Git\bin\bash.exe'
 
-    $identity = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
-    if (-not $identity.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    if (-not (Test-Administrator)) {
         throw '管理者の PowerShell で実行してください (開発者モードの設定と WSL のインストールに必要)'
     }
 
@@ -108,8 +112,9 @@ function Invoke-Bootstrap {
 
     # 7. WSL の中の setup (zsh・mise・CLI ツールとその設定)
     Write-Step "WSL ($distro) の中で bootstrap.sh を実行"
-    # setup は対話で入力を受け付けるため、パイプで渡さずファイルに保存してから実行する
-    wsl.exe -d $distro -- bash -c "curl -fsSL '$rawUrl' -o /tmp/dotfiles-bootstrap.sh && DOTFILES_BRANCH='$branch' bash /tmp/dotfiles-bootstrap.sh"
+    # setup は対話で入力を受け付けるため、パイプで渡さずファイルに保存してから実行する。
+    # -e は既定のシェルを経由せずに実行する (-- は PowerShell が自分の記号として取り除くことがあるため使わない)
+    wsl.exe -d $distro -e bash -c "curl -fsSL '$rawUrl' -o /tmp/dotfiles-bootstrap.sh && DOTFILES_BRANCH='$branch' bash /tmp/dotfiles-bootstrap.sh"
     if ($LASTEXITCODE -ne 0) {
         throw 'WSL の中の setup に失敗しました'
     }

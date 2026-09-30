@@ -33,6 +33,7 @@ git clone git@github.com:Nepenthes-1123/dotfiles.git ~/dotfiles
 | `lib/links.sh` | link / status / prune / adopt |
 | `lib/packages.sh` | OS のパッケージのインストール・更新 |
 | `lib/tools.sh` | mise・zsh プラグイン・Neovim プラグイン・VSCode 拡張・非公開素材・git のユーザー設定 |
+| `tests/bootstrap.test.ps1` | `bootstrap.ps1` のテスト。Windows 固有の部分をモックにして pwsh (Linux / macOS でも可) で実行する: `pwsh -NoProfile -File scripts/tests/bootstrap.test.ps1` |
 
 CLI ツール (ripgrep / gh / starship / fzf / herdr / neovim / node) は `packages.conf` ではなく `mise/config.toml` で管理する。
 
