@@ -16,7 +16,7 @@ git clone git@github.com:Nepenthes-1123/dotfiles.git ~/dotfiles
 | `update` | OS のパッケージ・mise のツール・Neovim プラグイン・VSCode 拡張・非公開素材を更新し、zsh プラグインを固定タグに合わせる |
 | `link` | `links.conf` のリンクを作成する。何度実行してもよい。既存の実ファイルは `<元の名前>.bak.<日時>` に退避する |
 | `status` | 各リンクの状態を表示する。すべて正常なら終了コード 0 |
-| `prune` | dotfiles を指しているが `links.conf` に無いリンクと、壊れたリンクを削除する |
+| `prune [-n\|--dry-run]` | dotfiles を指しているが `links.conf` に無いリンクと、壊れたリンクを削除する。`-n` を付けると削除せずに対象だけを表示する |
 | `adopt <設定ファイル> <保存先>` | 既存の設定ファイルを dotfiles に移してリンクに置き換え、`links.conf` に追記する |
 | `vscode-extensions` | `vscode/extensions.txt` の拡張をインストールする |
 | `assets` | 非公開素材 (wezterm の背景アニメーション) を取得・更新する |

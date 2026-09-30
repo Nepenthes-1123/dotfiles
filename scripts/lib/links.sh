@@ -2,7 +2,7 @@
 # シンボリックリンクの管理 (scripts/links.conf)
 #   links_apply  : リンクを作成する。既存の実ファイルは .bak.<日時> に退避する
 #   links_status : 各リンクの状態を表示する。すべて正常でなければ 1 を返す
-#   links_prune  : dotfiles を指しているが links.conf に無いリンク・壊れたリンクを削除する
+#   links_prune  : dotfiles を指しているが links.conf に無いリンク・壊れたリンクを削除する (-n で削除せず一覧表示)
 #   links_adopt  : 既存の設定ファイルを dotfiles に取り込み、リンクに置き換える
 
 LINKS_CONF="${SCRIPTS_DIR}/links.conf"
@@ -133,6 +133,13 @@ is_managed_dst() {
 }
 
 links_prune() {
+  local dry_run=0
+  case "${1:-}" in
+  "") ;;
+  -n | --dry-run) dry_run=1 ;;
+  *) die "使い方: dot.sh prune [-n|--dry-run]" ;;
+  esac
+
   load_links
   # links.conf の配置先の親ディレクトリだけを走査する
   local dirs=() d i found l target
@@ -152,11 +159,16 @@ links_prune() {
       [[ "$target" == "${DOT_DIR}/"* ]] || continue
       ! is_kept "$l" || continue
       if [[ ! -e "$l" ]] || ! is_managed_dst "$l"; then
-        rm -f "$l"
-        info "removed  ${l} -> ${target}"
+        if [[ "$dry_run" -eq 1 ]]; then
+          info "would remove ${l} -> ${target}"
+        else
+          rm -f "$l"
+          info "removed  ${l} -> ${target}"
+        fi
       fi
     done < <(find "$d" -mindepth 1 -maxdepth 1 -type l)
   done
+  [[ "$dry_run" -eq 0 ]] || info "(dry-run のため削除していません)"
 }
 
 links_adopt() {

@@ -46,5 +46,6 @@ jobs:
           scripts/dot.sh link
           scripts/dot.sh link
           scripts/dot.sh status
+          scripts/dot.sh prune --dry-run
           scripts/dot.sh prune
           scripts/dot.sh status

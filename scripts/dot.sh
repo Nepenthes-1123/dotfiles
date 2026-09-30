@@ -21,7 +21,8 @@ usage() {
   update     インストール済みのものを更新する
   link       scripts/links.conf のリンクを作成する (既存の実ファイルは .bak.<日時> に退避)
   status     各リンクの状態を表示する (すべて正常なら終了コード 0)
-  prune      dotfiles を指す壊れたリンク・links.conf に無いリンクを削除する
+  prune [-n|--dry-run]
+             dotfiles を指す壊れたリンク・links.conf に無いリンクを削除する (-n は削除せず対象を表示)
   adopt <設定ファイル> <dotfiles 内の保存先>
              既存の設定ファイルを dotfiles に移してリンクに置き換え、links.conf に追記する
   vscode-extensions
@@ -75,7 +76,7 @@ main() {
   update) cmd_update ;;
   link) links_apply ;;
   status) links_status ;;
-  prune) links_prune ;;
+  prune) links_prune "$@" ;;
   adopt) links_adopt "$@" ;;
   vscode-extensions) vscode_extensions_install ;;
   assets) assets_fetch ;;
