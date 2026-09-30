@@ -1,7 +1,7 @@
 ### zsh-plugins
-source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# fzf-tab は compinit の後 (completion.zsh より後)、ウィジェットを包むプラグインより前に読み込む
 source $HOME/.zsh/fzf-tab/fzf-tab.plugin.zsh
+source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 ### other-plugins
 [ -f $HOME/.fzf.zsh ] && source $HOME/.fzf.zsh
@@ -14,3 +14,6 @@ my-fzf-tab() {
 }
 zle -N my-fzf-tab
 bindkey "^I" my-fzf-tab
+
+# zsh-syntax-highlighting は他のウィジェットをすべて定義した後、最後に読み込む
+source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
