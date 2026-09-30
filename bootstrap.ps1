@@ -186,7 +186,7 @@ function Invoke-Bootstrap {
     # dot.sh link は既に正しいリンクがあると ln -s を実行しないため確認にならない。作業用の場所に 1 本張って消す
     Write-Host ''
     Write-Host '最後に、管理者でない Git Bash を開いて次を実行し、エラーにならずリンク (->) が表示されることを確認してください:' -ForegroundColor Yellow
-    Write-Host '  MSYS=winsymlinks:nativestrict ln -s ~/dotfiles/README.md /tmp/devmode-check && ls -l /tmp/devmode-check && rm /tmp/devmode-check'
+    Write-Host '  MSYS=winsymlinks:nativestrict ln -sf ~/dotfiles/README.md /tmp/devmode-check && ls -l /tmp/devmode-check && rm -f /tmp/devmode-check'
     Write-Host '  (失敗する場合は、設定 -> システム -> 開発者向け で開発者モードが有効か確認し、再起動してください)'
 }
 

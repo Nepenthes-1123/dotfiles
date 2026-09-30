@@ -70,7 +70,7 @@ irm https://raw.githubusercontent.com/Nepenthes-1123/dotfiles/main/bootstrap.ps1
    (bootstrap から起動した Git Bash は管理者権限で動くため、開発者モードが無くてもリンクを作れてしまう)
 
    ```bash
-   MSYS=winsymlinks:nativestrict ln -s ~/dotfiles/README.md /tmp/devmode-check && ls -l /tmp/devmode-check && rm /tmp/devmode-check
+   MSYS=winsymlinks:nativestrict ln -sf ~/dotfiles/README.md /tmp/devmode-check && ls -l /tmp/devmode-check && rm -f /tmp/devmode-check
    ```
 
    失敗する場合は、設定 → システム → 開発者向け で開発者モードが有効か確認し、再起動する
