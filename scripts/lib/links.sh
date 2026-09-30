@@ -125,16 +125,6 @@ links_status() {
   return "$ng"
 }
 
-# パスを比較用に正規化する。Windows (MSYS) では同じ場所でも表記が変わることがある
-# (Windows の Temp 配下が readlink では /tmp/... になる等) ため、C:/... の形にそろえる
-canon_path() {
-  if [[ "$OS" == windows ]]; then
-    cygpath -m "$1"
-  else
-    printf '%s' "$1"
-  fi
-}
-
 is_kept() {
   local k
   for k in "${PRUNE_KEEP[@]}"; do
@@ -161,8 +151,7 @@ links_prune() {
 
   load_links
   # links.conf の配置先の親ディレクトリだけを走査する
-  local dirs=() d i found l target dot_dir_canon
-  dot_dir_canon="$(canon_path "$DOT_DIR")"
+  local dirs=() d i found l target
   for i in "${!LINK_DST[@]}"; do
     d="$(dirname "${LINK_DST[$i]}")"
     found=0
@@ -176,7 +165,7 @@ links_prune() {
     [[ -d "$d" ]] || continue
     while IFS= read -r l; do
       target="$(readlink "$l")"
-      [[ "$(canon_path "$target")" == "${dot_dir_canon}/"* ]] || continue
+      [[ "$target" == "${DOT_DIR}/"* ]] || continue
       ! is_kept "$l" || continue
       if [[ ! -e "$l" ]] || ! is_managed_dst "$l"; then
         if [[ "$dry_run" -eq 1 ]]; then
