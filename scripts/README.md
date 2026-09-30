@@ -45,6 +45,8 @@ CLI ツール (ripgrep / gh / starship / fzf / herdr / neovim / node) は `packa
 
 `.gitignore` はホワイトリスト方式のため、新しく追加したファイルは `.gitignore` にも追記する。
 
+`~/.zshenv` は dotfiles からリンクするため、rustup など `~/.zshenv` に追記するツールの設定は `~/.zshenv.local` に移す (`link` で退避された `~/.zshenv.bak.<日時>` から移す)。`~/.zshrc` 用の `~/.zshrc.local` と同じ扱い。
+
 ## Windows (WSL2) での使い方
 
 Windows では、GUI アプリは Windows 側で、シェル・CLI ツールは WSL2 の中 (Ubuntu) で使う。

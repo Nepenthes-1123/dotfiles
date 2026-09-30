@@ -17,6 +17,7 @@
 !scripts/**
 
 # zsh セッティング
+!zsh/.zshenv
 !zsh/.zshrc
 !zsh/.zsh.d/priorities.conf
 !zsh/.zsh.d/audit.zsh
