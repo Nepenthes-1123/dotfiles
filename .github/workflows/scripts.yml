@@ -21,18 +21,17 @@ jobs:
       - uses: actions/checkout@v4
       - run: shellcheck scripts/dot.sh bootstrap.sh
 
-  # bootstrap.ps1 は Windows 標準の Windows PowerShell 5.1 で `irm <url> | iex` として実行されるため、
-  # 同じ経路 (GitHub から irm で取得した文字列) を 5.1 で構文確認する。
-  # ファイルを直接読む ParseFile は BOM の無い UTF-8 を ANSI として読むため使わない
+  # bootstrap.ps1 は Windows 標準の Windows PowerShell 5.1 で `irm <url> | iex` として実行される。
+  # irm は UTF-8 として読むため、checkout したファイルも UTF-8 として読んでから 5.1 で構文確認する
+  # (5.1 の ParseFile は BOM の無い UTF-8 を ANSI として読むため使わない)
   powershell:
     runs-on: windows-latest
-    env:
-      BOOTSTRAP_URL: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.event.pull_request.head.sha || github.sha }}/bootstrap.ps1
     steps:
-      - name: Parse (irm と同じ経路)
+      - uses: actions/checkout@v4
+      - name: Parse (irm と同じく UTF-8 として読む)
         shell: powershell
         run: |
-          $src = Invoke-RestMethod $env:BOOTSTRAP_URL
+          $src = [Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes("$PWD\bootstrap.ps1"))
           if ([int][char]$src[0] -eq 0xFEFF) { Write-Host "bootstrap.ps1 starts with a BOM"; exit 1 }
           $errors = $null
           [System.Management.Automation.Language.Parser]::ParseInput($src, [ref]$null, [ref]$errors) | Out-Null
@@ -48,7 +47,7 @@ jobs:
             Write-Host "PSScriptAnalyzer is not installed on this runner. skip"
             exit 0
           }
-          $src = Invoke-RestMethod $env:BOOTSTRAP_URL
+          $src = [Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes("$PWD\bootstrap.ps1"))
           $results = Invoke-ScriptAnalyzer -ScriptDefinition $src -Severity Error, Warning
           $results | Format-Table -AutoSize RuleName, Severity, Line, Message | Out-String -Width 200 | Write-Host
           if ($results | Where-Object Severity -eq 'Error') { exit 1 }

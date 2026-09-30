@@ -139,7 +139,7 @@ $whoami = 'wsl.exe -d Ubuntu -e whoami'
 function WslSetup([string]$Branch) {
     $url = "https://raw.githubusercontent.com/Nepenthes-1123/dotfiles/$(if ($Branch) { $Branch } else { 'main' })/bootstrap.sh"
     $envPart = if ($Branch) { "DOTFILES_BRANCH='$Branch' " } else { '' }
-    "wsl.exe -d Ubuntu -e bash -c curl -fsSL '$url' -o /tmp/dotfiles-bootstrap.sh && ${envPart}bash /tmp/dotfiles-bootstrap.sh"
+    "wsl.exe -d Ubuntu -e bash -c command -v curl >/dev/null || { sudo apt-get update && sudo apt-get install -y curl; } && curl -fsSL '$url' -o /tmp/dotfiles-bootstrap.sh && ${envPart}bash /tmp/dotfiles-bootstrap.sh"
 }
 try {
     # 新しい PC: 1 回目 (Git も WSL も無い) → 2 回目 (再起動・ユーザー作成後) → 3 回目以降 (再実行)
@@ -157,11 +157,12 @@ try {
         $whoami
         'RESULT ok'
     )
-    Assert-Calls '2 回目: clone・Windows 側の setup・WSL の中の bootstrap.sh' (Invoke-Scenario -Root $root -WslInstalled $true) @(
+    Assert-Calls '2 回目: clone・.wslconfig を作って WSL を停止・Windows 側の setup・WSL の中の bootstrap.sh' (Invoke-Scenario -Root $root -WslInstalled $true) @(
         $reg
         'wsl.exe --list --quiet'
         $whoami
         'git.exe clone --branch test-branch https://github.com/Nepenthes-1123/dotfiles.git <root>/home/dotfiles'
+        'wsl.exe --shutdown'
         'bash.exe -lc ~/dotfiles/scripts/dot.sh setup'
         (WslSetup 'test-branch')
         'RESULT ok'
@@ -169,7 +170,7 @@ try {
     $wslconfig = Join-Path $root 'home/.wslconfig'
     if ((Get-Content $wslconfig) -ne 'example') { Write-Host 'FAIL .wslconfig が雛形から作られていない' -ForegroundColor Red; $failures++ }
     Set-Content $wslconfig 'edited'
-    Assert-Calls '3 回目: 既存の clone を更新し、.wslconfig は変えない' (Invoke-Scenario -Root $root -WslInstalled $true) @(
+    Assert-Calls '3 回目: 既存の clone を更新し、.wslconfig は変えず WSL も停止しない' (Invoke-Scenario -Root $root -WslInstalled $true) @(
         $reg
         'wsl.exe --list --quiet'
         $whoami

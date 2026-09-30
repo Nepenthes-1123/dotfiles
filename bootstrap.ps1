@@ -147,6 +147,10 @@ function Invoke-Bootstrap {
     } else {
         Write-Step '.wslconfig を雛形から作成 (メモリの上限などは PC に合わせて変更する)'
         Copy-Item (Join-Path $dotfilesDir 'wsl\.wslconfig.example') $wslconfig
+        # .wslconfig は WSL の起動時にしか読まれない。ユーザー作成のために WSL は既に起動しているため、
+        # 一度止めて、続く WSL の中の setup から雛形の値 (メモリの上限など) が効くようにする
+        Write-Step '.wslconfig を反映するため WSL を停止 (wsl --shutdown)'
+        wsl.exe --shutdown
     }
 
     # 6. Windows 側の setup (GUI アプリと WezTerm / VSCode の設定)
@@ -163,13 +167,21 @@ function Invoke-Bootstrap {
     # -e は既定のシェルを経由せずに実行する (-- は PowerShell が自分の記号として取り除くことがあるため使わない)
     # DOTFILES_BRANCH は指定されたときだけ渡す (渡すと WSL の中の既存の clone もそのブランチに切り替わる)
     $branchEnv = if ($branchSpecified) { "DOTFILES_BRANCH='$branch' " } else { '' }
-    wsl.exe -d $distro -e bash -c "curl -fsSL '$rawUrl' -o /tmp/dotfiles-bootstrap.sh && ${branchEnv}bash /tmp/dotfiles-bootstrap.sh"
+    # 素のイメージに curl が無い場合に備えて、無ければ先に入れる
+    $ensureCurl = 'command -v curl >/dev/null || { sudo apt-get update && sudo apt-get install -y curl; }'
+    wsl.exe -d $distro -e bash -c "$ensureCurl && curl -fsSL '$rawUrl' -o /tmp/dotfiles-bootstrap.sh && ${branchEnv}bash /tmp/dotfiles-bootstrap.sh"
     if ($LASTEXITCODE -ne 0) {
         throw 'WSL の中の setup に失敗しました'
     }
 
     Write-Host ''
     Write-Host '完了しました。WezTerm を開くと WSL の中の zsh が起動します' -ForegroundColor Green
+    # このスクリプトから起動した Git Bash は管理者権限を引き継ぐため、開発者モードが効いていなくても
+    # シンボリックリンクを作れてしまう。普段使う (管理者でない) Git Bash で作れるかは別に確認する
+    Write-Host ''
+    Write-Host '最後に、管理者でない Git Bash を開いて次を実行し、すべて ok になることを確認してください:' -ForegroundColor Yellow
+    Write-Host '  ~/dotfiles/scripts/dot.sh link && ~/dotfiles/scripts/dot.sh status'
+    Write-Host '  (失敗する場合は、設定 -> システム -> 開発者向け で開発者モードが有効か確認し、再起動してください)'
 }
 
 Invoke-Bootstrap
