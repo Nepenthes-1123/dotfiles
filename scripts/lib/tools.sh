@@ -14,7 +14,6 @@ mise_install() {
 
 mise_upgrade() {
   has mise || return 0
-  # 更新すると mise/mise.lock が書き換わるので、差分をコミットして他の環境にも反映する
   mise upgrade || warn "mise でのツール更新に一部失敗しました"
 }
 
@@ -96,17 +95,21 @@ gitconfig_local_setup() {
     info "exists   ${dst}"
     return 0
   fi
-  local choice name email
+  local choice name email private
   echo "git のユーザー設定を選んでください"
-  echo "  1) 個人用 (git/.gitconfig.private をリンク)"
+  echo "  1) 個人用 (git/.gitconfig.private を include)"
   echo "  2) 名前とメールアドレスを入力して作成"
   echo "  3) スキップ"
   # 標準入力が無い (非対話) 場合はスキップ扱いにする
   read -r -p "> " choice || choice=3
   case "$choice" in
   1)
-    ln -s "${DOT_DIR}/git/.gitconfig.private" "$dst"
-    info "linked   ${dst}"
+    # シンボリックリンクにすると links.conf に無い dotfiles へのリンクとして prune に削除されるため、include で読み込む
+    private="${DOT_DIR}/git/.gitconfig.private"
+    # Windows の git は /c/... 形式のパスを解釈できないため C:/... 形式にする
+    [[ "$OS" != windows ]] || private="$(cygpath -m "$private")"
+    printf '[include]\n\tpath = %s\n' "$private" >"$dst"
+    info "created  ${dst}"
     ;;
   2)
     read -r -p "user.name: " name
