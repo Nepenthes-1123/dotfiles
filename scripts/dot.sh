@@ -19,9 +19,6 @@ usage() {
 
   setup      新しい環境を構築する (packages → assets → link → mise → zsh-plugins → gitconfig)
   update     インストール済みのものを更新する
-
-  Windows では Windows 側 (Git Bash) と WSL の中の両方で実行する。
-  Windows 側は GUI アプリ (WezTerm / VSCode / フォント) だけ、WSL の中はシェルと CLI ツールだけを扱う
   link       scripts/links.conf のリンクを作成する (既存の実ファイルは .bak.<日時> に退避)
   status     各リンクの状態を表示する (すべて正常なら終了コード 0)
   prune [-n|--dry-run]
@@ -32,23 +29,15 @@ usage() {
              vscode/extensions.txt の拡張をインストールする
   assets     非公開素材 (wezterm の背景アニメーション) を取得・更新する
   help       このヘルプを表示する
-EOF
-}
 
-# 実行する環境の表示名
-env_label() {
-  if [[ "$OS" == windows ]]; then
-    echo "windows: GUI アプリのみ"
-  elif [[ "$IS_WSL" -eq 1 ]]; then
-    echo "wsl: シェルと CLI ツールのみ"
-  else
-    echo "$OS"
-  fi
+Windows では Windows 側 (Git Bash) と WSL の中の両方で setup / update を実行する。
+Windows 側は GUI アプリ (WezTerm / VSCode / フォント) だけ、WSL の中はシェルと CLI ツールだけを扱う。
+EOF
 }
 
 cmd_setup() {
   require_supported_os
-  log "OS のパッケージをインストール ($(env_label))"
+  log "OS のパッケージをインストール (${OS})"
   packages_install
   if want_gui; then
     log "非公開素材を取得"
@@ -74,7 +63,7 @@ cmd_setup() {
 
 cmd_update() {
   require_supported_os
-  log "OS のパッケージを更新 ($(env_label))"
+  log "OS のパッケージを更新 (${OS})"
   packages_upgrade
   if want_cli; then
     log "mise のツールを更新"

@@ -14,15 +14,21 @@ die() {
 }
 has() { command -v "$1" >/dev/null 2>&1; }
 
-# mac / ubuntu (Debian 系。WSL の中も含む) / windows (Git Bash) / unsupported
+# 実行環境
+#   mac     : macOS
+#   ubuntu  : Ubuntu などの Debian 系 Linux
+#   wsl     : WSL の中の Ubuntu。Windows のシェルと CLI ツールを担当する
+#   windows : Windows 側 (Git Bash)。Windows の GUI アプリを担当する
 detect_os() {
   case "$(uname -s)" in
   Darwin) echo mac ;;
   Linux)
-    if [[ -r /etc/os-release ]] && grep -qE '^(ID|ID_LIKE)=.*(ubuntu|debian)' /etc/os-release; then
-      echo ubuntu
-    else
+    if [[ ! -r /etc/os-release ]] || ! grep -qE '^(ID|ID_LIKE)=.*(ubuntu|debian)' /etc/os-release; then
       echo unsupported
+    elif grep -qi microsoft /proc/sys/kernel/osrelease 2>/dev/null; then
+      echo wsl
+    else
+      echo ubuntu
     fi
     ;;
   MINGW* | MSYS* | CYGWIN*) echo windows ;;
@@ -32,25 +38,15 @@ detect_os() {
 
 OS="$(detect_os)"
 
-# WSL の中の Ubuntu かどうか
-IS_WSL=0
-if [[ "$OS" == ubuntu ]] && grep -qi microsoft /proc/sys/kernel/osrelease 2>/dev/null; then
-  IS_WSL=1
-fi
-
 # この環境が担当する範囲
 #   gui: GUI アプリとその設定 (WezTerm / VSCode / フォント)
 #   cli: シェルと CLI ツール (zsh / mise / Neovim / git の設定など)
-# Windows では GUI アプリだけを Windows 側に入れ、シェルと CLI ツールは WSL の中で使う。
-# そのため Windows 側 (Git Bash) は gui だけ、WSL の中は cli だけを扱う。mac と Ubuntu は両方を扱う
-want_gui() { [[ "$IS_WSL" -eq 0 ]]; }
+# mac と ubuntu は両方、windows は gui だけ、wsl は cli だけを担当する
+want_gui() { [[ "$OS" != wsl ]]; }
 want_cli() { [[ "$OS" != windows ]]; }
 
 # links.conf で使える配置先の変数。OS ごとの違いはここだけで吸収する
 CONFIG_DIR="${HOME}/.config"
-VSCODE_USER_DIR="${CONFIG_DIR}/Code/User"
-NVIM_DIR="${CONFIG_DIR}/nvim"
-HERDR_DIR="${CONFIG_DIR}/herdr"
 case "$OS" in
 mac)
   VSCODE_USER_DIR="${HOME}/Library/Application Support/Code/User"
@@ -61,10 +57,13 @@ windows)
   # 本物のシンボリックリンクだけを作り、作れなければエラーにする
   export MSYS=winsymlinks:nativestrict
   ;;
+*)
+  VSCODE_USER_DIR="${CONFIG_DIR}/Code/User"
+  ;;
 esac
 
 # links.conf で置換する変数名。adopt で逆変換するときは先頭から順に照合するため、深いパスを先に並べる
-PATH_VARS=(VSCODE_USER_DIR NVIM_DIR HERDR_DIR CONFIG_DIR HOME)
+PATH_VARS=(VSCODE_USER_DIR CONFIG_DIR HOME)
 
 require_supported_os() {
   [[ "$OS" != unsupported ]] || die "未対応の OS です: $(uname -a)"

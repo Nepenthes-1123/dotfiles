@@ -8,7 +8,7 @@ packages_install() {
   case "$OS" in
   windows) _win_install ;;
   mac) _mac_install ;;
-  ubuntu) _ubuntu_install ;;
+  ubuntu | wsl) _ubuntu_install ;;
   esac
 }
 
@@ -31,7 +31,7 @@ packages_upgrade() {
       brew upgrade "$p" || warn "${p} の更新に失敗しました"
     done
     ;;
-  ubuntu)
+  ubuntu | wsl)
     _ubuntu_select
     sudo apt-get update
     sudo apt-get install --only-upgrade -y "${UBUNTU_PKGS[@]}" || warn "apt パッケージの更新に失敗しました"
