@@ -149,8 +149,13 @@ function Invoke-Bootstrap {
         Copy-Item (Join-Path $dotfilesDir 'wsl\.wslconfig.example') $wslconfig
         # .wslconfig は WSL の起動時にしか読まれない。ユーザー作成のために WSL は既に起動しているため、
         # 一度止めて、続く WSL の中の setup から雛形の値 (メモリの上限など) が効くようにする
-        Write-Step '.wslconfig を反映するため WSL を停止 (wsl --shutdown)'
+        # --shutdown は Docker Desktop など、他のディストリビューションもすべて停止する
+        Write-Step '.wslconfig を反映するため WSL を停止 (wsl --shutdown: 起動中のすべてのディストリビューションが停止します)'
         wsl.exe --shutdown
+        if ($LASTEXITCODE -ne 0) {
+            # 失敗しても雛形の値が次に WSL を起動するまで効かないだけなので、止めずに続ける
+            Write-Host "wsl --shutdown が終了コード $LASTEXITCODE で失敗しました。.wslconfig は次に WSL を起動したときから反映されます" -ForegroundColor Yellow
+        }
     }
 
     # 6. Windows 側の setup (GUI アプリと WezTerm / VSCode の設定)
@@ -177,10 +182,11 @@ function Invoke-Bootstrap {
     Write-Host ''
     Write-Host '完了しました。WezTerm を開くと WSL の中の zsh が起動します' -ForegroundColor Green
     # このスクリプトから起動した Git Bash は管理者権限を引き継ぐため、開発者モードが効いていなくても
-    # シンボリックリンクを作れてしまう。普段使う (管理者でない) Git Bash で作れるかは別に確認する
+    # シンボリックリンクを作れてしまう。普段使う (管理者でない) Git Bash で作れるかは別に確認する。
+    # dot.sh link は既に正しいリンクがあると ln -s を実行しないため確認にならない。作業用の場所に 1 本張って消す
     Write-Host ''
-    Write-Host '最後に、管理者でない Git Bash を開いて次を実行し、すべて ok になることを確認してください:' -ForegroundColor Yellow
-    Write-Host '  ~/dotfiles/scripts/dot.sh link && ~/dotfiles/scripts/dot.sh status'
+    Write-Host '最後に、管理者でない Git Bash を開いて次を実行し、エラーにならずリンク (->) が表示されることを確認してください:' -ForegroundColor Yellow
+    Write-Host '  MSYS=winsymlinks:nativestrict ln -s ~/dotfiles/README.md /tmp/devmode-check && ls -l /tmp/devmode-check && rm /tmp/devmode-check'
     Write-Host '  (失敗する場合は、設定 -> システム -> 開発者向け で開発者モードが有効か確認し、再起動してください)'
 }
 

@@ -66,6 +66,14 @@ irm https://raw.githubusercontent.com/Nepenthes-1123/dotfiles/main/bootstrap.ps1
 2. 再起動し、スタートメニューから Ubuntu を開いてユーザー名とパスワードを作成する
 3. 同じコマンドをもう一度実行する。Windows 側の setup (WezTerm / VSCode / フォントと、その設定のリンク) と、
    WSL の中の setup (zsh・mise・CLI ツールとその設定) を続けて行う
+4. 管理者でない Git Bash で、開発者モードでシンボリックリンクを作れることを確認する
+   (bootstrap から起動した Git Bash は管理者権限で動くため、開発者モードが無くてもリンクを作れてしまう)
+
+   ```bash
+   MSYS=winsymlinks:nativestrict ln -s ~/dotfiles/README.md /tmp/devmode-check && ls -l /tmp/devmode-check && rm /tmp/devmode-check
+   ```
+
+   失敗する場合は、設定 → システム → 開発者向け で開発者モードが有効か確認し、再起動する
 
 `%UserProfile%\.wslconfig` は雛形 (`wsl/.wslconfig.example`) からコピーされるので、PC に合わせてメモリの上限などを変える。
 作業用のリポジトリは WSL の中 (`~/` 以下) に clone する (Windows 側のファイルを `/mnt/c/...` から扱うと遅い)。

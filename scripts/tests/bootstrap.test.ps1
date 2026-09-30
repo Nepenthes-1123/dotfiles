@@ -36,6 +36,7 @@ function Invoke-Scenario {
         [bool]$WingetFails = $false,
         [bool]$WslInstalled = $false,
         [bool]$WslInstallFails = $false,
+        [bool]$ShutdownFails = $false,
         # WSL の既定ユーザー (ユーザー作成前は root)
         [string]$WslUser = 'taro',
         # DOTFILES_BRANCH ($null なら未指定)
@@ -101,6 +102,10 @@ esac
             }
             if ($args[0] -eq '--install') {
                 $global:LASTEXITCODE = if ($WslInstallFails) { 1 } else { 0 }
+                return
+            }
+            if ($args[0] -eq '--shutdown') {
+                $global:LASTEXITCODE = if ($ShutdownFails) { 1 } else { 0 }
                 return
             }
             if ($args[2] -eq '-e' -and $args[3] -eq 'whoami') {
@@ -204,6 +209,17 @@ try {
         'RESULT ok'
     )
 
+    Assert-Calls 'wsl --shutdown が失敗しても止めずに続ける' (Invoke-Scenario -Root (Join-Path $work 'shutdown-fails') -WslInstalled $true -ShutdownFails $true) @(
+        $reg
+        $wingetGit
+        'wsl.exe --list --quiet'
+        $whoami
+        'git.exe clone --branch test-branch https://github.com/Nepenthes-1123/dotfiles.git <root>/home/dotfiles'
+        'wsl.exe --shutdown'
+        'bash.exe -lc ~/dotfiles/scripts/dot.sh setup'
+        (WslSetup 'test-branch')
+        'RESULT ok'
+    )
     Assert-Calls '管理者でなければ何もしない' (Invoke-Scenario -Root (Join-Path $work 'not-admin') -IsAdmin $false) @(
         'RESULT error: 管理者の PowerShell で実行してください (開発者モードの設定と WSL のインストールに必要)'
     )
