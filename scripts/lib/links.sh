@@ -7,6 +7,10 @@
 
 LINKS_CONF="${SCRIPTS_DIR}/links.conf"
 
+# links.conf では管理しないが、setup が dotfiles へのリンクとして作るもの (prune の対象外)
+#   ~/.gitconfig.local: gitconfig_local_setup で個人用を選ぶと git/.gitconfig.private へのリンクになる
+PRUNE_KEEP=("${HOME}/.gitconfig.local")
+
 # ${VAR} 形式の変数を PATH_VARS の値に置換する
 expand_path_vars() {
   local s="$1" v
@@ -112,6 +116,14 @@ links_status() {
   return "$ng"
 }
 
+is_kept() {
+  local k
+  for k in "${PRUNE_KEEP[@]}"; do
+    [[ "$k" != "$1" ]] || return 0
+  done
+  return 1
+}
+
 is_managed_dst() {
   local d
   for d in "${LINK_DST[@]}"; do
@@ -138,6 +150,7 @@ links_prune() {
     while IFS= read -r l; do
       target="$(readlink "$l")"
       [[ "$target" == "${DOT_DIR}/"* ]] || continue
+      ! is_kept "$l" || continue
       if [[ ! -e "$l" ]] || ! is_managed_dst "$l"; then
         rm -f "$l"
         info "removed  ${l} -> ${target}"
