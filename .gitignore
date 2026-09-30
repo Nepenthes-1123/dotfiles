@@ -11,6 +11,7 @@
 !README.md
 !.gitignore
 !.shellcheckrc
+!.gitattributes
 
 # scripts セッティング
 !scripts/**

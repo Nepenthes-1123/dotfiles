@@ -1,0 +1,5 @@
+# 改行コードは git の設定 (core.autocrlf) に関係なく LF で取り出す。
+# Git for Windows は既定で core.autocrlf=true のため、Windows 側で clone すると
+# シェルスクリプトや設定ファイルが CRLF になり、Git Bash で scripts/dot.sh が動かなくなる。
+# バイナリ (画像など) は git が自動で判定して変換しない。
+* text=auto eol=lf
