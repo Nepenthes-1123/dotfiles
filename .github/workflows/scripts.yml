@@ -21,15 +21,21 @@ jobs:
       - uses: actions/checkout@v4
       - run: shellcheck scripts/dot.sh bootstrap.sh
 
-  # bootstrap.ps1 は Windows PowerShell 5.1 (Windows 標準) で実行されるため、5.1 で構文を確認する
+  # bootstrap.ps1 は Windows 標準の Windows PowerShell 5.1 で `irm <url> | iex` として実行されるため、
+  # 同じ経路 (GitHub から irm で取得した文字列) を 5.1 で構文確認する。
+  # ファイルを直接読む ParseFile は BOM の無い UTF-8 を ANSI として読むため使わない
   powershell:
     runs-on: windows-latest
+    env:
+      BOOTSTRAP_URL: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.event.pull_request.head.sha || github.sha }}/bootstrap.ps1
     steps:
-      - uses: actions/checkout@v4
-      - shell: powershell
+      - name: Parse (irm と同じ経路)
+        shell: powershell
         run: |
+          $src = Invoke-RestMethod $env:BOOTSTRAP_URL
+          if ([int][char]$src[0] -eq 0xFEFF) { Write-Host "bootstrap.ps1 starts with a BOM"; exit 1 }
           $errors = $null
-          [System.Management.Automation.Language.Parser]::ParseFile("$PWD\bootstrap.ps1", [ref]$null, [ref]$errors) | Out-Null
+          [System.Management.Automation.Language.Parser]::ParseInput($src, [ref]$null, [ref]$errors) | Out-Null
           if ($errors) {
             $errors | ForEach-Object { Write-Host "$($_.Extent.StartLineNumber): $($_.Message)" }
             exit 1
@@ -42,7 +48,8 @@ jobs:
             Write-Host "PSScriptAnalyzer is not installed on this runner. skip"
             exit 0
           }
-          $results = Invoke-ScriptAnalyzer -Path bootstrap.ps1 -Severity Error, Warning
+          $src = Invoke-RestMethod $env:BOOTSTRAP_URL
+          $results = Invoke-ScriptAnalyzer -ScriptDefinition $src -Severity Error, Warning
           $results | Format-Table -AutoSize RuleName, Severity, Line, Message | Out-String -Width 200 | Write-Host
           if ($results | Where-Object Severity -eq 'Error') { exit 1 }
 

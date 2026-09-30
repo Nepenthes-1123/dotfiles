@@ -8,8 +8,18 @@
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '../..')
-$bootstrapSrc = (Get-Content -Raw (Join-Path $repoRoot 'bootstrap.ps1')) -replace '(?m)^Invoke-Bootstrap\s*$', ''
+$bootstrapPath = Join-Path $repoRoot 'bootstrap.ps1'
+$bootstrapSrc = (Get-Content -Raw $bootstrapPath) -replace '(?m)^Invoke-Bootstrap\s*$', ''
 $failures = 0
+
+# irm | iex は先頭の BOM を取り除かずに実行して失敗するため、BOM が付いていないことを確認する
+$head = [IO.File]::ReadAllBytes($bootstrapPath)[0..2]
+if ($head[0] -eq 0xEF -and $head[1] -eq 0xBB -and $head[2] -eq 0xBF) {
+    Write-Host 'FAIL bootstrap.ps1 に BOM が付いている (irm | iex で実行できなくなる)' -ForegroundColor Red
+    $failures++
+} else {
+    Write-Host 'ok   bootstrap.ps1 に BOM が付いていない' -ForegroundColor Green
+}
 
 # 実行ファイルのスタブを作る (呼ばれた引数を calls に記録する)
 function New-Stub([string]$Path, [string]$Body) {

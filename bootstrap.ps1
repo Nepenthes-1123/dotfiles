@@ -1,6 +1,15 @@
+# NOTE: Run this via `irm <url> | iex` (see below). Do not run this file directly with
+# Windows PowerShell 5.1: it reads BOM-less UTF-8 files in the system ANSI code page,
+# which breaks the Japanese strings. A BOM is not added because `irm | iex` keeps it
+# and fails on it.
+#
 # 新しい Windows PC で dotfiles をセットアップする入口。管理者の PowerShell で実行する。
 #
 #   irm https://raw.githubusercontent.com/Nepenthes-1123/dotfiles/main/bootstrap.ps1 | iex
+#
+# irm は UTF-8 として読むため日本語が壊れない。ファイルを直接実行すると Windows PowerShell 5.1 は
+# BOM の無い UTF-8 を ANSI (日本語環境では Shift_JIS) として読み、文字列が壊れて構文エラーになる。
+# BOM を付けると今度は irm | iex が先頭の BOM で失敗するため、BOM は付けない。
 #
 # 何度実行してもよい。済んでいる手順は飛ばす。
 #   1 回目: 開発者モード・Git for Windows・WSL (Ubuntu) を入れて止まる。
