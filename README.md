@@ -84,7 +84,9 @@ irm https://raw.githubusercontent.com/Nepenthes-1123/dotfiles/main/bootstrap.ps1
 2. `nvim` を起動する。初回はプラグインのインストール確認が出て、その後 Mason が LSP を入れる
 3. GitHub CLI を使う場合は `gh auth login` でログインする (setup では聞かない)。
    Windows では WSL の中で実行する (Windows 側でログインしても WSL の中の `gh` には反映されない)。
-   ブラウザが開かない場合は、表示されたワンタイムコードを控えて URL を Windows 側のブラウザで開き、コードを入力する
+   認証方法は `Paste an authentication token` を選ぶのが確実 (WSL ではブラウザ経路が
+   Linux 側のブラウザを起動しようとして待たされることがある)。
+   ブラウザ経路を使う場合は、表示されたワンタイムコードを控えて URL を Windows 側のブラウザで開き、コードを入力する
 
 ### 環境変数
 
