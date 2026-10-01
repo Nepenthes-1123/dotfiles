@@ -37,6 +37,7 @@ function Invoke-Scenario {
         [bool]$WslInstalled = $false,
         [bool]$WslInstallFails = $false,
         [bool]$ShutdownFails = $false,
+        [bool]$PullFails = $false,
         # WSL の既定ユーザー (ユーザー作成前は root)
         [string]$WslUser = 'taro',
         # DOTFILES_BRANCH ($null なら未指定)
@@ -50,6 +51,7 @@ function Invoke-Scenario {
     $env:ProgramFiles = Join-Path $Root 'ProgramFiles'
     $env:DOTFILES_BRANCH = if ($Branch) { $Branch } else { $null }
     $env:DOTFILES_WSL_DISTRO = $null
+    $env:PULL_FAILS = if ($PullFails) { '1' } else { $null }
 
     # テストの本体は別のスコープで実行し、モックが他のシナリオに漏れないようにする
     & {
@@ -86,6 +88,7 @@ clone) d="$5"; mkdir -p "$d/.git" "$d/wsl"; echo example > "$d/wsl/.wslconfig.ex
   case "$3" in
   rev-parse) cat "$2/.git/branch" ;;
   switch) echo "$4" > "$2/.git/branch" ;;
+  pull) [ -z "$PULL_FAILS" ] || exit 1 ;;
   esac
   ;;
 esac
@@ -219,6 +222,14 @@ try {
         'bash.exe -lc ~/dotfiles/scripts/dot.sh setup'
         (WslSetup 'test-branch')
         'RESULT ok'
+    )
+    Assert-Calls 'pull --ff-only に失敗したら、復帰手順を示して止まる' (Invoke-Scenario -Root $root -WslInstalled $true -Branch $null -PullFails $true) @(
+        $reg
+        'wsl.exe --list --quiet'
+        $whoami
+        'git.exe -C <root>/home/dotfiles rev-parse --abbrev-ref HEAD'
+        'git.exe -C <root>/home/dotfiles pull --ff-only'
+        "RESULT error: <root>/home/dotfiles を更新できませんでした。未コミットの変更が無いことを確認し、リモートの履歴が書き換えられている場合は git -C <root>/home/dotfiles fetch origin; git -C <root>/home/dotfiles reset --hard '@{u}' を実行してから再実行してください"
     )
     Assert-Calls '管理者でなければ何もしない' (Invoke-Scenario -Root (Join-Path $work 'not-admin') -IsAdmin $false) @(
         'RESULT error: 管理者の PowerShell で実行してください (開発者モードの設定と WSL のインストールに必要)'

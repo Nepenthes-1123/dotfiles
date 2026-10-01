@@ -67,7 +67,9 @@ main() {
       fi
     fi
     log "既存の dotfiles を更新: ${DOTFILES_DIR}"
-    git -C "$DOTFILES_DIR" pull --ff-only || die "更新に失敗しました。${DOTFILES_DIR} の変更を確認してください"
+    # ブランチの履歴が書き換えられた (force-push) 場合も fast-forward できずにここで止まる
+    git -C "$DOTFILES_DIR" pull --ff-only ||
+      die "更新に失敗しました。未コミットの変更が無いことを確認し、リモートの履歴が書き換えられている場合は 'git -C ${DOTFILES_DIR} fetch origin && git -C ${DOTFILES_DIR} reset --hard @{u}' を実行してから再実行してください"
   elif [[ -e "$DOTFILES_DIR" ]]; then
     die "${DOTFILES_DIR} が既にあり、git のリポジトリではありません。DOTFILES_DIR で別の場所を指定してください"
   else

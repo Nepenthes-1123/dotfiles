@@ -132,6 +132,10 @@ function Invoke-Bootstrap {
         }
         Write-Step "既存の dotfiles を更新: $dotfilesDir"
         & $gitExe -C $dotfilesDir pull --ff-only
+        if ($LASTEXITCODE -ne 0) {
+            # ブランチの履歴が書き換えられた (force-push) 場合も fast-forward できずにここで止まる
+            throw "$dotfilesDir を更新できませんでした。未コミットの変更が無いことを確認し、リモートの履歴が書き換えられている場合は git -C $dotfilesDir fetch origin; git -C $dotfilesDir reset --hard '@{u}' を実行してから再実行してください"
+        }
     } else {
         Write-Step "dotfiles を clone: $dotfilesDir ($branch)"
         & $gitExe clone --branch $branch $repoUrl $dotfilesDir
