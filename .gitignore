@@ -29,6 +29,7 @@
 !zsh/.zsh.d/prompt.zsh
 !zsh/.zsh.d/wezterm.zsh
 !zsh/.zsh.d/mise.zsh
+!zsh/.zprofile
 
 # wezterm セッティング
 !wezterm/WEZTERM_SETUP.md
