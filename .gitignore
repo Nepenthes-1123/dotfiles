@@ -50,15 +50,10 @@ wezterm/.wezterm/assets/
 !vscode/keybindings.json
 !vscode/snippets/c.json
 !vscode/snippets/latex.json
-!vscode/extensions.txt
 
 # git セッティング
 !git/.gitconfig
 !git/.gitconfig.private
-
-# githooks セッティング
-!.githooks/pre-commit
-!.githooks/post-merge
 
 # github セッティング
 !.github/workflows/scripts.yml

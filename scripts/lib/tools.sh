@@ -1,6 +1,6 @@
 # shellcheck shell=bash
 # パッケージマネージャー以外で入れるもの: mise のツール・zsh プラグイン・Neovim プラグイン・
-# VSCode 拡張・非公開素材・git のユーザー設定
+# 非公開素材・git のユーザー設定
 
 # --- mise (mise/config.toml, ~/.config/mise にリンク済みであること) ---
 
@@ -61,21 +61,6 @@ nvim_plugins_update() {
   # force = true で確認バッファを出さずに更新し、nvim-pack-lock.json を書き換える
   nvim --headless "+lua vim.pack.update(nil, { force = true })" +qa ||
     warn "Neovim プラグインの更新に失敗しました"
-}
-
-# --- VSCode 拡張 (vscode/extensions.txt) ---
-
-vscode_extensions_install() {
-  if ! has code; then
-    warn "code コマンドが見つからないため VSCode 拡張のインストールを省略します"
-    return 0
-  fi
-  local ext
-  while IFS= read -r ext || [[ -n "$ext" ]]; do
-    ext="$(trim "$ext")"
-    [[ -n "$ext" ]] || continue
-    code --install-extension "$ext" --force >/dev/null || warn "${ext} のインストールに失敗しました"
-  done <"${DOT_DIR}/vscode/extensions.txt"
 }
 
 # --- 非公開素材 (wezterm の背景アニメーション) ---

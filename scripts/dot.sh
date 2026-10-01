@@ -25,8 +25,6 @@ usage() {
              dotfiles を指す壊れたリンク・links.conf に無いリンクを削除する (-n は削除せず対象を表示)
   adopt <設定ファイル> <dotfiles 内の保存先>
              既存の設定ファイルを dotfiles に移してリンクに置き換え、links.conf に追記する
-  vscode-extensions
-             vscode/extensions.txt の拡張をインストールする
   assets     非公開素材 (wezterm の背景アニメーション) を取得・更新する
   help       このヘルプを表示する
 
@@ -81,8 +79,6 @@ cmd_update() {
     nvim_plugins_update
   fi
   if want_gui; then
-    log "VSCode 拡張を更新"
-    vscode_extensions_install
     log "非公開素材を更新"
     assets_fetch
   fi
@@ -100,7 +96,6 @@ main() {
   status) links_status ;;
   prune) links_prune "$@" ;;
   adopt) links_adopt "$@" ;;
-  vscode-extensions) vscode_extensions_install ;;
   assets) assets_fetch ;;
   help | -h | --help) usage ;;
   *)

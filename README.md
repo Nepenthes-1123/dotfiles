@@ -13,7 +13,7 @@ macOS・Ubuntu・Windows (WSL2) で共通に使う設定ファイル一式。
 | `zsh/` | `.zshrc` と `.zsh.d/` (読み込み順は `.zsh.d/priorities.conf`) | |
 | `nvim/` | Neovim (v0.12, `vim.pack` + Mason) | [nvim/README.md](nvim/README.md) |
 | `wezterm/` | WezTerm (Windows では WSL の zsh を開く) | [wezterm/WEZTERM_SETUP.md](wezterm/WEZTERM_SETUP.md) |
-| `vscode/` | VSCode の settings / keybindings / snippets / 拡張の一覧 | |
+| `vscode/` | VSCode の settings / keybindings / snippets | |
 | `git/` | `.gitconfig` (共通) と `.gitconfig.private` (個人用のユーザー設定) | |
 | `starship/` | プロンプト | |
 | `herdr/` | herdr (エージェントマルチプレクサ) | |
@@ -27,7 +27,7 @@ macOS・Ubuntu・Windows (WSL2) で共通に使う設定ファイル一式。
 | --- | --- | --- |
 | OS のパッケージマネージャー (brew / winget / apt) | GUI アプリ (WezTerm / VSCode)・フォント・git・zsh・mise 本体 | `scripts/packages.conf` |
 | mise | CLI ツール (neovim / node / ripgrep / gh / starship / fzf / herdr)。バージョンは固定せず常に最新 | `mise/config.toml` |
-| `scripts/dot.sh` | 上の 2 つの呼び出し・シンボリックリンク・zsh プラグイン・VSCode 拡張・git のユーザー設定 | `scripts/links.conf` / `scripts/zsh_plugins.conf` |
+| `scripts/dot.sh` | 上の 2 つの呼び出し・シンボリックリンク・zsh プラグイン・git のユーザー設定 | `scripts/links.conf` / `scripts/zsh_plugins.conf` |
 | Neovim | プラグイン (`vim.pack`)・LSP / フォーマッター (Mason) | `nvim/` |
 
 Windows では GUI アプリだけを Windows 側に置き、シェルと CLI ツールは WSL2 の中 (Ubuntu) で使う。
