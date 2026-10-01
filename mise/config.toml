@@ -18,3 +18,7 @@ herdr = "latest"
 neovim = "latest"
 # Mason が npm 経由で LSP / フォーマッターをインストールするために必要
 node = "lts"
+# git の TUI (hunk 単位の staging・ログの閲覧)
+lazygit = "latest"
+# nvim-treesitter がパーサーをビルドするのに使う
+tree-sitter = "latest"
