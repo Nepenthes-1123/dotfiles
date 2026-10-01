@@ -48,6 +48,8 @@ CLI ツール (ripgrep / gh / starship / fzf / herdr / neovim / node) は `packa
 
 `~/.zshenv` は dotfiles からリンクするため、rustup など `~/.zshenv` に追記するツールの設定は `~/.zshenv.local` に移す (`link` で退避された `~/.zshenv.bak.<日時>` から移す)。`~/.zshrc` 用の `~/.zshrc.local` と同じ扱い。
 
+`~/.zprofile` も同様にリンクするため、マシンごとに違う PATH の設定は `~/.zprofile.local` に書く。とくに macOS の Homebrew はインストーラが `~/.zprofile` に `eval "$(brew shellenv)"` を追記するので、`link` 前から Homebrew を使っている環境では `~/.zprofile.bak.<日時>` から移す必要がある (移さないと `brew` と brew で入れた mise が PATH から消える)。`~/.zprofile.local` は mise の shims より先に読まれるため、mise のツールが Homebrew のものより優先される。
+
 ## Windows (WSL2) での使い方
 
 Windows では、GUI アプリは Windows 側で、シェル・CLI ツールは WSL2 の中 (Ubuntu) で使う。

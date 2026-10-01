@@ -1,3 +1,8 @@
+## .zprofile.local が存在する場合は読み込む
+# Homebrew の `brew shellenv` など、マシンごとに違う PATH の設定はこちらに書く。
+# mise の shims より先に読むことで、shims が常に前に来る (mise のツールが優先される)。
+[ -f "${HOME}/.zprofile.local" ] && source "${HOME}/.zprofile.local"
+
 ## mise の shims を PATH に載せる (ログインシェル用)
 # .zshrc は対話シェルのときだけ読まれるため、WezTerm (shell.lua) や herdr 連携が使う
 # `zsh -l -c` では .zsh.d/mise.zsh の `mise activate zsh` が走らず、mise のツールが見つからない。
