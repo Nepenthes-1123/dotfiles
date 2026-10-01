@@ -22,9 +22,12 @@ done
 ## 未分割
 
 ## タイトルバーに現在のディレクトリを表示
-precmd() {
+# precmd() を直接定義すると他の precmd を上書きしてしまうため、add-zsh-hook で登録する
+_set_title_to_cwd() {
     print -Pn "\e]0; %3~\a"
 }
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _set_title_to_cwd
 
 
 ## カラー設定
