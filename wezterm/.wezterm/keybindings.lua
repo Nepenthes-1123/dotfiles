@@ -2,6 +2,7 @@ local wezterm = require("wezterm")
 local act = wezterm.action
 
 local herdr = require("herdr")
+local shell = require("shell")
 local conditional_action = herdr.conditional_action
 local conditional_resize_action = herdr.conditional_resize_action
 
@@ -25,14 +26,14 @@ return {
 		{ key = "d", mods = "SUPER", action = act.ShowDebugOverlay },
 		{ key = "M", mods = "SHIFT|CTRL", action = act.Hide },
 		{ key = "m", mods = "SUPER", action = act.Hide },
-		{ key = "N", mods = "SHIFT|CTRL", action = act.SpawnWindow },
-		{ key = "n", mods = "SUPER", action = act.SpawnWindow },
+		{ key = "N", mods = "SHIFT|CTRL", action = shell.spawn_window_action() },
+		{ key = "n", mods = "SUPER", action = shell.spawn_window_action() },
 		{ key = "P", mods = "SHIFT|CTRL", action = act.ActivateCommandPalette },
 		{ key = "p", mods = "SUPER", action = act.ActivateCommandPalette },
 		{ key = "R", mods = "SHIFT|CTRL", action = act.ReloadConfiguration },
 		{ key = "r", mods = "SUPER", action = act.ReloadConfiguration },
-		{ key = "T", mods = "SHIFT|CTRL", action = conditional_action(act.SpawnTab("CurrentPaneDomain"), "c") },
-		{ key = "t", mods = "SUPER", action = conditional_action(act.SpawnTab("CurrentPaneDomain"), "c") },
+		{ key = "T", mods = "SHIFT|CTRL", action = conditional_action(shell.spawn_tab_action(), "c") },
+		{ key = "t", mods = "SUPER", action = conditional_action(shell.spawn_tab_action(), "c") },
 		{
 			key = "U",
 			mods = "SHIFT|CTRL",
@@ -181,12 +182,12 @@ return {
 		{
 			key = ",",
 			mods = "CTRL",
-			action = conditional_action(act.SplitVertical({ domain = "CurrentPaneDomain" }), "-"),
+			action = conditional_action(shell.split_action("Vertical"), "-"),
 		},
 		{
 			key = ".",
 			mods = "CTRL",
-			action = conditional_action(act.SplitHorizontal({ domain = "CurrentPaneDomain" }), "v"),
+			action = conditional_action(shell.split_action("Horizontal"), "v"),
 		},
 		-- leader + q で Pane を閉じる
 		{
@@ -295,7 +296,7 @@ return {
 		{
 			mods = "LEADER|SHIFT",
 			key = "T",
-			action = act.SpawnTab("CurrentPaneDomain"),
+			action = shell.spawn_tab_action(),
 		},
 	},
 

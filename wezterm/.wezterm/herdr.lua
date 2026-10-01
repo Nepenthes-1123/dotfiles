@@ -5,7 +5,29 @@ local shell = require("shell")
 local M = {}
 local pane_state_cache = {}
 
+-- herdr を起動したペインを覚えておく。
+-- WSL のペインでは WezTerm から見えるのは wsl.exe だけで、中で動く herdr は
+-- プロセスからは判定できない (下の is_herdr_pane のプロセスの確認は Windows 側・mac・Linux 向け)。
+-- 設定を再読み込みしても消えないよう wezterm.GLOBAL に置く
+function M.mark_herdr_pane(pane)
+	if not pane then
+		return
+	end
+	local panes = wezterm.GLOBAL.herdr_panes or {}
+	panes[tostring(pane:pane_id())] = true
+	wezterm.GLOBAL.herdr_panes = panes
+end
+
+local function is_marked_herdr_pane(pane)
+	local panes = wezterm.GLOBAL.herdr_panes
+	return panes ~= nil and panes[tostring(pane:pane_id())] == true
+end
+
 local function is_herdr_pane(pane)
+	if is_marked_herdr_pane(pane) then
+		return true
+	end
+
 	local pane_id = pane:pane_id()
 	local current_title = pane:get_title() or ""
 	local pinfo = pane:get_foreground_process_info()
@@ -126,7 +148,7 @@ function M.session_selector_action()
 	return wezterm.action_callback(function(window, pane)
 		-- herdr連携が無効な場合は通常のタブ追加（フォールバック）
 		if not M.ENABLE_HERDR_INTEGRATION then
-			window:perform_action(act.SpawnTab("CurrentPaneDomain"), pane)
+			window:perform_action(shell.spawn_tab_action(), pane)
 			return
 		end
 
@@ -164,7 +186,7 @@ function M.session_selector_action()
 								description = "Enter new herdr session name:",
 								action = wezterm.action_callback(function(w, _, line)
 									if line and line ~= "" then
-										local spawn_ok, new_tab = pcall(function()
+										local spawn_ok, new_tab, new_pane = pcall(function()
 											return w:mux_window():spawn_tab({
 												args = shell.spawn_args("herdr --session " .. line),
 												cwd = shell.spawn_cwd(),
@@ -172,6 +194,7 @@ function M.session_selector_action()
 											})
 										end)
 										if spawn_ok and new_tab then
+											M.mark_herdr_pane(new_pane)
 											pcall(function()
 												new_tab:set_title(line)
 											end)
@@ -185,7 +208,7 @@ function M.session_selector_action()
 						)
 					else
 						-- 既存セッションにアタッチ
-						local spawn_ok, new_tab = pcall(function()
+						local spawn_ok, new_tab, new_pane = pcall(function()
 							return inner_window:mux_window():spawn_tab({
 								args = shell.spawn_args("herdr --session " .. id),
 								cwd = shell.spawn_cwd(),
@@ -193,6 +216,7 @@ function M.session_selector_action()
 							})
 						end)
 						if spawn_ok and new_tab then
+							M.mark_herdr_pane(new_pane)
 							pcall(function()
 								new_tab:set_title(id)
 							end)

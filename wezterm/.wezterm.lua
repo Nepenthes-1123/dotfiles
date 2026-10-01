@@ -25,9 +25,10 @@ end
 local mux = wezterm.mux
 wezterm.on("gui-startup", function(cmd)
 	local args = (cmd and cmd.args) or shell.spawn_args("herdr --session default")
-	local tab = mux.spawn_window({ args = args })
+	local tab, pane = mux.spawn_window({ args = args })
 	if not cmd or not cmd.args then
 		tab:set_title("default")
+		require("herdr").mark_herdr_pane(pane)
 	end
 end)
 
