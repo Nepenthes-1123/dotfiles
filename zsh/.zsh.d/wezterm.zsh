@@ -79,8 +79,9 @@ function _wezterm_report_cwd() {
   printf '\033]7;file://%s%s\033\\' "${HOST}" "$(_wezterm_osc7_path "$PWD")"
 }
 
-# Windows 側の zsh (MSYS2 / Cygwin) のパス (/c/Users/...) は WezTerm が扱えないため送らない
-case "${OSTYPE}" in
-msys* | cygwin*) ;;
-*) add-zsh-hook precmd _wezterm_report_cwd ;;
-esac
+# Windows 側の zsh (MSYS2 / Cygwin) のパス (/c/Users/...) は WezTerm が扱えないため送らない。
+# Linux のコンソール・dumb (エスケープシーケンスを解釈しない端末) にも送らない。
+# (.zshrc が後で TERM を上書きするため、読み込む時点の TERM で判定する)
+if [[ "${OSTYPE}" != (msys|cygwin)* && "${TERM}" != (linux|dumb) ]]; then
+  add-zsh-hook precmd _wezterm_report_cwd
+fi

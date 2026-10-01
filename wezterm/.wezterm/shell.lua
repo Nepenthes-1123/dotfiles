@@ -131,16 +131,21 @@ local function pane_cwd_path(pane)
 	return cwd:match("^file://[^/]*(/.*)$")
 end
 
--- 今のペインと同じドメインで新しいタブ・ペイン・ウィンドウを開くときの SpawnCommand。
--- WSL のペインでは、シェルが OSC 7 (zsh/.zsh.d/wezterm.zsh) でカレントディレクトリを知らせていれば
--- それを引き継ぐ。知らせていない (herdr の中など) と WezTerm には wsl.exe の
--- カレントディレクトリ (C:/Users/...) しか見えず、/mnt/c/... で開いてしまうため、WSL のホームで開く
-function M.spawn_command(pane)
-	local command = { domain = "CurrentPaneDomain" }
+-- 新しいタブ・ペイン・ウィンドウを開くときの SpawnCommand。domain の既定は今のペインと同じドメイン。
+-- WSL のペインでは、WezTerm が URL (file://<WSL のホスト名>/path) から Windows のパスに変換すると
+-- 正しい場所にならないため、パスを取り出して明示的に渡す。
+-- シェルが OSC 7 (zsh/.zsh.d/wezterm.zsh) で知らせていればその場所、知らせていない (herdr の中など) と
+-- WezTerm には wsl.exe のカレントディレクトリ (C:/Users/...) しか見えないため、WSL のホームで開く
+function M.spawn_command(pane, domain)
+	local command = { domain = domain or "CurrentPaneDomain" }
 	if M.wsl_domain and pane:get_domain_name() == M.wsl_domain.name then
 		local path = pane_cwd_path(pane)
 		-- /C:/Users/... のような Windows のパスは WSL の中のパスではない
-		if not path or path:match("^/%a:") then
+		if path and path:sub(1, 1) == "/" and not path:match("^/%a:") then
+			command.cwd = path:gsub("%%(%x%x)", function(hex)
+				return string.char(tonumber(hex, 16))
+			end)
+		else
 			command.cwd = "~"
 		end
 	end
@@ -156,7 +161,8 @@ end
 
 function M.spawn_window_action()
 	return wezterm.action_callback(function(window, pane)
-		window:perform_action(wezterm.action.SpawnCommandInNewWindow(M.spawn_command(pane)), pane)
+		-- 新しいウィンドウは従来の SpawnWindow と同じく既定のドメインで開く
+		window:perform_action(wezterm.action.SpawnCommandInNewWindow(M.spawn_command(pane, "DefaultDomain")), pane)
 	end)
 end
 
