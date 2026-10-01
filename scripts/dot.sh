@@ -17,7 +17,7 @@ usage() {
   cat <<'EOF'
 使い方: scripts/dot.sh <command>
 
-  setup      新しい環境を構築する (packages → assets → link → mise → zsh-plugins → gitconfig)
+  setup      新しい環境を構築する (packages → assets → link → mise → zsh-plugins → gitconfig → chsh → gh → status)
   update     インストール済みのものを更新する
   link       scripts/links.conf のリンクを作成する (既存の実ファイルは .bak.<日時> に退避)
   status     各リンクの状態を表示する (すべて正常なら終了コード 0)
@@ -49,11 +49,18 @@ cmd_setup() {
     # mise の設定 (~/.config/mise) はリンク後でないと読めないため link の後に実行する
     log "mise でツールをインストール"
     mise_install
+    mise_activate_shims
     log "zsh プラグインを取得"
     zsh_plugins_sync
     log "git のユーザー設定"
     gitconfig_local_setup
+    log "ログインシェル"
+    login_shell_setup
+    log "GitHub CLI"
+    gh_auth_check
   fi
+  log "リンクの状態"
+  links_status || warn "正常でないリンクがあります。'scripts/dot.sh link' で修復できます"
   if [[ "$OS" == windows ]]; then
     log "Windows 側の設定が完了しました。続けて WSL の中で dotfiles を clone し、'scripts/dot.sh setup' を実行してください"
   else

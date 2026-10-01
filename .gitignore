@@ -12,6 +12,8 @@
 !.gitignore
 !.shellcheckrc
 !.gitattributes
+!bootstrap.sh
+!bootstrap.ps1
 
 # scripts セッティング
 !scripts/**
@@ -27,6 +29,7 @@
 !zsh/.zsh.d/prompt.zsh
 !zsh/.zsh.d/wezterm.zsh
 !zsh/.zsh.d/mise.zsh
+!zsh/.zprofile
 
 # wezterm セッティング
 !wezterm/WEZTERM_SETUP.md

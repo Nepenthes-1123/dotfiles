@@ -12,9 +12,14 @@ mise_install() {
   mise install || warn "mise でのインストールに一部失敗しました。'mise install' を再実行してください"
 }
 
+# mise で入れたツールを、このプロセス (setup の残りの手順) から使えるようにする
+mise_activate_shims() {
+  has mise || return 0
+  eval "$(mise activate bash --shims)"
+}
+
 mise_upgrade() {
   has mise || return 0
-  # 更新すると mise/mise.lock が書き換わるので、差分をコミットして他の環境にも反映する
   mise upgrade || warn "mise でのツール更新に一部失敗しました"
 }
 
@@ -81,9 +86,13 @@ assets_fetch() {
   # 取得できない環境では背景アニメーションが省略されるだけで、他の設定には影響しない。
   local dir="${DOT_DIR}/wezterm/.wezterm/assets"
   local url="git@github.com:Nepenthes-1123/dotfiles-assets.git"
+  # 新しい PC では ~/.ssh/known_hosts が空で、ssh がホスト鍵の確認を求めて入力待ちになる。
+  # その確認は下の 2>/dev/null で見えないため、画面に何も出ないまま止まってしまう。
+  # 未知のホスト鍵は確認なしで登録し (accept-new)、鍵が無いなどで認証できなければ待たずに失敗させる (BatchMode)
+  local ssh_cmd="ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10"
   if [[ -d "${dir}/.git" ]]; then
-    git -C "$dir" pull --quiet --ff-only || warn "素材の更新に失敗しました"
-  elif ! git clone --quiet "$url" "$dir" 2>/dev/null; then
+    GIT_SSH_COMMAND="$ssh_cmd" git -C "$dir" pull --quiet --ff-only || warn "素材の更新に失敗しました"
+  elif ! GIT_SSH_COMMAND="$ssh_cmd" git clone --quiet "$url" "$dir" 2>/dev/null; then
     info "素材を取得できないため、背景アニメーションは省略されます"
   fi
 }
@@ -116,4 +125,41 @@ gitconfig_local_setup() {
     ;;
   *) info "skip     ${dst}" ;;
   esac
+}
+
+# --- ログインシェル (zsh に切り替える) ---
+
+login_shell_setup() {
+  has zsh || return 0
+  local user current zsh_path
+  user="$(id -un)"
+  if [[ "$OS" == mac ]]; then
+    current="$(dscl . -read "/Users/${user}" UserShell 2>/dev/null | awk '{print $2}')"
+  else
+    current="$(getent passwd "$user" | cut -d: -f7)"
+  fi
+  if [[ "$(basename "${current:-}")" == zsh ]]; then
+    info "ok       ログインシェルは zsh (${current})"
+    return 0
+  fi
+  zsh_path="$(command -v zsh)"
+  if ! grep -qx "$zsh_path" /etc/shells 2>/dev/null; then
+    warn "${zsh_path} が /etc/shells に無いため切り替えられません"
+    return 0
+  fi
+  info "ログインシェルを ${current:-不明} から ${zsh_path} に切り替えます (パスワードを聞かれます)"
+  chsh -s "$zsh_path" || warn "切り替えに失敗しました。後で 'chsh -s ${zsh_path}' を実行してください"
+}
+
+# --- GitHub CLI のログイン状態 (octo.nvim で使う) ---
+
+gh_auth_check() {
+  has gh || return 0
+  if gh auth status >/dev/null 2>&1; then
+    info "ok       GitHub CLI にログイン済み"
+    return 0
+  fi
+  # gh auth login はブラウザの起動やデバイス認可の完了を待つため、環境によっては
+  # setup 全体が止まったままになる。setup の時点では gh は不要なので案内だけにする
+  info "skip     GitHub CLI は未ログインです。使う前に 'gh auth login' を実行してください"
 }

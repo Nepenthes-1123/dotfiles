@@ -17,6 +17,7 @@ packages_upgrade() {
   case "$OS" in
   windows)
     for p in "${win_packages[@]}"; do
+      p="${p%%|*}"
       # 更新が無い場合も非 0 で終わるため失敗扱いにしない
       if winget upgrade --id "$p" -e --source winget --accept-package-agreements --accept-source-agreements >/dev/null 2>&1; then
         info "upgraded ${p}"
@@ -41,13 +42,16 @@ packages_upgrade() {
 
 _win_install() {
   has winget || die "winget が見つかりません。App Installer をインストールしてから再実行してください"
-  local p
-  for p in "${win_packages[@]}"; do
+  local entry p scope scope_args
+  for entry in "${win_packages[@]}"; do
+    IFS='|' read -r p scope <<<"$entry"
     if winget list --id "$p" -e >/dev/null 2>&1; then
       info "installed ${p}"
       continue
     fi
-    winget install --id "$p" -e --source winget --accept-package-agreements --accept-source-agreements ||
+    scope_args=()
+    [[ -z "$scope" ]] || scope_args=(--scope "$scope")
+    winget install --id "$p" -e --source winget --accept-package-agreements --accept-source-agreements ${scope_args[@]+"${scope_args[@]}"} ||
       warn "${p} のインストールに失敗しました"
   done
   if ! has wsl.exe || ! wsl.exe --list --quiet >/dev/null 2>&1; then
@@ -57,6 +61,8 @@ _win_install() {
 
 _mac_install() {
   if ! has brew; then
+    # NONINTERACTIVE では sudo のパスワードを聞けずに失敗するため、先に認証しておく
+    sudo -v || die "Homebrew のインストールには管理者のパスワードが必要です"
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" ||
       die "Homebrew のインストールに失敗しました"
   fi
