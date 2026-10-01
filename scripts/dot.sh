@@ -29,6 +29,9 @@ usage() {
              vscode/extensions.txt の拡張をインストールする
   assets     非公開素材 (wezterm の背景アニメーション) を取得・更新する
   help       このヘルプを表示する
+
+Windows では Windows 側 (Git Bash) と WSL の中の両方で setup / update を実行する。
+Windows 側は GUI アプリ (WezTerm / VSCode / フォント) だけ、WSL の中はシェルと CLI ツールだけを扱う。
 EOF
 }
 
@@ -36,34 +39,46 @@ cmd_setup() {
   require_supported_os
   log "OS のパッケージをインストール (${OS})"
   packages_install
-  log "非公開素材を取得"
-  assets_fetch
+  if want_gui; then
+    log "非公開素材を取得"
+    assets_fetch
+  fi
   log "シンボリックリンクを作成"
   links_apply
-  # mise の設定 (~/.config/mise) はリンク後でないと読めないため link の後に実行する
-  log "mise でツールをインストール"
-  mise_install
-  log "zsh プラグインを取得"
-  zsh_plugins_sync
-  log "git のユーザー設定"
-  gitconfig_local_setup
-  log "完了しました。新しいシェルを開いてください"
+  if want_cli; then
+    # mise の設定 (~/.config/mise) はリンク後でないと読めないため link の後に実行する
+    log "mise でツールをインストール"
+    mise_install
+    log "zsh プラグインを取得"
+    zsh_plugins_sync
+    log "git のユーザー設定"
+    gitconfig_local_setup
+  fi
+  if [[ "$OS" == windows ]]; then
+    log "Windows 側の設定が完了しました。続けて WSL の中で dotfiles を clone し、'scripts/dot.sh setup' を実行してください"
+  else
+    log "完了しました。新しいシェルを開いてください"
+  fi
 }
 
 cmd_update() {
   require_supported_os
   log "OS のパッケージを更新 (${OS})"
   packages_upgrade
-  log "mise のツールを更新"
-  mise_upgrade
-  log "zsh プラグインを zsh_plugins.conf のタグに合わせる"
-  zsh_plugins_sync
-  log "Neovim プラグインを更新"
-  nvim_plugins_update
-  log "VSCode 拡張を更新"
-  vscode_extensions_install
-  log "非公開素材を更新"
-  assets_fetch
+  if want_cli; then
+    log "mise のツールを更新"
+    mise_upgrade
+    log "zsh プラグインを zsh_plugins.conf のタグに合わせる"
+    zsh_plugins_sync
+    log "Neovim プラグインを更新"
+    nvim_plugins_update
+  fi
+  if want_gui; then
+    log "VSCode 拡張を更新"
+    vscode_extensions_install
+    log "非公開素材を更新"
+    assets_fetch
+  fi
   log "リンクの状態"
   links_status || warn "正常でないリンクがあります。'scripts/dot.sh link' で修復できます"
 }

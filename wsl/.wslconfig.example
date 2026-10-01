@@ -1,0 +1,20 @@
+# WSL2 の設定の雛形
+#
+# %UserProfile%\.wslconfig (C:\Users\<名前>\.wslconfig) にコピーし、PC の性能に合わせて値を変える。
+# シンボリックリンクにはしない。値が PC ごとに違うことに加え、dotfiles を WSL の中に置くと
+# WSL の起動前に Windows 側から読めないため。
+# 変更後は PowerShell で `wsl --shutdown` を実行し、WSL を起動し直すと反映される。
+# 設定項目: https://learn.microsoft.com/windows/wsl/wsl-config
+
+[wsl2]
+# WSL が使うメモリの上限。既定は Windows のメモリの 50%
+# 目安: メモリ 8GB の PC なら 2〜3GB、16GB なら 4GB
+memory=3GB
+# WSL が使う CPU のコア数。既定はすべてのコア
+processors=2
+# スワップの大きさ。既定は Windows のメモリの 25%
+swap=2GB
+
+[experimental]
+# 使い終わったキャッシュを Windows に返す (dropCache: すぐ返す / gradual: 少しずつ返す)
+autoMemoryReclaim=dropCache
