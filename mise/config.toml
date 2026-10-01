@@ -1,0 +1,20 @@
+# mise のグローバル設定 (~/.config/mise にディレクトリごとリンクされる)
+# OS に依存しない CLI ツールはここで管理し、3 OS で同じ方法で導入する。
+# GUI アプリ・フォント・git・zsh は OS のパッケージマネージャー (scripts/packages.conf) で管理する。
+#
+# バージョンは固定せず "latest" で常に最新を使う。更新は `scripts/dot.sh update` (mise upgrade) で行う。
+[tools]
+# grep 代替 (snacks.picker / :grep のバックエンド)
+ripgrep = "latest"
+# GitHub CLI (octo.nvim が依存)。認証は別途 `gh auth login` を実行する
+github-cli = "latest"
+# プロンプト (zsh/.zsh.d/prompt.zsh)
+starship = "latest"
+# ファジーファインダー (zsh/.zsh.d/plugins.zsh の fzf-tab / キーバインド)
+fzf = "latest"
+# エージェントマルチプレクサ (herdr/config.toml)
+herdr = "latest"
+# エディタ本体。nvim の設定が vim.pack を使うため v0.12 以降が必要
+neovim = "latest"
+# Mason が npm 経由で LSP / フォーマッターをインストールするために必要
+node = "lts"

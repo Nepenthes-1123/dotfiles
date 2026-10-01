@@ -1,21 +1,9 @@
-source ~/dotfiles/scripts/check_os.sh
-
-OS=$(check_os)
-
-if [[ $OS == "Cygwin" ]]; then
-    alias cursor-agent="${HOME}/AppData/Local/cursor-agent/agent.cmd"
-elif [[ $OS == "Mac" ]]; then
-    :
-elif [[ $OS == "CentOS" ]]; then
-    :
-elif [[ $OS == "Amazon Linux" ]]; then
-    :
-elif [[ $OS == "Ubuntu" ]]; then
-    :
-else
-    echo "Unsupported OS: $OS @alias.zsh"
-    return 1
-fi
+## OS 固有のエイリアス
+case "${OSTYPE}" in
+msys* | cygwin*)
+  alias cursor-agent="${HOME}/AppData/Local/cursor-agent/agent.cmd"
+  ;;
+esac
 
 # safty
 alias cp='cp -i'

@@ -75,22 +75,24 @@ jsonls, dockerls, docker_compose_language_service
 ruff, stylua, prettier, eslint_d, clang-format, markdownlint
 ```
 
-これらの多くは Node.js 上で動作するため、事前に Node.js (npm) のインストールが必要。clangd / clang-format は別途 C/C++ ツールチェーンに依存する場合がある。
+これらの多くは Node.js 上で動作するため、事前に Node.js (npm) のインストールが必要 (下記の mise で導入される)。clangd / clang-format は別途 C/C++ ツールチェーンに依存する場合がある。
+
+### mise が自動インストールするもの
+
+`scripts/dot.sh setup` を実行すると、dotfiles の `mise/config.toml` (`~/.config/mise` にリンク) に従って mise が以下をインストールする。バージョンは固定せず、常に最新を使う。
+
+```
+neovim, node (LTS), ripgrep, github-cli (gh), starship, fzf, herdr
+```
+
+- ripgrep — snacks.picker の grep / Telescope の高速化、:grep のバックエンド
+- GitHub CLI — octo.nvim (PR/Issue/Review) に必須。インストール後に `gh auth login` が必要。GitHub Projects (v2) を使う場合は追加スコープも必要: `gh auth refresh -s read:project`
 
 ### 手動インストールが必要なもの
 
+以下の任意ツールは `mise use -g <tool>` で `mise/config.toml` に追加して管理することもできる (lazydocker / hadolint / glow / jq はいずれも mise のレジストリにある)。
+
 ```bash
-# ripgrep — snacks.picker の grep / Telescope の高速化、:grep のバックエンド
-sudo apt install ripgrep   # Ubuntu/Debian
-brew install ripgrep       # macOS
-scoop install ripgrep      # Windows
-
-# GitHub CLI — octo.nvim (PR/Issue/Review) に必須
-# インストール後に `gh auth login` が必要
-# GitHub Projects (v2) を使う場合は追加スコープも必要: gh auth refresh -s read:project
-winget install GitHub.cli  # Windows
-brew install gh            # macOS
-
 # Docker または Podman — nvim-dev-container 用 (自動検出)
 # docker compose v2 が無ければ docker-compose (v1) にフォールバック
 
