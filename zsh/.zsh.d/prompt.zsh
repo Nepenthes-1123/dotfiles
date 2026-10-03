@@ -15,4 +15,7 @@ zstyle ':completion:*' save-history $SAVEHIST
 
 
 ## プロンプト表示設定 (starship に委譲)
-eval "$(starship init zsh)"
+# dumb (エスケープシーケンスを解釈しない端末) では starship がエラーを出すため、zsh 標準のプロンプトのままにする
+if [[ "${TERM}" != dumb ]]; then
+  eval "$(starship init zsh)"
+fi

@@ -80,7 +80,6 @@ function _wezterm_report_cwd() {
 }
 
 # Linux のコンソール・dumb (エスケープシーケンスを解釈しない端末) には送らない。
-# (.zshrc が後で TERM を上書きするため、読み込む時点の TERM で判定する)
 if [[ "${TERM}" != (linux|dumb) ]]; then
   add-zsh-hook precmd _wezterm_report_cwd
 fi
