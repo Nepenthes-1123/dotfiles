@@ -1,9 +1,4 @@
 #!/bin/zsh
-export LANG='ja_JP.UTF-8'
-export LC_ALL='ja_JP.UTF-8'
-export LC_TIME='en_US.UTF-8'
-export LC_MESSAGES='ja_JP.UTF-8'
-
 # .zsh.d ディレクトリ内の設定ファイルを読み込む
 ZSH_CONFS_DIR="${HOME}/.zsh.d"
 ZSH_PRIORITIES_CONF="${ZSH_CONFS_DIR}/priorities.conf"
