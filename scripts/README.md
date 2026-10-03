@@ -49,6 +49,14 @@ CLI ツール (ripgrep / gh / starship / fzf / herdr / neovim / node) は `packa
 
 `~/.zprofile` も同様にリンクするため、マシンごとに違う PATH の設定は `~/.zprofile.local` に書く。とくに macOS の Homebrew はインストーラが `~/.zprofile` に `eval "$(brew shellenv)"` を追記するので、`link` 前から Homebrew を使っている環境では `~/.zprofile.bak.<日時>` から移す必要がある (移さないと `brew` と brew で入れた mise が PATH から消える)。`~/.zprofile.local` は mise の shims より先に読まれるため、mise のツールが Homebrew のものより優先される。
 
+Node を Volta で管理する必要があるマシン (会社の方針など) では、`~/.volta/bin/node` があると `.zprofile` が mise の node を無効にし (`MISE_DISABLE_TOOLS=node`)、Volta の node が使われる。Volta の PATH の設定は `~/.zshrc` や `~/.zshrc.local` ではなく `~/.zprofile.local` に書く (`.zshrc` 系は対話シェルでしか読まれず、WezTerm や herdr が使う `zsh -l -c` で Volta の node が見つからなくなる)。
+
+```zsh
+# ~/.zprofile.local
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+```
+
 ## Windows (WSL2) での使い方
 
 Windows では、GUI アプリは Windows 側で、シェル・CLI ツールは WSL2 の中 (Ubuntu) で使う。
