@@ -79,13 +79,15 @@ ruff, stylua, prettier, eslint_d, clang-format, markdownlint
 
 ### mise が自動インストールするもの
 
-`scripts/dot.sh setup` を実行すると、dotfiles の `mise/config.toml` (`~/.config/mise` にリンク) に従って mise が以下をインストールする。バージョンは固定せず、常に最新を使う。
+`scripts/dot.sh setup` を実行すると、dotfiles の `mise/config.toml` (`~/.config/mise` にリンク) に従って mise がインストールする。バージョンは固定せず、常に最新を使う。Neovim に関係するのは次のもの (全体は `mise/config.toml` を参照)。
 
 ```
-neovim, node (LTS), ripgrep, github-cli (gh), starship, fzf, herdr
+neovim, node (LTS), ripgrep, github-cli (gh), tree-sitter
 ```
 
 - ripgrep — snacks.picker の grep / Telescope の高速化、:grep のバックエンド
+- tree-sitter — nvim-treesitter がパーサーをビルドするのに使う
+- node — Mason が npm で LSP / フォーマッターを入れるのに使う。Volta を使うマシンでは mise の node は無効になり、Volta の node が使われる
 - GitHub CLI — octo.nvim (PR/Issue/Review) に必須。インストール後に `gh auth login` が必要。GitHub Projects (v2) を使う場合は追加スコープも必要: `gh auth refresh -s read:project`
 
 ### 手動インストールが必要なもの
@@ -98,7 +100,6 @@ neovim, node (LTS), ripgrep, github-cli (gh), starship, fzf, herdr
 
 # lazydocker (任意) — <Leader>Dk でフローティングターミナル起動
 brew install lazydocker
-scoop install lazydocker / winget install lazydocker
 
 # hadolint (任意) — Dockerfile の :make 構文チェック
 brew install hadolint

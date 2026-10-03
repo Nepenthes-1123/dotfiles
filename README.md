@@ -10,7 +10,7 @@ macOS・Ubuntu・Windows (WSL2) で共通に使う設定ファイル一式。
 
 | ディレクトリ | 内容 | 詳細 |
 | --- | --- | --- |
-| `zsh/` | `.zshrc` と `.zsh.d/` (読み込み順は `.zsh.d/priorities.conf`) | |
+| `zsh/` | `.zshenv`・`.zprofile`・`.zshrc` と `.zsh.d/` (読み込み順は `.zsh.d/priorities.conf`) | |
 | `nvim/` | Neovim (v0.12, `vim.pack` + Mason) | [nvim/README.md](nvim/README.md) |
 | `wezterm/` | WezTerm (Windows では WSL の zsh を開く) | [wezterm/WEZTERM_SETUP.md](wezterm/WEZTERM_SETUP.md) |
 | `vscode/` | VSCode の settings / keybindings / snippets | |
@@ -26,7 +26,7 @@ macOS・Ubuntu・Windows (WSL2) で共通に使う設定ファイル一式。
 | 担当 | 管理するもの | 設定 |
 | --- | --- | --- |
 | OS のパッケージマネージャー (brew / winget / apt) | GUI アプリ (WezTerm / VSCode)・フォント・git・zsh・mise 本体 | `scripts/packages.conf` |
-| mise | CLI ツール (neovim / node / ripgrep / gh / starship / fzf / herdr)。バージョンは固定せず常に最新 | `mise/config.toml` |
+| mise | CLI ツール (neovim / node / ripgrep / gh / starship / fzf / herdr / lazygit / tree-sitter / Claude Code / hunk)。バージョンは固定せず常に最新 | `mise/config.toml` |
 | `scripts/dot.sh` | 上の 2 つの呼び出し・シンボリックリンク・zsh プラグイン・git のユーザー設定 | `scripts/links.conf` / `scripts/zsh_plugins.conf` |
 | Neovim | プラグイン (`vim.pack`)・LSP / フォーマッター (Mason) | `nvim/` |
 
@@ -53,6 +53,8 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/Nepenthes-1123/dotfiles/
 - macOS では Homebrew (Xcode Command Line Tools = git を含む) を先に入れる
 - Ubuntu では apt で git を入れる
 - setup が対話で入力を受け付けるため、`curl ... | bash` ではなく上の形で実行する
+- Node を Volta で管理するマシン (会社の方針など) では、先頭に `MISE_DISABLE_TOOLS=node` を付けて実行すると、使わない node を mise が入れずに済む。
+  Volta の PATH の設定は `~/.zprofile.local` に書く ([scripts/README.md](scripts/README.md#設定の追加))
 
 ### Windows
 

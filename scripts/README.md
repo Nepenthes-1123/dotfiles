@@ -1,7 +1,7 @@
 # scripts
 
 dotfiles のセットアップ・更新・リンク管理を行うスクリプト。入口は `scripts/dot.sh` の 1 本だけ。
-Windows では Git Bash (MSYS2) から実行する。
+Windows では Git Bash (Git for Windows) から実行する。
 
 ## 使い方
 
@@ -34,7 +34,7 @@ git clone git@github.com:Nepenthes-1123/dotfiles.git ~/dotfiles
 | `lib/tools.sh` | mise・zsh プラグイン・Neovim プラグイン・非公開素材・git のユーザー設定 |
 | `tests/bootstrap.test.ps1` | `bootstrap.ps1` のテスト。Windows 固有の部分をモックにして pwsh (Linux / macOS でも可) で実行する: `pwsh -NoProfile -File scripts/tests/bootstrap.test.ps1` |
 
-CLI ツール (ripgrep / gh / starship / fzf / herdr / neovim / node) は `packages.conf` ではなく `mise/config.toml` で管理する。
+CLI ツールは `packages.conf` ではなく `mise/config.toml` で管理する。
 
 ## 設定の追加
 
@@ -80,6 +80,7 @@ WezTerm は WSL を見つけると WSL の中の zsh を開く (`wezterm/.wezter
 ### 注意点
 
 - Windows 側でシンボリックリンクを作るには開発者モードが必要。`MSYS=winsymlinks:nativestrict` を設定しているため、権限が無いとコピーで済まさずにエラーになる
-- WSL の中の Neovim から Windows のクリップボードを使うには、Windows 側に `win32yank.exe` を入れて PATH に通す
+- WSL の中の Neovim から Windows のクリップボードを使うには、Windows 側に `win32yank.exe` を入れて PATH に通す。
+  winget の `Neovim.Neovim` に同梱されており、入れると PATH も通る (`packages.conf` には含めていないため手動で入れる)
 - 以前 Windows 側 (MSYS2) で作ったシェル用のリンク (`~/.zshrc` など) は、Windows 側の `links.conf` の対象外になる。
   不要になったら Windows 側で `dot.sh prune -n` で確認してから `dot.sh prune` で削除する
