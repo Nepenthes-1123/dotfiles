@@ -25,7 +25,7 @@ git clone git@github.com:Nepenthes-1123/dotfiles.git ~/dotfiles
 | ファイル | 役割 |
 | --- | --- |
 | `dot.sh` | サブコマンドの振り分けと、setup / update の手順 |
-| `links.conf` | リンクの一覧 (`dotfiles 内のパス \| 配置先 \| 対象`)。3 OS 共通。対象 (`gui` / `cli`、省略時は `cli`) で Windows 側と WSL の中のどちらでリンクするかを分ける |
+| `links.conf` | リンクの一覧 (`dotfiles 内のパス \| 配置先 \| 対象`)。3 OS 共通。対象 (`gui` / `cli` / `all`、省略時は `cli`) で Windows 側と WSL の中のどちらでリンクするかを分ける |
 | `packages.conf` | OS のパッケージマネージャーで入れるもの (winget / brew / apt) |
 | `zsh_plugins.conf` | zsh プラグインと固定するタグ |
 | `lib/common.sh` | ログ出力・OS 判定・OS ごとの配置先パス (`links.conf` の変数) |
@@ -38,7 +38,7 @@ CLI ツールは `packages.conf` ではなく `mise/config.toml` で管理する
 
 ## 設定の追加
 
-- 新しい設定ファイルをリンクする: `links.conf` に 1 行追加して `dot.sh link`。GUI アプリの設定なら 3 列目に `gui` を付ける。既存の設定ファイルを取り込むなら `dot.sh adopt`
+- 新しい設定ファイルをリンクする: `links.conf` に 1 行追加して `dot.sh link`。GUI アプリの設定なら 3 列目に `gui`、Windows 側と WSL の中の両方で使うツールの設定なら `all` を付ける。既存の設定ファイルを取り込むなら `dot.sh adopt`
 - OS ごとに配置先が違う場合: `lib/common.sh` に変数を追加し、`PATH_VARS` にも登録する
 - CLI ツールを追加する: `mise use -g <tool>` (`mise/config.toml` に追記される)
 - zsh プラグインを更新する: `zsh_plugins.conf` のタグを書き換えて `dot.sh update`
@@ -64,8 +64,8 @@ dotfiles は Windows 側と WSL の中にそれぞれ clone し、両方で `dot
 
 | 環境 | 担当 | 入れるもの | リンクするもの (`links.conf`) |
 | --- | --- | --- | --- |
-| Windows 側 (Git Bash) | GUI アプリ | WezTerm / VSCode / フォント / Git / Neovim (winget) | 対象が `gui` の行 (WezTerm / VSCode) |
-| WSL の中 (Ubuntu) | シェル・CLI ツール | zsh / git / mise (apt)、CLI ツール (mise) | 対象が `cli` の行 (zsh / git / Neovim など) |
+| Windows 側 (Git Bash) | GUI アプリ | WezTerm / VSCode / フォント / Git / Neovim (winget) | 対象が `gui` と `all` の行 (WezTerm / VSCode / Neovim) |
+| WSL の中 (Ubuntu) | シェル・CLI ツール | zsh / git / mise (apt)、CLI ツール (mise) | 対象が `cli` と `all` の行 (zsh / git / Neovim など) |
 | mac / Ubuntu | 両方 | すべて | すべて |
 
 どちらで実行しているかは自動で判定する (`lib/common.sh` の `want_gui` / `want_cli`)。

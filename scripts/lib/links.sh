@@ -60,7 +60,8 @@ load_links() {
     case "$scope" in
     gui) want_gui || continue ;;
     cli) want_cli || continue ;;
-    *) die "links.conf の 3 列目は gui か cli です: $line" ;;
+    all) ;;
+    *) die "links.conf の 3 列目は gui・cli・all のどれかです: $line" ;;
     esac
     LINK_SRC+=("${DOT_DIR}/${src}")
     LINK_DST+=("$(expand_path_vars "$dst")")
