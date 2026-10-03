@@ -1,10 +1,3 @@
-## OS 固有のエイリアス
-case "${OSTYPE}" in
-msys* | cygwin*)
-  alias cursor-agent="${HOME}/AppData/Local/cursor-agent/agent.cmd"
-  ;;
-esac
-
 # safty
 alias cp='cp -i'
 alias mv='mv -i'

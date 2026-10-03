@@ -15,6 +15,4 @@ zstyle ':completion:*' save-history $SAVEHIST
 
 
 ## プロンプト表示設定 (starship に委譲)
-# Windows版starship.exeがzsh(MSYS2/Git Bash)配下で自身のパスをバックスラッシュ形式のまま
-# 埋め込み、コマンドとして解決できずエラーになるため、フォワードスラッシュに変換する
-eval "$(starship init zsh | sed 's/\\/\//g')"
+eval "$(starship init zsh)"
