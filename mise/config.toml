@@ -22,3 +22,12 @@ node = "lts"
 lazygit = "latest"
 # nvim-treesitter がパーサーをビルドするのに使う
 tree-sitter = "latest"
+# Claude Code
+# 登録名は claude-code ではなく claude にする。Claude Code は自分が
+# パッケージマネージャー管理下にあると `mise upgrade claude` を案内するため、
+# この名前でないと案内のコマンドが空振りする (mise はレジストリ上の別エントリとして扱う)。
+# 自動更新は未対応。2.1.287 の時点で、実行するコマンドの配列を返す分岐は homebrew と
+# winget のみで mise は null になり、CLAUDE_CODE_PACKAGE_MANAGER_AUTO_UPDATE を設定しても
+# 実行されない (起動時に「Update available! Run: mise upgrade claude」の案内は出る)。
+# 更新は案内に従うか `dot.sh update` で行う。
+claude = "latest"
