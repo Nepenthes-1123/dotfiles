@@ -54,7 +54,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/Nepenthes-1123/dotfiles/
 - Ubuntu では apt で git を入れる
 - setup が対話で入力を受け付けるため、`curl ... | bash` ではなく上の形で実行する
 - Node を Volta で管理するマシン (会社の方針など) では、先頭に `MISE_DISABLE_TOOLS=node` を付けて実行すると、使わない node を mise が入れずに済む。
-  Volta の PATH の設定は `~/.zprofile.local` に書く ([scripts/README.md](scripts/README.md#設定の追加))
+  Volta の PATH の設定は `~/.zprofile.local` に書く ([scripts/README.md](scripts/README.md#zsh-の設定ファイルの使い分け))
 
 ### Windows
 
