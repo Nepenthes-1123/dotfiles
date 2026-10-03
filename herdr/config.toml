@@ -145,6 +145,14 @@ command = "zsh -lc 'cd ${HERDR_ACTIVE_PANE_CWD:-.}; lazygit'"
 width = "95%"
 height = "95%"
 
+# hunk で作業ツリーの変更をレビューする。--watch でエージェントがファイルを書き換えるたびに再読み込みする
+[[keys.command]]
+key = "prefix+ctrl+h"
+type = "popup"
+command = "zsh -lc 'cd ${HERDR_ACTIVE_PANE_CWD:-.}; hunk diff --watch'"
+width = "95%"
+height = "95%"
+
 # Legacy indexed shortcut config is still parsed for compatibility.
 # Prefer switch_tab, switch_workspace, and focus_agent for new configs.
 # [keys.indexed]
