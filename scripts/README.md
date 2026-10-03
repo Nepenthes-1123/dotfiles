@@ -67,7 +67,7 @@ dotfiles は Windows 側と WSL の中にそれぞれ clone し、両方で `dot
 管理者の PowerShell で `bootstrap.ps1` を実行する (手順はルートの [README](../README.md#windows))。
 開発者モード・Git for Windows・WSL の導入、Windows 側と WSL の中の両方の `dot.sh setup` をまとめて行う。
 
-WezTerm は WSL を見つけると WSL の中の zsh を開く (`wezterm/.wezterm/shell.lua`)。WSL が無い場合は Windows 側の zsh (MSYS2 など) を探す。
+WezTerm は WSL を見つけると WSL の中の zsh を開く (`wezterm/.wezterm/shell.lua`)。WSL が無い場合は WezTerm の既定のシェル (PowerShell など) を開く。
 
 ### 注意点
 
