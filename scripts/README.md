@@ -64,7 +64,7 @@ dotfiles は Windows 側と WSL の中にそれぞれ clone し、両方で `dot
 
 | 環境 | 担当 | 入れるもの | リンクするもの (`links.conf`) |
 | --- | --- | --- | --- |
-| Windows 側 (Git Bash) | GUI アプリ | WezTerm / VSCode / フォント / Git (winget) | 対象が `gui` の行 (WezTerm / VSCode) |
+| Windows 側 (Git Bash) | GUI アプリ | WezTerm / VSCode / フォント / Git / Neovim (winget) | 対象が `gui` の行 (WezTerm / VSCode) |
 | WSL の中 (Ubuntu) | シェル・CLI ツール | zsh / git / mise (apt)、CLI ツール (mise) | 対象が `cli` の行 (zsh / git / Neovim など) |
 | mac / Ubuntu | 両方 | すべて | すべて |
 
@@ -80,7 +80,7 @@ WezTerm は WSL を見つけると WSL の中の zsh を開く (`wezterm/.wezter
 ### 注意点
 
 - Windows 側でシンボリックリンクを作るには開発者モードが必要。`MSYS=winsymlinks:nativestrict` を設定しているため、権限が無いとコピーで済まさずにエラーになる
-- WSL の中の Neovim から Windows のクリップボードを使うには、Windows 側に `win32yank.exe` を入れて PATH に通す。
-  winget の `Neovim.Neovim` に同梱されており、入れると PATH も通る (`packages.conf` には含めていないため手動で入れる)
+- WSL の中の Neovim は、Windows のクリップボードとのやり取りに Windows 側の `win32yank.exe` を使う。
+  `packages.conf` で入れる winget の `Neovim.Neovim` に同梱されており、PATH も通る (PowerShell から nvim を使うためにも入れている)
 - 以前 Windows 側 (MSYS2) で作ったシェル用のリンク (`~/.zshrc` など) は、Windows 側の `links.conf` の対象外になる。
   不要になったら Windows 側で `dot.sh prune -n` で確認してから `dot.sh prune` で削除する
