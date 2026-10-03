@@ -20,6 +20,8 @@ neovim = "latest"
 node = "lts"
 # git の TUI (hunk 単位の staging・ログの閲覧)
 lazygit = "latest"
+# 差分のレビュー用ビューア (エージェントが書いた変更を確認する)。staging は lazygit で行う
+hunk = "latest"
 # nvim-treesitter がパーサーをビルドするのに使う
 tree-sitter = "latest"
 # Claude Code
