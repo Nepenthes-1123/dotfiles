@@ -9,7 +9,7 @@ end
 local format = require("format")
 format.setup(wezterm, config)
 
--- zsh の起動先 (Windows では WSL の中の zsh。WSL が無ければ Windows 側の zsh) を設定する
+-- zsh の起動先 (Windows では WSL の中の zsh) を設定する
 local shell = require("shell")
 shell.setup(config)
 

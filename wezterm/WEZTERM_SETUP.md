@@ -21,15 +21,10 @@ herdr のセッション一覧など、WezTerm から直接実行するコマン
 
 WSL の導入と `.wslconfig` (メモリの上限など) は `scripts/README.md` の「Windows (WSL2) での使い方」を参照してください。
 
-### WSL が無い場合 (フォールバック)
+### WSL が無い場合
 
-WSL が見つからない場合は、Windows 側の zsh を次の順で探します。
-
-1. 環境変数 `ZSH_CUSTOM_PATH` (例: `setx ZSH_CUSTOM_PATH "C:\msys64\usr\bin\zsh.exe"`)
-2. 環境変数 `MSYS2_HOME` から `%MSYS2_HOME%\usr\bin\zsh.exe`
-3. 既定の候補: `C:\msys64\usr\bin\zsh.exe` / `C:\tools\msys64\usr\bin\zsh.exe` / `C:\Program Files\Git\usr\bin\zsh.exe` / `C:\cygwin64\bin\zsh.exe`
-
-どれも見つからない場合は、WezTerm の既定のシェル (PowerShell など) を使います。
+WSL が見つからない場合は、WezTerm の既定のシェル (PowerShell など) を開きます。
+zsh の設定は Windows 側にはリンクしないため、Windows 側の zsh (MSYS2 など) は使いません。
 
 ---
 
