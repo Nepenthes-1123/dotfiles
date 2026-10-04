@@ -17,6 +17,7 @@ macOS・Ubuntu・Windows (WSL2) で共通に使う設定ファイル一式。
 | `git/` | `.gitconfig` (共通) と `.gitconfig.private` (個人用のユーザー設定) | |
 | `starship/` | プロンプト | |
 | `herdr/` | herdr (エージェントマルチプレクサ) | |
+| `lazygit/` | lazygit (配色は WezTerm・starship の Sakura に合わせる) | |
 | `mise/` | mise で入れる CLI ツールの一覧 (`config.toml`) | |
 | `wsl/` | WSL2 の `.wslconfig` の雛形 (リンクせずコピーして使う) | [scripts/README.md](scripts/README.md#windows-wsl2-での使い方) |
 | `scripts/` | セットアップ・更新・リンク管理 (`dot.sh`) | [scripts/README.md](scripts/README.md) |

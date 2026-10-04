@@ -18,6 +18,9 @@
 # scripts セッティング
 !scripts/**
 
+# lazygit セッティング
+!lazygit/config.yml
+
 # zsh セッティング
 !zsh/.zshenv
 !zsh/.zshrc

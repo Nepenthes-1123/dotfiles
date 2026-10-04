@@ -48,9 +48,11 @@ want_cli() { [[ "$OS" != windows ]]; }
 # links.conf で使える配置先の変数。OS ごとの違いはここだけで吸収する
 CONFIG_DIR="${HOME}/.config"
 NVIM_DIR="${CONFIG_DIR}/nvim"
+LAZYGIT_DIR="${CONFIG_DIR}/lazygit"
 case "$OS" in
 mac)
   VSCODE_USER_DIR="${HOME}/Library/Application Support/Code/User"
+  LAZYGIT_DIR="${HOME}/Library/Application Support/lazygit"
   ;;
 windows)
   VSCODE_USER_DIR="$(cygpath -u "${APPDATA}")/Code/User"
@@ -65,7 +67,7 @@ windows)
 esac
 
 # links.conf で置換する変数名。adopt で逆変換するときは先頭から順に照合するため、深いパスを先に並べる
-PATH_VARS=(VSCODE_USER_DIR NVIM_DIR CONFIG_DIR HOME)
+PATH_VARS=(VSCODE_USER_DIR NVIM_DIR LAZYGIT_DIR CONFIG_DIR HOME)
 
 require_supported_os() {
   [[ "$OS" != unsupported ]] || die "未対応の OS です: $(uname -a)"

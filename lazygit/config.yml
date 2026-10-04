@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
+# lazygit の設定 (既定値から変えたものだけを書く)。すべての項目は `lazygit --config` で確認できる
+gui:
+  # 配色は WezTerm の color_scheme = "Sakura" と starship の palettes.sakura に合わせる
+  theme:
+    activeBorderColor:
+      - "#dd7bdc" # pink (Sakura の前景色)
+      - bold
+    inactiveBorderColor:
+      - "#998eac" # gray
+    searchingActiveBorderColor:
+      - "#ff65fd" # bright_pink (Sakura のカーソル色)
+      - bold
+    optionsTextColor:
+      - "#9892f1" # purple
+    # Sakura に選択行向けの暗い色は無いため、背景色 #18131e と前景色 #dd7bdc を混ぜて作る
+    selectedLineBgColor:
+      - "#5d3760" # ピンク 35%
+    inactiveViewSelectedLineBgColor:
+      - "#3f2844" # ピンク 20%
+    cherryPickedCommitFgColor:
+      - "#24242e" # dark
+    cherryPickedCommitBgColor:
+      - "#9892f1" # purple
+    markedBaseCommitFgColor:
+      - "#24242e" # dark
+    markedBaseCommitBgColor:
+      - "#bc7053" # peach
+    unstagedChangesColor:
+      - "#d52370" # red
+  # WezTerm で JetBrainsMono Nerd Font を使っているため、ファイルやブランチのアイコンを表示する
+  nerdFontsVersion: "3"
+  showRandomTip: false
+  timeFormat: "2006-01-02"
+  shortTimeFormat: "15:04"
