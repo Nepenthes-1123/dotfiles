@@ -62,17 +62,19 @@ time_format = "%H:%M:%S"
 format = "[$symbol$branch ](bg:green fg:dark)"
 
 [git_status]
-format = "[$all_status$ahead_behind ](bg:green)"
-conflicted = "[=](bg:green fg:bright_pink)"
-ahead = "[⇡](bg:green fg:gray)"
-behind = "[⇣](bg:green fg:gray)"
-diverged = "[⇕](bg:green fg:bright_pink)"
-untracked = "[?](bg:green fg:peach)"
-stashed = '[\$](bg:green fg:purple)'
-modified = "[!](bg:green fg:red)"
-staged = "[+$count](bg:green fg:bright_green)"
-renamed = "[»](bg:green fg:white)"
-deleted = "[✘](bg:green fg:bright_red)"
+# 背景の green (#41af1a) の上で読める色は dark だけ (コントラスト比 5.39。ほかの色は 1.05〜2.46) のため、
+# 状態は色ではなく Nerd Font の記号 (Octicons) の形で区別する。記号は私用領域の文字なのでコードポイントで書く
+format = "[$all_status$ahead_behind](bg:green fg:dark)"
+conflicted = "\uf421 " # oct-alert
+ahead = "\uf431 " # oct-arrow_up
+behind = "\uf433 " # oct-arrow_down
+diverged = "\uf443 " # oct-arrow_switch
+untracked = "\uf420 " # oct-question
+stashed = "\uf51e " # oct-stack
+modified = "\uf459 " # oct-diff_modified
+staged = "\uf457 " # oct-diff_added
+renamed = "\uf45a " # oct-diff_renamed
+deleted = "\uf458 " # oct-diff_removed
 
 [nodejs]
 style = "bg:bright_pink fg:dark"
