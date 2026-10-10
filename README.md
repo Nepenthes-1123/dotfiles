@@ -19,6 +19,7 @@ macOS・Ubuntu・Windows (WSL2) で共通に使う設定ファイル一式。
 | `herdr/` | herdr (エージェントマルチプレクサ) | |
 | `lazygit/` | lazygit (配色は WezTerm・starship の Sakura に合わせる) | |
 | `mise/` | mise で入れる CLI ツールの一覧 (`config.toml`) | |
+| `claude/` | Claude Code のグローバル設定 (`CLAUDE.md`・`settings.json`)。Claude Code が `settings.json` に書き込んだ内容も差分に出るので、commit 前に確認する | |
 | `wsl/` | WSL2 の `.wslconfig` の雛形 (リンクせずコピーして使う) | [scripts/README.md](scripts/README.md#windows-wsl2-での使い方) |
 | `scripts/` | セットアップ・更新・リンク管理 (`dot.sh`) | [scripts/README.md](scripts/README.md) |
 

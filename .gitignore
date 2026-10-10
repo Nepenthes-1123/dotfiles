@@ -121,5 +121,9 @@ wezterm/.wezterm/assets/
 # mise セッティング
 !mise/config.toml
 
+# Claude Code セッティング
+!claude/CLAUDE.md
+!claude/settings.json
+
 # WSL セッティング (雛形のみ。実際の .wslconfig は PC ごとに置く)
 !wsl/.wslconfig.example

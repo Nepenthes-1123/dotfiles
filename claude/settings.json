@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(stylua --check *)",
+      "Bash(git fetch *)",
+      "Bash(git grep *)",
+      "Bash(command -v *)"
+    ]
+  },
+  "model": "opus",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  },
+  "theme": "auto",
+  "agentPushNotifEnabled": true,
+  "language": "japanese",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git *)",
+            "command": "grep -qE 'git( +-C +[^ ]+)? +(switch|checkout)([^a-z-]|$)' || exit 0; [ \"$(git rev-parse --absolute-git-dir 2>/dev/null)\" = \"$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)\" ] && [ $(git worktree list 2>/dev/null | wc -l) -le 1 ] && exit 0; echo 'worktree を使うリポジトリではブランチを切り替えない。新しい worktree を作る。ファイルを戻すだけなら git restore を使う' >&2; exit 2"
+          }
+        ]
+      }
+    ]
+  }
+}
