@@ -183,15 +183,9 @@ render() {
   width=0
 
   [ "$1" -lt 1 ] && segment "$C_ROOT" "$C_WHITE" " ${OS_GLYPH} "
-  if [ "$1" -lt 3 ]; then
-    segment "$C_TRUNK" "$C_WHITE" " ${DIR_GLYPH} ${dir} "
-  else
-    segment "$C_TRUNK" "$C_WHITE" " ${DIR_GLYPH} ${short_dir} "
-  fi
 
-  [ -n "$git_text" ] && segment "$C_GREEN" "$C_DARK" "$git_text"
-
-  [ -n "$model" ] && [ "$1" -lt 2 ] && segment "$C_BRIGHT_PINK" "$C_DARK" " ${model} "
+  # Claude Code は COLUMNS とは別に左右の余白を取り、その幅は公開されていないため、下の省略でも
+  # はみ出すことがある。切れても困らないよう、コンテキストと使用量上限を左寄りに置く
   [ -n "$used" ] && segment "$C_PURPLE" "$C_DARK" " ctx ${used}% "
 
   if [ -n "$limits" ]; then
@@ -201,6 +195,16 @@ render() {
     else
       segment "$C_GRAY" "$C_DARK" " ${LIMIT_GLYPH} ${limits} "
     fi
+  fi
+
+  [ -n "$model" ] && [ "$1" -lt 2 ] && segment "$C_BRIGHT_PINK" "$C_DARK" " ${model} "
+
+  [ -n "$git_text" ] && segment "$C_GREEN" "$C_DARK" "$git_text"
+
+  if [ "$1" -lt 3 ]; then
+    segment "$C_TRUNK" "$C_WHITE" " ${DIR_GLYPH} ${dir} "
+  else
+    segment "$C_TRUNK" "$C_WHITE" " ${DIR_GLYPH} ${short_dir} "
   fi
 
   out+="${RESET}$(fgc "$prev_bg")${SEP}${RESET}"
