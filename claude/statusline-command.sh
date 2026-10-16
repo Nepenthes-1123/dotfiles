@@ -65,13 +65,22 @@ segment() {
   prev_bg=$1
 }
 
-cwd=$(printf '%s' "$input" | jq -r '.workspace.current_dir // .cwd // empty' 2>/dev/null)
+# 区切りにタブを使うと、read は IFS の空白文字が連続した箇所を 1 つにまとめるため、
+# 値が空のフィールドで後続の値が前にずれる。空白でない US (0x1f) で区切る
+IFS=$'\x1f' read -r cwd model used five_hour seven_day spend < <(
+  printf '%s' "$input" | jq -r '
+    def pct: if . == null then "" else round | tostring end;
+    [
+      .workspace.current_dir // .cwd // "",
+      .model.display_name // "",
+      (.context_window.used_percentage | pct),
+      (.rate_limits.five_hour.used_percentage | pct),
+      (.rate_limits.seven_day.used_percentage | pct),
+      (.rate_limits.spend_limit.used_percentage | pct)
+    ] | join("\u001f")
+  ' 2>/dev/null
+)
 [ -n "$cwd" ] || cwd=$PWD
-model=$(printf '%s' "$input" | jq -r '.model.display_name // empty' 2>/dev/null)
-used=$(printf '%s' "$input" | jq -r '.context_window.used_percentage // empty | round' 2>/dev/null)
-five_hour=$(printf '%s' "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty | round' 2>/dev/null)
-seven_day=$(printf '%s' "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty | round' 2>/dev/null)
-spend=$(printf '%s' "$input" | jq -r '.rate_limits.spend_limit.used_percentage // empty | round' 2>/dev/null)
 
 # directory: ~ 置換のうえ末尾 3 階層に切り詰める (truncation_length = 3, truncate_to_repo = false)
 dir=$cwd
