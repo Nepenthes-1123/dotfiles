@@ -39,7 +39,6 @@ LIMIT_GLYPH=$(glyph f463)
 LIMIT_WARN_PERCENTAGE=80
 
 # sakura パレット (R;G;B)
-C_ROOT='65;45;27'
 C_TRUNK='122;82;46'
 C_GREEN='65;175;26'
 C_BRIGHT_PINK='255;101;253'
@@ -48,6 +47,8 @@ C_GRAY='153;142;172'
 C_RED='213;35;112'
 C_WHITE='238;238;238'
 C_DARK='36;36;46'
+# sakura パレットに青系の色が無いため、OS アイコン用に CSS の skyblue (#87ceeb) を足している
+C_SKY='135;206;235'
 
 RESET=$'\033[0m'
 fgc() { printf '\033[38;2;%sm' "$1"; }
@@ -182,7 +183,7 @@ render() {
   prev_bg=""
   width=0
 
-  [ "$1" -lt 1 ] && segment "$C_ROOT" "$C_WHITE" " ${OS_GLYPH} "
+  [ "$1" -lt 1 ] && segment "$C_SKY" "$C_DARK" " ${OS_GLYPH} "
 
   # Claude Code は COLUMNS とは別に左右の余白を取り、その幅は公開されていないため、下の省略でも
   # はみ出すことがある。切れても困らないよう、コンテキストと使用量上限を左寄りに置く
