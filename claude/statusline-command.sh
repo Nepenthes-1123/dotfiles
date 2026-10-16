@@ -53,16 +53,28 @@ RESET=$'\033[0m'
 fgc() { printf '\033[38;2;%sm' "$1"; }
 bgc() { printf '\033[48;2;%sm' "$1"; }
 
+# ${#s} はロケールが UTF-8 でないとバイト数を返すため、UTF-8 の継続バイトを除いて文字数を数える。
+# 全角文字も 1 と数えるので、日本語を含むディレクトリ名などでは実際の幅より小さくなる
+vis_width() {
+  local LC_ALL=C s=$1
+  s=${s//[$'\x80'-$'\xbf']/}
+  printf '%s' "${#s}"
+}
+
 out=""
 prev_bg=""
+width=0
 
 # $1=背景色 $2=文字色 $3=本文。直前の背景色から新しい背景色へ Powerline 区切りでつなぐ
 segment() {
   if [ -n "$prev_bg" ]; then
     out+="$(fgc "$prev_bg")$(bgc "$1")${SEP}"
+  else
+    out+="$(fgc "$1")${CAP_L}"
   fi
   out+="$(bgc "$1")$(fgc "$2")$3"
   prev_bg=$1
+  width=$((width + 1 + $(vis_width "$3")))
 }
 
 # 区切りにタブを使うと、read は IFS の空白文字が連続した箇所を 1 つにまとめるため、
@@ -93,6 +105,8 @@ n=${#parts[@]}
 if [ "$n" -gt 3 ]; then
   dir="${ELLIPSIS}/${parts[n-3]}/${parts[n-2]}/${parts[n-1]}"
 fi
+short_dir=$dir
+[ "$n" -gt 2 ] && short_dir="${ELLIPSIS}/${parts[n-1]}"
 
 # statusLine は頻繁に実行されるため、--no-optional-locks でユーザー自身の git 操作と index のロックを奪い合わない
 git_segment_text() {
@@ -154,29 +168,50 @@ git_segment_text() {
   printf ' %s %s %s' "$BRANCH_GLYPH" "$branch" "$syms"
 }
 
-out="$(fgc "$C_ROOT")${CAP_L}"
-segment "$C_ROOT" "$C_WHITE" " ${OS_GLYPH} "
-segment "$C_TRUNK" "$C_WHITE" " ${DIR_GLYPH} ${dir} "
-
-if [ -d "$cwd" ] && git_text=$(git_segment_text); then
-  segment "$C_GREEN" "$C_DARK" "$git_text"
-fi
-
-[ -n "$model" ] && segment "$C_BRIGHT_PINK" "$C_DARK" " ${model} "
-[ -n "$used" ] && segment "$C_PURPLE" "$C_DARK" " ctx ${used}% "
+git_text=""
+[ -d "$cwd" ] && git_text=$(git_segment_text)
 
 limits=""
 [ -n "$five_hour" ] && limits="5h ${five_hour}%"
 [ -n "$seven_day" ] && limits="${limits:+$limits }7d ${seven_day}%"
 [ -n "$spend" ] && limits="${limits:+$limits }spend ${spend}%"
-if [ -n "$limits" ]; then
-  if [ "${five_hour:-0}" -ge "$LIMIT_WARN_PERCENTAGE" ] || [ "${seven_day:-0}" -ge "$LIMIT_WARN_PERCENTAGE" ] \
-    || [ "${spend:-0}" -ge "$LIMIT_WARN_PERCENTAGE" ]; then
-    segment "$C_RED" "$C_WHITE" " ${LIMIT_GLYPH} ${limits} "
-  else
-    segment "$C_GRAY" "$C_DARK" " ${LIMIT_GLYPH} ${limits} "
-  fi
-fi
 
-out+="${RESET}$(fgc "$prev_bg")${SEP}${RESET}"
+# $1=省略の段階 (0: 省略なし 1: OS アイコン 2: +モデル名 3: +ディレクトリを末尾 1 階層に短縮)
+render() {
+  out=""
+  prev_bg=""
+  width=0
+
+  [ "$1" -lt 1 ] && segment "$C_ROOT" "$C_WHITE" " ${OS_GLYPH} "
+  if [ "$1" -lt 3 ]; then
+    segment "$C_TRUNK" "$C_WHITE" " ${DIR_GLYPH} ${dir} "
+  else
+    segment "$C_TRUNK" "$C_WHITE" " ${DIR_GLYPH} ${short_dir} "
+  fi
+
+  [ -n "$git_text" ] && segment "$C_GREEN" "$C_DARK" "$git_text"
+
+  [ -n "$model" ] && [ "$1" -lt 2 ] && segment "$C_BRIGHT_PINK" "$C_DARK" " ${model} "
+  [ -n "$used" ] && segment "$C_PURPLE" "$C_DARK" " ctx ${used}% "
+
+  if [ -n "$limits" ]; then
+    if [ "${five_hour:-0}" -ge "$LIMIT_WARN_PERCENTAGE" ] || [ "${seven_day:-0}" -ge "$LIMIT_WARN_PERCENTAGE" ] \
+      || [ "${spend:-0}" -ge "$LIMIT_WARN_PERCENTAGE" ]; then
+      segment "$C_RED" "$C_WHITE" " ${LIMIT_GLYPH} ${limits} "
+    else
+      segment "$C_GRAY" "$C_DARK" " ${LIMIT_GLYPH} ${limits} "
+    fi
+  fi
+
+  out+="${RESET}$(fgc "$prev_bg")${SEP}${RESET}"
+  width=$((width + 1))
+}
+
+# Claude Code は端末の幅を COLUMNS で渡す。渡されないときは省略しない
+level=0
+render "$level"
+while [ -n "$COLUMNS" ] && [ "$width" -gt "$COLUMNS" ] && [ "$level" -lt 3 ]; do
+  level=$((level + 1))
+  render "$level"
+done
 printf '%s\n' "$out"
