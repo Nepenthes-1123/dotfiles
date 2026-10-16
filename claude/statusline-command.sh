@@ -1,0 +1,173 @@
+#!/usr/bin/env bash
+# ~/.config/starship.toml (sakura パレット) の見た目を再現した Claude Code の statusLine
+
+input=$(cat)
+
+# macOS 標準の bash 3.2 は \u を解釈せず、ロケールにも左右されるため、
+# コードポイントを UTF-8 のバイト列へ自前で変換する (3 バイト領域 U+0800-U+FFFF のみ対応)
+glyph() {
+  local cp=$((16#$1))
+  printf "$(printf '\\%03o\\%03o\\%03o' \
+    $((0xE0 | (cp >> 12))) \
+    $((0x80 | ((cp >> 6) & 0x3F))) \
+    $((0x80 | (cp & 0x3F))))"
+}
+
+CAP_L=$(glyph e0b6)
+SEP=$(glyph e0b0)
+ELLIPSIS=$(glyph 2026)
+BRANCH_GLYPH=$(glyph e0a0)
+DIR_GLYPH=$(glyph f07b)
+case "$(uname -s)" in
+  Darwin) OS_GLYPH=$(glyph f179) ;;
+  *) OS_GLYPH=$(glyph f17c) ;;
+esac
+
+# git_status の記号 (Octicons)。starship.toml の各記号と同じコードポイント
+SYM_CONFLICTED=$(glyph f421)
+SYM_STASHED=$(glyph f51e)
+SYM_DELETED=$(glyph f458)
+SYM_RENAMED=$(glyph f45a)
+SYM_MODIFIED=$(glyph f459)
+SYM_STAGED=$(glyph f457)
+SYM_UNTRACKED=$(glyph f420)
+SYM_AHEAD=$(glyph f431)
+SYM_BEHIND=$(glyph f433)
+SYM_DIVERGED=$(glyph f443)
+
+LIMIT_GLYPH=$(glyph f463)
+LIMIT_WARN_PERCENTAGE=80
+
+# sakura パレット (R;G;B)
+C_ROOT='65;45;27'
+C_TRUNK='122;82;46'
+C_GREEN='65;175;26'
+C_BRIGHT_PINK='255;101;253'
+C_PURPLE='152;146;241'
+C_GRAY='153;142;172'
+C_RED='213;35;112'
+C_WHITE='238;238;238'
+C_DARK='36;36;46'
+
+RESET=$'\033[0m'
+fgc() { printf '\033[38;2;%sm' "$1"; }
+bgc() { printf '\033[48;2;%sm' "$1"; }
+
+out=""
+prev_bg=""
+
+# $1=背景色 $2=文字色 $3=本文。直前の背景色から新しい背景色へ Powerline 区切りでつなぐ
+segment() {
+  if [ -n "$prev_bg" ]; then
+    out+="$(fgc "$prev_bg")$(bgc "$1")${SEP}"
+  fi
+  out+="$(bgc "$1")$(fgc "$2")$3"
+  prev_bg=$1
+}
+
+cwd=$(printf '%s' "$input" | jq -r '.workspace.current_dir // .cwd // empty' 2>/dev/null)
+[ -n "$cwd" ] || cwd=$PWD
+model=$(printf '%s' "$input" | jq -r '.model.display_name // empty' 2>/dev/null)
+used=$(printf '%s' "$input" | jq -r '.context_window.used_percentage // empty | round' 2>/dev/null)
+five_hour=$(printf '%s' "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty | round' 2>/dev/null)
+seven_day=$(printf '%s' "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty | round' 2>/dev/null)
+spend=$(printf '%s' "$input" | jq -r '.rate_limits.spend_limit.used_percentage // empty | round' 2>/dev/null)
+
+# directory: ~ 置換のうえ末尾 3 階層に切り詰める (truncation_length = 3, truncate_to_repo = false)
+dir=$cwd
+case "$dir" in
+  "$HOME") dir="~" ;;
+  "$HOME"/*) dir="~${dir#"$HOME"}" ;;
+esac
+IFS=/ read -ra parts <<< "${dir#/}"
+n=${#parts[@]}
+if [ "$n" -gt 3 ]; then
+  dir="${ELLIPSIS}/${parts[n-3]}/${parts[n-2]}/${parts[n-1]}"
+fi
+
+# statusLine は頻繁に実行されるため、--no-optional-locks でユーザー自身の git 操作と index のロックを奪い合わない
+git_segment_text() {
+  local gs head rest branch line x y syms=""
+  local ahead="" behind="" conflicted="" stashed="" deleted="" renamed="" modified="" staged="" untracked=""
+
+  gs=$(git --no-optional-locks -C "$cwd" status --porcelain=v1 --branch 2>/dev/null) || return 1
+  head=${gs%%$'\n'*}
+  rest=${gs#"$head"}
+
+  branch=${head#\#\# }
+  branch=${branch#No commits yet on }
+  branch=${branch%%...*}
+  branch=${branch%% *}
+  case "$head" in
+    "## HEAD (no branch)"*)
+      branch=$(git --no-optional-locks -C "$cwd" rev-parse --short HEAD 2>/dev/null) || return 1
+      ;;
+  esac
+
+  case "$head" in *"ahead "*) ahead=1 ;; esac
+  case "$head" in *"behind "*) behind=1 ;; esac
+
+  while IFS= read -r line; do
+    x=${line:0:1}
+    y=${line:1:1}
+    case "$x$y" in
+      '??') untracked=1; continue ;;
+      DD|AU|UD|UA|DU|AA|UU) conflicted=1; continue ;;
+    esac
+    case "$x" in
+      M|A|T|C) staged=1 ;;
+      R) renamed=1 ;;
+      D) deleted=1 ;;
+    esac
+    case "$y" in
+      M|T) modified=1 ;;
+      D) deleted=1 ;;
+    esac
+  done <<< "$rest"
+
+  git --no-optional-locks -C "$cwd" rev-parse --verify --quiet refs/stash >/dev/null 2>&1 && stashed=1
+
+  [ -n "$conflicted" ] && syms+="${SYM_CONFLICTED} "
+  [ -n "$stashed" ] && syms+="${SYM_STASHED} "
+  [ -n "$deleted" ] && syms+="${SYM_DELETED} "
+  [ -n "$renamed" ] && syms+="${SYM_RENAMED} "
+  [ -n "$modified" ] && syms+="${SYM_MODIFIED} "
+  [ -n "$staged" ] && syms+="${SYM_STAGED} "
+  [ -n "$untracked" ] && syms+="${SYM_UNTRACKED} "
+  if [ -n "$ahead" ] && [ -n "$behind" ]; then
+    syms+="${SYM_DIVERGED} "
+  elif [ -n "$ahead" ]; then
+    syms+="${SYM_AHEAD} "
+  elif [ -n "$behind" ]; then
+    syms+="${SYM_BEHIND} "
+  fi
+
+  printf ' %s %s %s' "$BRANCH_GLYPH" "$branch" "$syms"
+}
+
+out="$(fgc "$C_ROOT")${CAP_L}"
+segment "$C_ROOT" "$C_WHITE" " ${OS_GLYPH} "
+segment "$C_TRUNK" "$C_WHITE" " ${DIR_GLYPH} ${dir} "
+
+if [ -d "$cwd" ] && git_text=$(git_segment_text); then
+  segment "$C_GREEN" "$C_DARK" "$git_text"
+fi
+
+[ -n "$model" ] && segment "$C_BRIGHT_PINK" "$C_DARK" " ${model} "
+[ -n "$used" ] && segment "$C_PURPLE" "$C_DARK" " ctx ${used}% "
+
+limits=""
+[ -n "$five_hour" ] && limits="5h ${five_hour}%"
+[ -n "$seven_day" ] && limits="${limits:+$limits }7d ${seven_day}%"
+[ -n "$spend" ] && limits="${limits:+$limits }spend ${spend}%"
+if [ -n "$limits" ]; then
+  if [ "${five_hour:-0}" -ge "$LIMIT_WARN_PERCENTAGE" ] || [ "${seven_day:-0}" -ge "$LIMIT_WARN_PERCENTAGE" ] \
+    || [ "${spend:-0}" -ge "$LIMIT_WARN_PERCENTAGE" ]; then
+    segment "$C_RED" "$C_WHITE" " ${LIMIT_GLYPH} ${limits} "
+  else
+    segment "$C_GRAY" "$C_DARK" " ${LIMIT_GLYPH} ${limits} "
+  fi
+fi
+
+out+="${RESET}$(fgc "$prev_bg")${SEP}${RESET}"
+printf '%s\n' "$out"

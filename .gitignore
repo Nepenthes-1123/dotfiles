@@ -124,6 +124,7 @@ wezterm/.wezterm/assets/
 # Claude Code セッティング
 !claude/CLAUDE.md
 !claude/settings.json
+!claude/statusline-command.sh
 
 # WSL セッティング (雛形のみ。実際の .wslconfig は PC ごとに置く)
 !wsl/.wslconfig.example

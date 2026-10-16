@@ -16,6 +16,10 @@
   "theme": "auto",
   "agentPushNotifEnabled": true,
   "language": "japanese",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
   "hooks": {
     "PreToolUse": [
       {
