@@ -28,7 +28,7 @@ macOS・Ubuntu・Windows (WSL2) で共通に使う設定ファイル一式。
 | 担当 | 管理するもの | 設定 |
 | --- | --- | --- |
 | OS のパッケージマネージャー (brew / winget / apt) | GUI アプリ (WezTerm / VSCode)・フォント・git・zsh・mise 本体 | `scripts/packages.conf` |
-| mise | CLI ツール (neovim / node / ripgrep / gh / starship / fzf / herdr / lazygit / tree-sitter / Claude Code / hunk)。バージョンは固定せず常に最新 | `mise/config.toml` |
+| mise | CLI ツール (neovim / node / ripgrep / gh / starship / fzf / herdr / lazygit / tree-sitter / Claude Code / hunk / jq)。バージョンは固定せず常に最新 | `mise/config.toml` |
 | `scripts/dot.sh` | 上の 2 つの呼び出し・シンボリックリンク・zsh プラグイン・git のユーザー設定 | `scripts/links.conf` / `scripts/zsh_plugins.conf` |
 | Neovim | プラグイン (`vim.pack`)・LSP / フォーマッター (Mason) | `nvim/` |
 
