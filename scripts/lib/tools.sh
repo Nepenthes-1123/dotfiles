@@ -90,16 +90,17 @@ gitconfig_local_setup() {
     info "exists   ${dst}"
     return 0
   fi
-  local choice name email
+  local choice name email private="${DOT_DIR}/git/.gitconfig.private"
   echo "git のユーザー設定を選んでください"
-  echo "  1) 個人用 (git/.gitconfig.private をリンク)"
+  [[ ! -e "$private" ]] || echo "  1) 個人用 (git/.gitconfig.private をリンク)"
   echo "  2) 名前とメールアドレスを入力して作成"
   echo "  3) スキップ"
   # 標準入力が無い (非対話) 場合はスキップ扱いにする
   read -r -p "> " choice || choice=3
+  [[ "$choice" != 1 || -e "$private" ]] || choice=3
   case "$choice" in
   1)
-    ln -s "${DOT_DIR}/git/.gitconfig.private" "$dst"
+    ln -s "$private" "$dst"
     info "linked   ${dst}"
     ;;
   2)
