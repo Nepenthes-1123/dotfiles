@@ -9,6 +9,12 @@ skip_global_compinit=1
 # LC_ALL はほかの LC_* より優先されて個別の指定を打ち消すため使わない
 export LANG='ja_JP.UTF-8'
 
+## エディタ
+# 未設定だと、Claude Code は VSCode (code) を、herdr・less・crontab などは vi を開く。
+# zsh -l -c から起動する Claude Code や herdr にも渡すため、ロケールと同じくここで設定する
+export EDITOR='nvim'
+export VISUAL='nvim'
+
 ## .zshenv.local が存在する場合は読み込む
 # rustup など ~/.zshenv に追記するツールの設定は、こちらに書く
 [ -f "${HOME}/.zshenv.local" ] && source "${HOME}/.zshenv.local"

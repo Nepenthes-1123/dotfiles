@@ -49,7 +49,7 @@ CLI ツールは `packages.conf` ではなく `mise/config.toml` で管理する
 
 | ファイル | 読まれるとき | 書くもの | マシンごとの追記先 |
 | --- | --- | --- | --- |
-| `.zshenv` | すべての zsh (スクリプトの `zsh -c` も含む) | どこでも必要な軽い環境変数 (ロケールなど) | `~/.zshenv.local`: rustup など `~/.zshenv` に追記するツールの設定 |
+| `.zshenv` | すべての zsh (スクリプトの `zsh -c` も含む) | どこでも必要な軽い環境変数 (ロケール・エディタなど) | `~/.zshenv.local`: rustup など `~/.zshenv` に追記するツールの設定 |
 | `.zprofile` | ログインシェル (対話シェルと、WezTerm や herdr が使う `zsh -l -c`) | PATH と、`zsh -l -c` から起動するコマンドでも必要な環境変数 | `~/.zprofile.local`: Homebrew の `brew shellenv`・Volta の PATH・起動するツールが読む環境変数 (API キーなど) |
 | `.zshrc` | 対話シェルだけ | オプション・プロンプト・補完・エイリアス・色 | `~/.zshrc.local`: そのマシンだけのエイリアスや関数 |
 
