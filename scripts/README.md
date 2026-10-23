@@ -19,6 +19,7 @@ git clone git@github.com:Nepenthes-1123/dotfiles.git ~/dotfiles
 | `prune [-n\|--dry-run]` | dotfiles を指しているが `links.conf` に無いリンクと、壊れたリンクを削除する。`-n` を付けると削除せずに対象だけを表示する |
 | `adopt <設定ファイル> <保存先>` | 既存の設定ファイルを dotfiles に移してリンクに置き換え、`links.conf` に追記する |
 | `assets` | 非公開素材 (wezterm の背景アニメーション) を取得・更新する |
+| `export <写し先のリポジトリ>` | コミット済みの内容を規則に従って置き換え・除外し、別のリポジトリにコミットする。[dotfiles の写しを作る](#dotfiles-の写しを作る) を参照 |
 
 ## 構成
 
@@ -32,6 +33,7 @@ git clone git@github.com:Nepenthes-1123/dotfiles.git ~/dotfiles
 | `lib/links.sh` | link / status / prune / adopt |
 | `lib/packages.sh` | OS のパッケージのインストール・更新 |
 | `lib/tools.sh` | mise・zsh プラグイン・Neovim プラグイン・非公開素材・git のユーザー設定 |
+| `lib/export.sh` | export |
 | `tests/bootstrap.test.ps1` | `bootstrap.ps1` のテスト。Windows 固有の部分をモックにして pwsh (Linux / macOS でも可) で実行する: `pwsh -NoProfile -File scripts/tests/bootstrap.test.ps1` |
 
 CLI ツールは `packages.conf` ではなく `mise/config.toml` で管理する。
@@ -67,6 +69,27 @@ Node を Volta で管理する必要があるマシン (会社の方針など) �
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
 ```
+
+## dotfiles の写しを作る
+
+`dot.sh export <写し先>` は、コミット済みの内容 (`HEAD`) を写し先のリポジトリに写してコミットする。push はしないので、写し先で行う。写し先には履歴を持たせず、同期のたびに 1 コミットを積む。写し先にしか無いファイルは消える。
+
+規則は `~/.config/dotfiles/export.conf` に書く。dotfiles の外に置くのは、写し先の名前や検査する語を公開リポジトリに含めないため。書式は `links.conf` と同じく `|` 区切りで、`#` 以降はコメント。
+
+```text
+replace | <置き換える文字列> | <置き換え後の文字列>
+exclude | <写さないパス (リポジトリからの相対パス)>
+deny    | <写しに残っていたら止める語>
+allow   | <deny に当たっても許す文字列>
+```
+
+置き換えのあと、写しのファイルの中身とパスに `deny` の語が残っていないかを大文字・小文字を区別せずに検査し、1 つでも残っていれば写し先に触れずに止める。次の語は `export.conf` に書かなくても検査する。
+
+- このユーザーの名前 (`id -un`) とホームディレクトリ
+- dotfiles の git の `user.name` / `user.email`
+- dotfiles の `origin` の所有者
+
+NUL を含むファイル (画像など) は、置き換えも中身の検査もしない。写し先の git の `user.name` / `user.email` が未設定か dotfiles と同じときも、作者として名前が残るため止める。
 
 ## Windows (WSL2) での使い方
 

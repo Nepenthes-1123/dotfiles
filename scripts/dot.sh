@@ -12,6 +12,8 @@ source "${LIB_DIR}/links.sh"
 source "${LIB_DIR}/packages.sh"
 # shellcheck source=lib/tools.sh
 source "${LIB_DIR}/tools.sh"
+# shellcheck source=lib/export.sh
+source "${LIB_DIR}/export.sh"
 
 usage() {
   cat <<'EOF'
@@ -26,6 +28,8 @@ usage() {
   adopt <設定ファイル> <dotfiles 内の保存先>
              既存の設定ファイルを dotfiles に移してリンクに置き換え、links.conf に追記する
   assets     非公開素材 (wezterm の背景アニメーション) を取得・更新する
+  export <写し先のリポジトリ>
+             コミット済みの内容を ~/.config/dotfiles/export.conf の規則で置き換え・除外し、写し先にコミットする
   help       このヘルプを表示する
 
 Windows では Windows 側 (Git Bash) と WSL の中の両方で setup / update を実行する。
@@ -97,6 +101,7 @@ main() {
   prune) links_prune "$@" ;;
   adopt) links_adopt "$@" ;;
   assets) assets_fetch ;;
+  export) export_run "$@" ;;
   help | -h | --help) usage ;;
   *)
     usage >&2
