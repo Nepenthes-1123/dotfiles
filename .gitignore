@@ -48,6 +48,9 @@
 # 素材は非公開リポジトリ (dotfiles-assets) で管理するため追跡しない
 wezterm/.wezterm/assets/
 
+# Claude Code が作る worktree などを置く場所。中に .git があり !*/ だけでは除外されないため追跡しない
+.claude/
+
 # vscode セッティング
 !vscode/settings.json
 !vscode/keybindings.json
