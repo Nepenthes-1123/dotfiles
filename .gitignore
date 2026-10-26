@@ -27,6 +27,7 @@
 !zsh/.zsh.d/priorities.conf
 !zsh/.zsh.d/audit.zsh
 !zsh/.zsh.d/plugins.zsh
+!zsh/.zsh.d/keybind.zsh
 !zsh/.zsh.d/alias.zsh
 !zsh/.zsh.d/completion.zsh
 !zsh/.zsh.d/prompt.zsh

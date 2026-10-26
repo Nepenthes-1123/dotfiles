@@ -128,24 +128,6 @@ return {
 		{ key = "Insert", mods = "CTRL", action = act.CopyTo("PrimarySelection") },
 		{ key = "Copy", mods = "NONE", action = act.CopyTo("Clipboard") },
 		{ key = "Paste", mods = "NONE", action = act.PasteFrom("Clipboard") },
-		-- Ctrl+左矢印でカーソルを前の単語に移動
-		{
-			key = "LeftArrow",
-			mods = "CTRL",
-			action = act.SendKey({
-				key = "b",
-				mods = "META",
-			}),
-		},
-		-- Ctrl+右矢印でカーソルを次の単語に移動
-		{
-			key = "RightArrow",
-			mods = "CTRL",
-			action = act.SendKey({
-				key = "f",
-				mods = "META",
-			}),
-		},
 		-- Ctrl+Backspaceで前の単語を削除
 		{
 			key = "Backspace",
