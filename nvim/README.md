@@ -142,10 +142,13 @@ sudo apt install jq / brew install jq
 | Markdownレンダリング | render-markdown.nvim |
 | GitHub PR/Issue/Review | octo.nvim (要 `gh` CLI) |
 | コマンドラインのフローティング | tiny-cmdline.nvim |
+| AI 自動補完 | copilot.lua |
 
 ファイルツリー・インデントガイド・カーソル下単語ハイライトは個別プラグインではなく snacks.nvim (`explorer`/`indent`/`words`) でまとめて提供している。コメントトグル (`gcc`/`gc`) は Neovim 組み込み機能を使用。
 
 obsidian.nvim の Vault パスは環境変数 `OBSIDIAN_VAULT_PATH` で指定する(未設定時は `~/Documents/slip-box`)。
+
+Copilot を使わないマシンでは、`~/.zshenv.local` に `export NVIM_DISABLE_COPILOT=1` を書くと copilot.lua を起動しない。
 
 ---
 

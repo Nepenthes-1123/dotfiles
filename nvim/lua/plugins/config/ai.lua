@@ -5,6 +5,11 @@ local setup = require("plugins.config.utils").setup
 
 -- ── copilot.lua (自動補完) ───────────────────────────────────────────────────
 setup("copilot", function(copilot)
+	-- dotfiles は複数マシンで共有しており、Copilot を使わないマシンだけで止めたいので、
+	-- プラグインの宣言は残してマシンごとの環境変数で setup を飛ばす
+	if vim.env.NVIM_DISABLE_COPILOT == "1" then
+		return
+	end
 	copilot.setup({
 		panel = { enabled = false },
 		suggestion = {
