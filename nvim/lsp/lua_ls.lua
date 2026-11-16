@@ -31,12 +31,10 @@ return {
 			telemetry = {
 				enable = false,
 			},
+			-- 整形は conform の stylua に任せる。lua_ls の整形器は stylua と字下げの既定が違い、
+			-- 経路によって整形結果が食い違うため止めておく
 			format = {
-				enable = true,
-				defaultConfig = {
-					indent_style = "space",
-					indent_size = "2",
-				},
+				enable = false,
 			},
 		},
 	},
