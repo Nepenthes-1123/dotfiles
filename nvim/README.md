@@ -211,7 +211,7 @@ gh auth login
 | --- | --- |
 | `gd` | 定義へジャンプ |
 | `gD` | 宣言へジャンプ |
-| `gr` | 参照一覧 |
+| `grr` | 参照一覧 (Neovim 既定) |
 | `gi` | 実装へジャンプ |
 | `gy` | 型定義へジャンプ |
 | `K` | ホバー表示 |
@@ -348,7 +348,7 @@ Foam Vault との互換性を保ったまま obsidian.nvim で運用する。
 | --- | --- | --- |
 | 定義ジャンプ (F12) | `vim.lsp.buf.definition` | `gd` |
 | 宣言ジャンプ | `vim.lsp.buf.declaration` | `gD` |
-| 参照ジャンプ (Shift+F12) | `vim.lsp.buf.references` / `Snacks.picker` | `gr` / `<Leader>fr` |
+| 参照ジャンプ (Shift+F12) | `vim.lsp.buf.references` / `Snacks.picker` | `grr` / `<Leader>fr` |
 | 実装ジャンプ | `vim.lsp.buf.implementation` | `gi` |
 | ホバー表示 | `vim.lsp.buf.hover` | `K` |
 | リネーム (F2) | `vim.lsp.buf.rename` | `<F2>` / `<Leader>cr` |

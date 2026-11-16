@@ -47,9 +47,10 @@ map("i", "jj", "<Esc>", opts)
 -- ── LSP コードナビゲーション ─────────────────────────────────────────────────
 -- VSCode: F12 → 定義ジャンプ, Shift+F12 → 参照
 -- Neovim 標準 LSP キーマップ (LspAttach autocmd で上書きも可)
+-- 参照一覧は Neovim 0.12 既定の grr を使う。gr に割り当てると既定の grr・grn・gra などの
+-- 前置になり、押すたびに timeoutlen だけ待たされる
 map("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
 map("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
-map("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Go to references" }))
 map("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
 map("n", "gy", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Go to type definition" }))
 
