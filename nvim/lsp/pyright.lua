@@ -28,17 +28,21 @@ return {
 			venvPath = vim.fn.expand("~/.virtualenvs"),
 			analysis = {
 				typeCheckingMode = "basic",
-				-- VSCode: mypy の "--warn-return-any" に対応
-				reportReturnType = "warning",
-				-- VSCode: "--no-implicit-optional" に対応
-				reportOptionalCall = "warning",
-				reportOptionalMemberAccess = "warning",
-				-- VSCode: "--disallow-untyped-defs" に対応
-				reportUnknownParameterType = "information",
-				reportUnknownVariableType = "information",
-				-- 未使用の import・変数は ruff (F401 / F841) が報告するので、二重に出さない
-				reportUnusedImport = "none",
-				reportUnusedVariable = "none",
+				-- 規則ごとの重大度は diagnosticSeverityOverrides の中にしか書けない
+				-- (analysis の直下に report* を書いても pyright は読まない)
+				diagnosticSeverityOverrides = {
+					-- VSCode: mypy の "--warn-return-any" に対応
+					reportReturnType = "warning",
+					-- VSCode: "--no-implicit-optional" に対応
+					reportOptionalCall = "warning",
+					reportOptionalMemberAccess = "warning",
+					-- VSCode: "--disallow-untyped-defs" に対応
+					reportUnknownParameterType = "information",
+					reportUnknownVariableType = "information",
+					-- 未使用の import・変数は ruff (F401 / F841) が報告するので、二重に出さない
+					reportUnusedImport = "none",
+					reportUnusedVariable = "none",
+				},
 				-- 自動補完でスタブを参照
 				useLibraryCodeForTypes = true,
 				autoSearchPaths = true,
