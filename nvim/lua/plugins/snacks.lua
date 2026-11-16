@@ -90,8 +90,8 @@ setup("snacks", function(Snacks)
 		-- plugins/init.lua で別途設定しているものと競合しないよう無効化
 		bigfile = { enabled = false }, -- autocmds.lua で代替済み
 		dashboard = { enabled = false }, -- 使用しない
-		explorer = { enabled = true }, -- nvim-tree を使用
-		indent = { enabled = true }, -- indent-blankline.nvim を使用
+		explorer = { enabled = true }, -- ファイルツリー (nvim-tree の代わり)
+		indent = { enabled = true }, -- インデントガイド (indent-blankline.nvim の代わり)
 		picker = {
 			enabled = true,
 			-- これ使えばlsp経由のrenameとかもそれっぽいUIで出来る

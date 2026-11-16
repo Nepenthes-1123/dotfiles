@@ -1,5 +1,5 @@
 -- =============================================================================
--- lua/plugins/ai.lua  –  AI協同設定 (Copilot + CodeCompanion)
+-- lua/plugins/ai.lua  –  AI 補完 (Copilot)
 -- =============================================================================
 local setup = require("plugins.utils").setup
 
