@@ -14,6 +14,14 @@ die() {
 }
 has() { command -v "$1" >/dev/null 2>&1; }
 
+# 前後の空白を除く (.conf の列を読むときに使う)
+trim() {
+  local s="$1"
+  s="${s#"${s%%[![:space:]]*}"}"
+  s="${s%"${s##*[![:space:]]}"}"
+  printf '%s' "$s"
+}
+
 # 実行環境
 #   mac     : macOS
 #   ubuntu  : Ubuntu などの Debian 系 Linux

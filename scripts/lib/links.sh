@@ -35,13 +35,6 @@ collapse_path_vars() {
   printf '%s' "$s"
 }
 
-trim() {
-  local s="$1"
-  s="${s#"${s%%[![:space:]]*}"}"
-  s="${s%"${s##*[![:space:]]}"}"
-  printf '%s' "$s"
-}
-
 # links.conf を読み込み、この環境が担当する行 (want_gui / want_cli) だけを
 # LINK_SRC (絶対パス) と LINK_DST (絶対パス) に格納する
 load_links() {
