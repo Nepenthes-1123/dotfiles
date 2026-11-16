@@ -1,52 +1,56 @@
 local setup = require("plugins.utils").setup
 
 -- ── nvim-treesitter ───────────────────────────────────────────────────────────
-setup("nvim-treesitter.configs", function(m)
-	---@diagnostic disable-next-line: missing-fields
-	m.setup({
-		ensure_installed = {
-			"python",
-			"lua",
-			"c",
-			"cpp",
-			"vim",
-			"vimdoc",
-			"javascript",
-			"typescript",
-			"vue",
-			"json",
-			"jsonc",
-			"markdown",
-			"markdown_inline",
-			"bash",
-			"zsh",
-			"yaml",
-			"toml",
-			"html",
-			"css",
-			"pug",
-			"scss",
-		},
-		highlight = { enable = true, additional_vim_regex_highlighting = false },
-		indent = { enable = true },
-		incremental_selection = {
-			enable = true,
-			keymaps = {
-				init_selection = "<C-Space>",
-				node_incremental = "<C-Space>",
-				node_decremental = "<BS>",
-			},
-		},
+-- main ブランチはパーサとクエリの導入だけを担い、ハイライト・インデントの有効化は
+-- 利用側に任せる (master の highlight = { enable = true } に当たるオプションは無い)。
+-- パーサのビルドに tree-sitter CLI が要る (mise で導入)。
+local parsers = {
+	"python",
+	"lua",
+	"c",
+	"cpp",
+	"vim",
+	"vimdoc",
+	"javascript",
+	"typescript",
+	"vue",
+	"json",
+	"markdown",
+	"markdown_inline",
+	"bash",
+	"zsh",
+	"yaml",
+	"toml",
+	"html",
+	"css",
+	"pug",
+	"scss",
+}
+
+setup("nvim-treesitter", function(m)
+	m.install(parsers)
+
+	vim.api.nvim_create_autocmd("FileType", {
+		group = vim.api.nvim_create_augroup("treesitter-start", { clear = true }),
+		callback = function(ev)
+			local lang = vim.treesitter.language.get_lang(ev.match)
+			-- パーサが無い filetype は多いため、エラーにせず正規表現のハイライトのままにする
+			if not lang or not vim.treesitter.language.add(lang) then
+				return
+			end
+			vim.treesitter.start(ev.buf, lang)
+			-- インデントのクエリが無い言語で indentexpr を差し替えると、既定の字下げより悪くなる
+			if vim.treesitter.query.get(lang, "indents") then
+				vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+			end
+		end,
 	})
 end)
 
-vim.api.nvim_create_autocmd({ "FileType" }, {
-	group = vim.api.nvim_create_augroup("treesitter-vue-start", { clear = true }),
-	pattern = "vue",
-	callback = function()
-		pcall(vim.treesitter.start)
-	end,
-})
+-- master の incremental_selection の代わりに、Neovim 0.12 組み込みのノード選択 (v_an / v_in) を使う
+vim.keymap.set("n", "<C-Space>", "van", { remap = true, desc = "Select treesitter node" })
+vim.keymap.set("x", "<C-Space>", "an", { remap = true, desc = "Expand selection to parent node" })
+vim.keymap.set("x", "<BS>", "in", { remap = true, desc = "Shrink selection to child node" })
 
 -- ── nvim-treesitter-context ──────────────────────────────────────────────────
 setup("treesitter-context", function(m)

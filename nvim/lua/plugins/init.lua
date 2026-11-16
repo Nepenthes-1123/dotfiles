@@ -15,7 +15,8 @@ vim.api.nvim_create_autocmd("PackChanged", {
 	callback = function(ev)
 		local name = ev.data.spec.name
 		local kind = ev.data.kind -- 'install' | 'update' | 'delete'
-		-- nvim-treesitter: install/update 後に :TSUpdate でパーサーをビルド
+		-- nvim-treesitter: プラグインの更新に合わせて、導入済みのパーサーを対応する版に更新する
+		-- (初回の導入は plugins/treesitter.lua の install() が担う)
 		if name == "nvim-treesitter" and (kind == "install" or kind == "update") then
 			if not ev.data.active then
 				vim.cmd.packadd("nvim-treesitter")
