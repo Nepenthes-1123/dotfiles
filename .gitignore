@@ -36,7 +36,7 @@
 !zsh/.zprofile
 
 # wezterm セッティング
-!wezterm/WEZTERM_SETUP.md
+!wezterm/README.md
 !wezterm/.wezterm.lua
 !wezterm/.wezterm/keybindings.lua
 !wezterm/.wezterm/colors.lua

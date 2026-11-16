@@ -1,4 +1,20 @@
-# Wezterm 設定ガイド
+# WezTerm
+
+## 構成
+
+`.wezterm.lua` が `~/.wezterm.lua`、`.wezterm/` が `~/.wezterm/` にリンクされる。
+`.wezterm.lua` は全体の設定 (フォント・カラースキームなど) を持ち、残りは `.wezterm/` のモジュールの `apply(config)` を呼んで反映する。
+
+| ファイル | 役割 |
+| --- | --- |
+| `.wezterm.lua` | 入口。フォント・カラースキーム・環境変数・起動時のウィンドウ |
+| `.wezterm/colors.lua` | タブバー・ステータス・タイトルバーの配色 |
+| `.wezterm/format.lua` | タブバーとタブのタイトルの見た目 |
+| `.wezterm/status.lua` | 右側のステータス (モード・バッテリー・時刻) |
+| `.wezterm/background.lua` | 背景の透過と画像 |
+| `.wezterm/keybindings.lua` | キーバインド (既定のキーバインドは無効にしている) |
+| `.wezterm/shell.lua` | zsh を起動する場所 (Windows では WSL) と、タブ・ペインを開く処理 |
+| `.wezterm/herdr.lua` | herdr のペインでは WezTerm の操作を herdr のキーに置き換える処理と、セッションの選択 |
 
 ## Windows での zsh 設定
 

@@ -12,7 +12,7 @@ macOS・Ubuntu・Windows (WSL2) で共通に使う設定ファイル一式。
 | --- | --- | --- |
 | `zsh/` | `.zshenv`・`.zprofile`・`.zshrc` と `.zsh.d/` (読み込み順は `.zsh.d/priorities.conf`) | |
 | `nvim/` | Neovim (v0.12, `vim.pack` + Mason) | [nvim/README.md](nvim/README.md) |
-| `wezterm/` | WezTerm (Windows では WSL の zsh を開く) | [wezterm/WEZTERM_SETUP.md](wezterm/WEZTERM_SETUP.md) |
+| `wezterm/` | WezTerm (Windows では WSL の zsh を開く) | [wezterm/README.md](wezterm/README.md) |
 | `vscode/` | VSCode の settings / keybindings / snippets | |
 | `git/` | `.gitconfig` (共通) と `.gitconfig.private` (個人用のユーザー設定) | |
 | `starship/` | プロンプト | |
