@@ -35,20 +35,14 @@ setup("devcontainer", function(m)
 			return "docker"
 		end)(),
 
-		-- docker-compose も使用する場合
-		compose_command = (function()
-			-- docker compose (v2) を優先、なければ docker-compose (v1) にフォールバック
-			if vim.fn.executable("docker") == 1 then
-				if vim.v.shell_error == 0 then
-					return "docker compose"
-				end
-			end
-			return "docker-compose"
-		end)(),
+		-- docker compose (v2) を優先、docker が無ければ docker-compose (v1) にフォールバック。
+		-- v2 プラグインの有無を docker compose version で確かめると起動のたびにプロセスを
+		-- 立ち上げることになるため、docker があれば v2 があるものとみなす
+		compose_command = vim.fn.executable("docker") == 1 and "docker compose" or "docker-compose",
 
 		-- .devcontainer.json の検索起点
 		config_search_start = function()
-			return vim.loop.cwd()
+			return vim.uv.cwd()
 		end,
 
 		-- Neovim をコンテナ内にインストールするか
