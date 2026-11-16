@@ -44,10 +44,12 @@ collapse_path_vars() {
 }
 
 # links.conf を読み込み、この環境が担当する行 (want_gui / want_cli) だけを
-# LINK_SRC (絶対パス) と LINK_DST (絶対パス) に格納する
+# LINK_SRC (絶対パス) と LINK_DST (絶対パス) に格納する。
+# ALL_LINK_DST には担当外の行も含めたすべての配置先を格納する (prune で走査するディレクトリを決めるため)
 load_links() {
   LINK_SRC=()
   LINK_DST=()
+  ALL_LINK_DST=()
   local line src rest dst scope expanded
   while IFS= read -r line || [[ -n "$line" ]]; do
     line="${line%%#*}"
@@ -58,15 +60,16 @@ load_links() {
     dst="$(trim "${rest%%|*}")"
     scope=cli
     [[ "$rest" != *'|'* ]] || scope="$(trim "${rest#*|}")"
+    # expand_path_vars の die はコマンド置換の中で動くため、それだけでは呼び出し元が止まらない。
+    # また links_status || warn のように || の左側で呼ばれると set -e も効かないので、明示的に終了する
+    expanded="$(expand_path_vars "$dst")" || exit 1
+    ALL_LINK_DST+=("$expanded")
     case "$scope" in
     gui) want_gui || continue ;;
     cli) want_cli || continue ;;
     all) ;;
     *) die "links.conf の 3 列目は gui・cli・all のどれかです: $line" ;;
     esac
-    # expand_path_vars の die はコマンド置換の中で動くため、それだけでは呼び出し元が止まらない。
-    # また links_status || warn のように || の左側で呼ばれると set -e も効かないので、明示的に終了する
-    expanded="$(expand_path_vars "$dst")" || exit 1
     LINK_SRC+=("${DOT_DIR}/${src}")
     LINK_DST+=("$expanded")
   done <"$LINKS_CONF"
@@ -155,10 +158,11 @@ links_prune() {
   esac
 
   load_links
-  # links.conf の配置先の親ディレクトリだけを走査する
+  # links.conf の配置先の親ディレクトリだけを走査する。担当外の行も含めるのは、
+  # 以前その環境で作ったリンク (Windows 側の ~/.config/starship.toml など) も消すため
   local dirs=() d i found l target
-  for i in "${!LINK_DST[@]}"; do
-    d="$(dirname "${LINK_DST[$i]}")"
+  for i in "${!ALL_LINK_DST[@]}"; do
+    d="$(dirname "${ALL_LINK_DST[$i]}")"
     found=0
     for l in ${dirs[@]+"${dirs[@]}"}; do
       [[ "$l" != "$d" ]] || found=1
