@@ -53,7 +53,7 @@ au("BufWritePre", {
 local indent_group = aug("FiletypeIndent", { clear = true })
 au("FileType", {
 	group = indent_group,
-	pattern = { "latex", "bib", "plaintex", "jsonc", "yaml", "html", "css", "sh", "bash", "zsh" },
+	pattern = { "bib", "plaintex", "jsonc", "yaml", "html", "css", "sh", "bash", "zsh" },
 	callback = function()
 		vim.bo.tabstop = 2
 		vim.bo.shiftwidth = 2

@@ -60,7 +60,6 @@ setup("lualine", function(m)
 			globalstatus = true,
 			component_separators = { left = "", right = "" },
 			section_separators = { left = "", right = "" },
-			disabled_filetypes = { statusline = { "NvimTree" } },
 		},
 		sections = {
 			lualine_a = { "mode" },
@@ -105,7 +104,7 @@ setup("lualine", function(m)
 			lualine_y = { "progress" },
 			lualine_z = { "location" },
 		},
-		extensions = { "nvim-tree", "quickfix" },
+		extensions = { "quickfix" },
 	})
 end)
 
@@ -138,7 +137,7 @@ setup("render-markdown", function(m)
 	m.setup({
 		-- 対象ファイルタイプ (lazy.nvim の ft = {...} 相当)
 		-- vim.pack には遅延読み込み機構が無いため、setup 内の file_types で制御する
-		file_types = { "markdown", "norg", "rmd", "org" },
+		file_types = { "markdown" },
 
 		enabled = true,
 
@@ -218,11 +217,6 @@ setup("bufferline", function(m)
 				return true
 			end,
 			offsets = {
-				{
-					filetype = "NvimTree",
-					text = "",
-					separator = true,
-				},
 				{
 					filetype = "snacks_explorer",
 					text = "",

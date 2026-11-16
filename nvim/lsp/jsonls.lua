@@ -37,11 +37,4 @@ return {
 		},
 	},
 	-- VSCode: "editor.quickSuggestions": { "strings": true }
-	-- jsonls はデフォルトで文字列内補完を提供するため追加設定不要
-	on_attach = function(_, bufnr)
-		-- JSONC (コメント付き JSON) のフォーマットを有効化
-		if vim.bo[bufnr].filetype == "jsonc" then
-			vim.bo[bufnr].filetype = "jsonc"
-		end
-	end,
 }

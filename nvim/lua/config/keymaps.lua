@@ -56,9 +56,8 @@ map("n", "gy", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc
 -- ホバー表示 (VSCode: マウスホバー → K キー)
 map("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
 
--- シグネチャヘルプ (関数引数のヒント)
+-- シグネチャヘルプ (関数引数のヒント)。挿入モードの <C-s> は保存に使うため normal のみ
 map("n", "<C-s>", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature help" }))
-map("i", "<C-s>", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature help" }))
 
 -- リネーム (VSCode: F2)
 map("n", "<F2>", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
