@@ -6,12 +6,6 @@
 --   "flake8.args": ["--ignore=E203,W503,W504", "--max-line-length=88"]
 --   "black-formatter.importStrategy": "useBundled"
 --   "editor.codeActionsOnSave": { "source.organizeImports": "explicit" }
--- lsp.lua など、LSPをセットアップするファイル内
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local ok, blink = pcall(require, "blink.cmp")
-if ok then
-	capabilities = blink.get_lsp_capabilities(capabilities)
-end
 
 return {
 	cmd = { "ruff", "server" },
@@ -47,5 +41,4 @@ return {
 	-- code_action は非同期なので書き込みまでに完了せず、編集が書き込み後に
 	-- 適用されてバッファが再び modified になる。augroup をバッファごとに
 	-- 作る実装だったため増え続ける問題もあった。
-	capabilities = capabilities,
 }

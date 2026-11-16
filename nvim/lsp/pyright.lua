@@ -5,12 +5,6 @@
 -- mypy-type-checker の設定を移植:
 --   "--warn-return-any", "--no-implicit-optional",
 --   "--disallow-untyped-calls", "--disallow-untyped-defs"
--- lsp.lua など、LSPをセットアップするファイル内
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local ok, blink = pcall(require, "blink.cmp")
-if ok then
-	capabilities = blink.get_lsp_capabilities(capabilities)
-end
 
 return {
 	cmd = { "pyright-langserver", "--stdio" },
@@ -51,5 +45,4 @@ return {
 			},
 		},
 	},
-	capabilities = capabilities,
 }

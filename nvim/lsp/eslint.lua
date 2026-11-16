@@ -6,11 +6,6 @@
 -- conform.nvim 経由で保存時整形に使うため、LspEslintFixAll 相当のコマンドは
 -- 定義していない (整形の入口は conform に一本化している)。
 -- =============================================================================
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local ok, blink = pcall(require, "blink.cmp")
-if ok then
-	capabilities = blink.get_lsp_capabilities(capabilities)
-end
 
 local eslint_config_files = {
 	"eslint.config.js",
@@ -31,7 +26,6 @@ return {
 	cmd = { "vscode-eslint-language-server", "--stdio" },
 	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
 	workspace_required = true,
-	capabilities = capabilities,
 
 	-- vscode-eslint は textDocument/formatting を処理できるが、capability として申告しない。
 	-- VSCode では拡張 (クライアント側) がフォーマッタを登録する設計のため、サーバが

@@ -1,9 +1,3 @@
--- lsp.lua など、LSPをセットアップするファイル内
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local ok, blink = pcall(require, "blink.cmp")
-if ok then
-	capabilities = blink.get_lsp_capabilities(capabilities)
-end
 -- =============================================================================
 -- lsp/lua_ls.lua  –  Lua LSP サーバー設定
 -- VSCode: sumneko.lua 拡張のサーバー
@@ -38,5 +32,4 @@ return {
 			},
 		},
 	},
-	capabilities = capabilities,
 }

@@ -6,12 +6,6 @@
 --   "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" }
 --   "[json]": { "editor.quickSuggestions": { "strings": true } }
 -- jsonls は SchemaStore からスキーマを自動取得して補完・検証を行う
--- lsp.lua など、LSPをセットアップするファイル内
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local ok, blink = pcall(require, "blink.cmp")
-if ok then
-	capabilities = blink.get_lsp_capabilities(capabilities)
-end
 
 return {
 	cmd = { "vscode-json-language-server", "--stdio" },
@@ -42,7 +36,6 @@ return {
 			validate = { enable = true },
 		},
 	},
-	capabilities = capabilities,
 	-- VSCode: "editor.quickSuggestions": { "strings": true }
 	-- jsonls はデフォルトで文字列内補完を提供するため追加設定不要
 	on_attach = function(_, bufnr)

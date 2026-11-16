@@ -3,12 +3,6 @@
 -- VSCode: yzhang.markdown-all-in-one, davidanson.vscode-markdownlint の再現
 -- =============================================================================
 -- marksman はドキュメント内リンク補完・参照ジャンプを提供する
--- lsp.lua など、LSPをセットアップするファイル内
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local ok, blink = pcall(require, "blink.cmp")
-if ok then
-	capabilities = blink.get_lsp_capabilities(capabilities)
-end
 
 return {
 	cmd = { "marksman", "server" },
@@ -16,5 +10,4 @@ return {
 	root_markers = { ".marksman.toml", ".git" },
 	-- marksman はフォーマット機能を持たないため、
 	-- フォーマットは conform.nvim の prettier (markdown 用) に任せる
-	capabilities = capabilities,
 }

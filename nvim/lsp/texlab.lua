@@ -7,12 +7,6 @@
 --   "latex-workshop.latex.outDir": "out"
 --   "latex-workshop.bibtex-format.sort.enabled": true
 --   latexmk コマンド: "-file-line-error -interaction=nonstopmode -synctex=1 -outdir=%OUTDIR%"
--- lsp.lua など、LSPをセットアップするファイル内
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local ok, blink = pcall(require, "blink.cmp")
-if ok then
-	capabilities = blink.get_lsp_capabilities(capabilities)
-end
 
 return {
 	cmd = { "texlab" },
@@ -48,5 +42,4 @@ return {
 			},
 		},
 	},
-	capabilities = capabilities,
 }
