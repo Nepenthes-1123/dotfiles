@@ -18,12 +18,68 @@ vim.wo.spell = true
 -- 末尾スペースを維持 (Markdown の改行は 2 スペース)
 -- autocmds.lua の trimTrailingWhitespace は markdown を除外済み
 
--- テーブル整形ヘルパー (VSCode: "markdown.extension.tableFormatter.enabled": true の代替)
--- 選択範囲のテーブルを整形する簡易コマンド
-vim.keymap.set("n", "<LocalLeader>t", function()
-	-- column コマンドを使ったテーブル整形
-	vim.cmd("'<,'>!column -t -s '|' -o '|'")
-end, { buffer = true, desc = "Format table" })
+-- テーブル整形 (VSCode: "markdown.extension.tableFormatter.enabled": true の代替)
+-- カーソルのある表の列幅を揃える。column -o は util-linux 版にしか無く (macOS の BSD 版や
+-- Windows には無い)、日本語の表示幅も数えられないため、外部コマンドを使わずに整形する
+local function split_row(line)
+	local cells = {}
+	-- \| はセルの区切りではないので、一時的に置き換えてから分割する
+	local body = line:gsub("\\|", "\0"):match("^%s*|?(.-)|?%s*$")
+	for cell in (body .. "|"):gmatch("(.-)|") do
+		cells[#cells + 1] = vim.trim((cell:gsub("%z", "\\|")))
+	end
+	return cells
+end
+
+local function format_table()
+	local row = vim.api.nvim_win_get_cursor(0)[1]
+	local function is_table(n)
+		local line = vim.fn.getline(n)
+		return line:match("^%s*|") ~= nil
+	end
+	if not is_table(row) then
+		vim.notify("カーソルが表の中にありません", vim.log.levels.WARN)
+		return
+	end
+	local first, last = row, row
+	while first > 1 and is_table(first - 1) do
+		first = first - 1
+	end
+	while last < vim.fn.line("$") and is_table(last + 1) do
+		last = last + 1
+	end
+
+	local lines = vim.api.nvim_buf_get_lines(0, first - 1, last, false)
+	local indent = lines[1]:match("^(%s*)")
+	local rows, widths = {}, {}
+	for i, line in ipairs(lines) do
+		rows[i] = split_row(line)
+		for c, cell in ipairs(rows[i]) do
+			-- 区切り行 (---) の幅は数えず、見出しと本文の幅に合わせる
+			local width = cell:match("^:?%-+:?$") and 3 or vim.fn.strdisplaywidth(cell)
+			widths[c] = math.max(widths[c] or 3, width)
+		end
+	end
+
+	local out = {}
+	for i, cells in ipairs(rows) do
+		local parts = {}
+		for c = 1, #widths do
+			local cell = cells[c] or ""
+			if cell:match("^:?%-+:?$") then
+				local left, right = cell:sub(1, 1) == ":", cell:sub(-1) == ":"
+				local dashes = widths[c] - (left and 1 or 0) - (right and 1 or 0)
+				parts[c] = (left and ":" or "") .. string.rep("-", dashes) .. (right and ":" or "")
+			else
+				parts[c] = cell .. string.rep(" ", widths[c] - vim.fn.strdisplaywidth(cell))
+			end
+		end
+		out[i] = indent .. "| " .. table.concat(parts, " | ") .. " |"
+	end
+	vim.api.nvim_buf_set_lines(0, first - 1, last, false, out)
+end
+
+vim.keymap.set("n", "<LocalLeader>t", format_table, { buffer = true, desc = "Format table" })
 
 -- プレビュー: glow (CLI Markdown ビューワー) があれば使用
 vim.keymap.set("n", "<LocalLeader>p", function()
