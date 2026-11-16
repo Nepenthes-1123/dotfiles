@@ -16,6 +16,9 @@ autoload -Uz compinit
 _stale_zcompdump=(~/.zcompdump(N.mh+24))
 if (( ${#_stale_zcompdump} )); then
   compinit -u
+  # compinit はダンプが有効なら読み込むだけで書き直さないため、日時を更新しないと
+  # 次の起動以降もずっと古いと判定され、毎回この検査が走る
+  touch ~/.zcompdump
 else
   compinit -C
 fi
