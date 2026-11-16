@@ -166,8 +166,9 @@ nvim
 # 2. Mason によるLSP/ツールの自動インストールを待つ (start_delay 1.5秒後に開始)
 :Mason            " 進捗確認
 
-# 3. Treesitter パーサーをビルド (初回のみ・数分かかる場合あり)
-:TSUpdate
+# 3. Treesitter パーサーのビルドを待つ (起動時に plugins/treesitter.lua の一覧を自動で入れる。
+#    初回のみ数分かかる場合あり。tree-sitter CLI が必要)
+:checkhealth nvim-treesitter
 
 # 4. ヘルスチェックで不足ツールを確認
 :checkhealth
@@ -198,6 +199,8 @@ gh auth login
 | `<Tab>` / `<S-Tab>` | 次/前のバッファへ |
 | `<Leader>bd` | バッファを閉じる |
 | `<Leader>t` | ターミナルを開く |
+| `<C-Space>` (n/x) | Treesitter のノードを選択 / 親のノードへ広げる |
+| `<BS>` (x) | 子のノードへ狭める |
 | `<Esc>` (terminal) | ターミナルモードを抜ける |
 | `gcc` / `gc` | コメントトグル (行 / Visual、組み込み機能) |
 | `<` / `>` (Visual) | インデント変更後も選択を維持 |
@@ -212,7 +215,7 @@ gh auth login
 | `gi` | 実装へジャンプ |
 | `gy` | 型定義へジャンプ |
 | `K` | ホバー表示 |
-| `<C-s>` (n/i) | シグネチャヘルプ |
+| `<C-s>` (n) | シグネチャヘルプ (挿入モードでは保存) |
 
 ### コード操作 — `<Leader>c`
 
