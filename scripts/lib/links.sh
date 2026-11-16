@@ -187,8 +187,11 @@ links_prune() {
 
 links_adopt() {
   [[ $# -eq 2 ]] || die "使い方: dot.sh adopt <取り込む設定ファイル> <dotfiles 内の保存先>"
-  local dst src_rel src
-  dst="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+  local dir dst src_rel src
+  # cd の失敗を拾うため、ディレクトリの解決は単独の代入で行う
+  # (basename と同じ式に入れると、式全体の結果が basename の成否になり、失敗すると /<ファイル名> になる)
+  dir="$(cd "$(dirname "$1")" && pwd)" || die "取り込む設定ファイルのディレクトリがありません: $(dirname "$1")"
+  dst="${dir}/$(basename "$1")"
   src_rel="${2#./}"
   src="${DOT_DIR}/${src_rel}"
   [[ -e "$dst" && ! -L "$dst" ]] || die "取り込めるのはリンクではない既存のファイル・ディレクトリだけです: ${dst}"
