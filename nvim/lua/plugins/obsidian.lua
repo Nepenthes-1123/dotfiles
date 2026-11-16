@@ -390,8 +390,10 @@ setup("obsidian", function(m)
 		vim.tbl_extend("force", opts, { desc = "Obsidian: Toggle checkbox" })
 	)
 
-	-- リンクを挿入 (Foam: [[ で補完)
-	map("n", "<Leader>oi", "<Cmd>Obsidian link<CR>", vim.tbl_extend("force", opts, { desc = "Obsidian: Insert link" }))
+	-- 選択した文字列を既存のノートへのリンクにする (Foam: [[ で補完)
+	-- Obsidian link はビジュアル選択を対象にするため x モードに置く。normal モードでは
+	-- 前回の選択範囲 ('< '>) が使われ、カーソルと関係の無い場所がリンクになる
+	map("x", "<Leader>oi", "<Cmd>Obsidian link<CR>", vim.tbl_extend("force", opts, { desc = "Obsidian: Insert link" }))
 
 	-- ワークスペースを切り替え
 	map(

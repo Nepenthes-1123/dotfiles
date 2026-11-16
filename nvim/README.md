@@ -320,7 +320,7 @@ Foam Vault との互換性を保ったまま obsidian.nvim で運用する。
 | `<Leader>oc` | 目次 (TOC) を表示 |
 | `<Leader>or` | ノートをリネーム (リンク自動更新) |
 | `<Leader>ox` | チェックボックスをトグル |
-| `<Leader>oi` | リンクを挿入 |
+| `<Leader>oi` (v) | 選択した文字列をノートへのリンクにする |
 | `<Leader>ow` | ワークスペースを切替 |
 
 ### その他
