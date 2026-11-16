@@ -1,4 +1,4 @@
-local setup = require("plugins.config.utils").setup
+local setup = require("plugins.utils").setup
 
 -- ── nvim-treesitter ───────────────────────────────────────────────────────────
 setup("nvim-treesitter.configs", function(m)
@@ -47,3 +47,21 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 		pcall(vim.treesitter.start)
 	end,
 })
+
+-- ── nvim-treesitter-context ──────────────────────────────────────────────────
+setup("treesitter-context", function(m)
+	m.setup({
+		enable = true,
+		max_lines = 3,
+		min_window_height = 0,
+		line_numbers = true,
+		multiline_threshold = 20,
+		trim_scope = "outer",
+		mode = "topline",
+		separator = "▔",
+		zindex = 10,
+		multiwindow = true,
+	})
+
+	vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { link = "DiagnosticInfo" })
+end)

@@ -1,5 +1,5 @@
 -- =============================================================================
--- lua/plugins/config/gtodo-md.lua  –  gtodo-md.nvim 設定
+-- lua/plugins/gtodo-md.lua  –  gtodo-md.nvim 設定
 -- =============================================================================
 
 local ok, gtodo_md = pcall(require, "gtodo-md")

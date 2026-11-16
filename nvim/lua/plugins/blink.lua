@@ -1,4 +1,4 @@
-local setup = require("plugins.config.utils").setup
+local setup = require("plugins.utils").setup
 
 -- ── 補完プラグイン: blink.cmp───────────────────────────────────────────
 setup("blink.cmp", function(m)

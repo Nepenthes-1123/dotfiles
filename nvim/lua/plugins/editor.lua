@@ -1,4 +1,4 @@
-local setup = require("plugins.config.utils").setup
+local setup = require("plugins.utils").setup
 
 local map = vim.keymap.set
 local opts = { noremap = true, silent = true }
@@ -88,3 +88,17 @@ if wk_ok then
 		{ "<Leader>g", group = "Git" },
 	})
 end
+
+-- ── nvim-autopairs ───────────────────────────────────────────────────────────
+setup("nvim-autopairs", function(m)
+	m.setup({
+		check_ts = true,
+		map_cr = true,
+		disable_filetype = {
+			"TelescopePrompt",
+			"snacks_picker_input",
+			"spectre_panel",
+			"octo",
+		},
+	})
+end)

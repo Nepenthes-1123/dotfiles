@@ -1,5 +1,5 @@
 -- =============================================================================
--- lua/plugins/config/octo.lua  –  octo.nvim 設定
+-- lua/plugins/octo.lua  –  octo.nvim 設定
 -- VSCode: GitHub.vscode-pull-request-github の代替
 -- =============================================================================
 -- VSCode 拡張の機能と Neovim での対応 (キーマップは <Leader>h プレフィックス):
@@ -26,7 +26,7 @@
 --       gh auth refresh -s read:project
 -- =============================================================================
 
-local setup = require("plugins.config.utils").setup
+local setup = require("plugins.utils").setup
 
 setup("octo", function(m)
 	-- gh コマンドが無い場合は警告のみ表示してセットアップを継続

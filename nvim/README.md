@@ -60,7 +60,7 @@ Neovim v0.12 向け設定。プラグイン管理は外部プラグインマネ�
 
 ### Mason が自動インストールするもの
 
-初回起動時、`plugins/config/lsp.lua` の設定に従って Mason が以下を自動インストールする(`mason-tool-installer` は `start_delay = 1500`ms 後に自動実行、`auto_update = false`)。手動でのインストール作業は不要。
+初回起動時、`plugins/lsp.lua` の設定に従って Mason が以下を自動インストールする(`mason-tool-installer` は `start_delay = 1500`ms 後に自動実行、`auto_update = false`)。手動でのインストール作業は不要。
 
 LSPサーバー (`mason-lspconfig.ensure_installed`):
 
@@ -353,7 +353,7 @@ Foam Vault との互換性を保ったまま obsidian.nvim で運用する。
 | Git Diff プレビュー | `Snacks.picker.git_diff` | `<Leader>gd` |
 | GitHub Issues / PR 連携 | `Snacks.picker.gh_issue` / `gh_pr` | `<Leader>gil` / `<Leader>gpl` |
 | コメントトグル (Ctrl+/) | Neovim 0.10+ 組み込みコメント機能 | `gcc` (行) / `gc` (Visual) |
-| 保存時フォーマット | `conform.nvim` の `format_on_save` (`lua/plugins/config/lsp.lua`) | 保存時自動 |
+| 保存時フォーマット | `conform.nvim` の `format_on_save` (`lua/plugins/lsp.lua`) | 保存時自動 |
 | 付箋メモ (スクラッチバッファ) | `Snacks.scratch` / `select` | `<Leader>.` (開閉) / `<Leader>S` (履歴) |
 | タブ表示 (ファイル切り替え) | `bufferline.nvim` | `<Tab>` (次のタブ) / `<S-Tab>` (前のタブ) / `<Leader>bd` (タブを閉じる) |
 
@@ -364,7 +364,7 @@ Foam Vault との互換性を保ったまま obsidian.nvim で運用する。
 ### LSP サーバーの追加
 
 1. `lsp/<server_name>.lua` にサーバー設定を追加する。
-2. `lua/plugins/config/lsp.lua` の `mason-lspconfig.setup()` の `ensure_installed` に `"<server_name>"` を追記する(`automatic_enable = true` のため、追記するだけで `vim.lsp.enable()` が自動的に呼ばれる)。
+2. `lua/plugins/lsp.lua` の `mason-lspconfig.setup()` の `ensure_installed` に `"<server_name>"` を追記する(`automatic_enable = true` のため、追記するだけで `vim.lsp.enable()` が自動的に呼ばれる)。
 
 ### Python 仮想環境
 
@@ -372,8 +372,8 @@ Foam Vault との互換性を保ったまま obsidian.nvim で運用する。
 
 ### インライン Blame の常時表示を OFF にする
 
-`lua/plugins/config/editor.lua` の gitsigns 設定で `current_line_blame = false` に変更し、必要なときだけ `<Leader>gb` で該当行の blame を表示する運用も可能。
+`lua/plugins/editor.lua` の gitsigns 設定で `current_line_blame = false` に変更し、必要なときだけ `<Leader>gb` で該当行の blame を表示する運用も可能。
 
 ### Obsidian Vault のパスを変更する
 
-環境変数 `OBSIDIAN_VAULT_PATH` を設定するか、`lua/plugins/config/obsidian.lua` の `workspaces` を直接書き換える。
+環境変数 `OBSIDIAN_VAULT_PATH` を設定するか、`lua/plugins/obsidian.lua` の `workspaces` を直接書き換える。

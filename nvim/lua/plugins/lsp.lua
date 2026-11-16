@@ -1,4 +1,4 @@
-local setup = require("plugins.config.utils").setup
+local setup = require("plugins.utils").setup
 
 -- ── Mason ────────────────────────────────────────────────────────────────────
 setup("mason", function(m)

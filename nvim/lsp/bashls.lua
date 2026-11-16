@@ -3,7 +3,7 @@
 -- =============================================================================
 -- 整形と lint をこのサーバ 1 つで賄う。bash-language-server は shfmt と
 -- shellcheck を外部バイナリとして呼ぶだけなので、本体は
--- plugins/config/lsp.lua の mason-tool-installer で別途インストールする。
+-- plugins/lsp.lua の mason-tool-installer で別途インストールする。
 --
 -- shfmt のインデント幅を指定する設定項目は存在せず、Neovim の shiftwidth に
 -- 従う。プロジェクトで固定したい場合は .editorconfig を置くこと
