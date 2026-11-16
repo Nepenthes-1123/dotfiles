@@ -122,6 +122,13 @@ _ubuntu_install() {
     sudo apt-get install -y "$p" || warn "${p} のインストールに失敗しました"
   done
 
+  # zsh/.zshenv は LANG=ja_JP.UTF-8 を使うが、Ubuntu の標準では生成されていない
+  if locale -a 2>/dev/null | grep -qi '^ja_JP\.utf-\?8$'; then
+    info "installed ja_JP.UTF-8 locale"
+  else
+    sudo locale-gen ja_JP.UTF-8 || warn "ja_JP.UTF-8 のロケールを生成できませんでした"
+  fi
+
   # WSL の中ではフォントは Windows 側 (winget) で入れる
   if want_gui; then
     _ubuntu_install_nerd_font
