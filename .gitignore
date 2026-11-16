@@ -39,6 +39,7 @@
 !wezterm/WEZTERM_SETUP.md
 !wezterm/.wezterm.lua
 !wezterm/.wezterm/keybindings.lua
+!wezterm/.wezterm/colors.lua
 !wezterm/.wezterm/format.lua
 !wezterm/.wezterm/status.lua
 !wezterm/.wezterm/background.lua

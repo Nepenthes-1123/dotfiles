@@ -1,18 +1,9 @@
 local wezterm = require("wezterm")
 
--- Color palette for the backgrounds of each cell
-local COLORS = {
-	"#8a3375", -- 1 (Mode)
-	"#9f377e", -- 2 (Battery etc.)
-	"#b33c86", -- 3 (Time etc.)
-	"#c54390", -- 4
-	"#d64b9f", -- 5
-	"#e55ea8", -- 6
-	"#f071b5", -- 7
-}
+local colors = require("colors")
 
--- Foreground color for the text across the fade
-local TEXT_FG = "#fee6ee"
+local COLORS = colors.fade
+local TEXT_FG = colors.text
 
 local SOLID_LEFT_ARROW = utf8.char(0xe0d2)
 
@@ -55,25 +46,20 @@ local function rightUpdate(window)
 
 	-- 1. モードインジケーターの取得
 	local mode = "NORMAL"
-	local mode_color = "#cbb6ff"
 
 	if window:active_key_table() == "resize_pane" then
 		mode = "RESIZE"
-		mode_color = "#f59574"
 	elseif window:active_key_table() == "copy_mode" then
 		mode = "COPY"
-		mode_color = "#f41d99"
 	elseif window:active_key_table() == "search_mode" then
 		mode = "SEARCH"
-		mode_color = "#22e529"
 	elseif window:leader_is_active() then
 		mode = "LEADER"
-		mode_color = "#f59574"
 	end
 
 	-- モード部分を右側の先頭(一番左側)に配置
 	local mode_text = string.format(" %-6s ", mode)
-	table.insert(elements, { Foreground = { Color = mode_color } })
+	table.insert(elements, { Foreground = { Color = colors.mode[mode] } })
 	table.insert(elements, { Background = { Color = COLORS[1] } })
 	table.insert(elements, { Text = mode_text })
 

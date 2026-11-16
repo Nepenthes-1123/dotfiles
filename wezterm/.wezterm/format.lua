@@ -1,4 +1,5 @@
 local wezterm = require("wezterm")
+local colors = require("colors")
 
 local function BaseName(s)
 	return string.gsub(s, "(.*[/\\])(.*)", "%2")
@@ -8,8 +9,8 @@ local M = {}
 
 function M.apply(config)
 	config.window_frame = {
-		active_titlebar_bg = "#442845",
-		inactive_titlebar_bg = "#221622",
+		active_titlebar_bg = colors.titlebar.active,
+		inactive_titlebar_bg = colors.titlebar.inactive,
 	}
 
 	-- タブバーの設定
@@ -32,15 +33,11 @@ function M.apply(config)
 	config.default_cursor_style = "BlinkingBlock"
 
 	wezterm.on("format-tab-title", function(tab, _, _, _, hover, _)
-		local background = "#442845" -- 非アクティブタブの色
-		local foreground = "#dcc4cc"
-
+		local color = colors.tab.inactive
 		if tab.is_active then
-			background = "#b33c86" -- アクティブタブ
-			foreground = "#fee6ee"
+			color = colors.tab.active
 		elseif hover then
-			background = "#8a3375" -- ホバー時
-			foreground = "#edd5dd"
+			color = colors.tab.hover
 		end
 
 		local title = tab.tab_title
@@ -53,8 +50,8 @@ function M.apply(config)
 		end
 
 		return {
-			{ Background = { Color = background } },
-			{ Foreground = { Color = foreground } },
+			{ Background = { Color = color.bg } },
+			{ Foreground = { Color = color.fg } },
 			{ Text = " " .. title .. " " },
 		}
 	end)
