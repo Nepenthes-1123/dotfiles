@@ -8,6 +8,13 @@ skip_global_compinit=1
 # 環境変数なので、対話シェルだけでなく zsh -l -c (WezTerm や herdr から起動するコマンド) にも効くようここで設定する。
 # LC_ALL はほかの LC_* より優先されて個別の指定を打ち消すため使わない
 export LANG='ja_JP.UTF-8'
+# Ubuntu (WSL を含む) は ja_JP.UTF-8 を生成していないことがあり (dot.sh setup で生成する)、
+# 無いロケールを指定すると C ロケールに戻って日本語をバイト単位で扱ってしまう。
+# zsh は LANG を設定した時点でロケールを切り替えるので、文字コードが UTF-8 にならなければ C.UTF-8 にする
+zmodload -F zsh/langinfo p:langinfo 2>/dev/null
+if [[ ${langinfo[CODESET]} != UTF-8 ]]; then
+  export LANG='C.UTF-8'
+fi
 
 ## エディタ
 # 未設定だと、Claude Code は VSCode (code) を、herdr・less・crontab などは vi を開く。
