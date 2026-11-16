@@ -1,17 +1,5 @@
 -- =============================================================================
--- config/lsp.lua  –  LSP 設定 (Neovim v0.12 標準 API ベース)
--- vim.lsp.enable() を使用してプラグインマネージャ不要で LSP を有効化
--- =============================================================================
---
--- 対応 LSP サーバー (extensions.txt の言語から)
---   Python    → pyright  (Pylance の OSS 版, 同等の機能)
---               + ruff-lsp (black/flake8/isort を統合した高速フォーマッタ/リンタ)
---   C/C++     → clangd
---   Lua       → lua_ls   (sumneko.lua 拡張の LSP サーバー)
---   Vue/JS/TS → volar (v2), vtsls
---   LaTeX     → texlab
---   Markdown  → marksman
---   JSON      → jsonls (vscode-json-languageserver)
+-- config/diagnostics.lua  –  診断の表示と、hover・signatureHelp のフロートの枠
 -- =============================================================================
 
 -- ── 診断表示設定 ─────────────────────────────────────────────────────────────
@@ -66,11 +54,11 @@ end
 
 -- ── LSP サーバー有効化 ───────────────────────────────────────────────────────
 -- vim.pack.add() で Mason / mason-lspconfig が常にロードされるため、
--- サーバーの有効化は plugins/init.lua の mason-lspconfig.setup() が担う。
+-- サーバーの有効化は plugins/lsp.lua の mason-lspconfig.setup() が担う。
 -- （mason-lspconfig の automatic_enable = true により、
 --   ensure_installed の各サーバーに対して自動で vim.lsp.enable() が呼ばれる）
 --
 -- lsp/<server>.lua の設定ファイルは mason-lspconfig が vim.lsp.enable() を
 -- 呼ぶ際に自動で読み込まれる。追加サーバーは以下の2箇所に記述すること:
 --   1. lsp/<server>.lua              … サーバー固有の設定
---   2. plugins/init.lua の           … mason-lspconfig.setup() の ensure_installed
+--   2. plugins/lsp.lua の            … mason-lspconfig.setup() の ensure_installed

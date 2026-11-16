@@ -69,7 +69,7 @@ wezterm/.wezterm/assets/
 !nvim/README.md
 !nvim/lua/config/autocmds.lua
 !nvim/lua/config/keymaps.lua
-!nvim/lua/config/lsp.lua
+!nvim/lua/config/diagnostics.lua
 !nvim/lua/config/options.lua
 !nvim/lua/plugins/init.lua
 !nvim/lua/plugins/ai.lua
