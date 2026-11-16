@@ -70,7 +70,7 @@ join_lines() {
 }
 
 # $1 のツリーで replace を適用し、deny に当たる箇所を表示する。1 つでも当たれば 1 を返す。
-# 置き換え・検査はファイルの中身とパスの両方が対象。NUL を含むファイル (画像など) は中身を扱わない
+# 置き換えはファイルの中身だけ、検査は中身とパスの両方が対象。NUL を含むファイル (画像など) は中身を扱わない
 rewrite_and_check() (
   export EXPORT_FROM_LIST EXPORT_TO_LIST EXPORT_DENY_LIST EXPORT_ALLOW_LIST
   EXPORT_FROM_LIST="$(join_lines ${EXPORT_FROM[@]+"${EXPORT_FROM[@]}"})"
