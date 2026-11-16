@@ -63,6 +63,7 @@ wezterm/.wezterm/assets/
 
 # github セッティング
 !.github/workflows/scripts.yml
+!.github/workflows/config.yml
 
 # neovim セッティング
 !nvim/init.lua

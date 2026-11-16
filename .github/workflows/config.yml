@@ -1,0 +1,35 @@
+name: Config
+
+# 設定ファイル側の変更 (ファイルの改名・削除など) でも壊れるため、scripts.yml と違ってパスで絞らない
+on:
+  push:
+  pull_request:
+
+jobs:
+  # WezTerm は Lua 5.4、Neovim は LuaJIT で読み込むため、それぞれの処理系で構文を確認する
+  lua-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends lua5.4 luajit
+      - name: wezterm (Lua 5.4)
+        run: find wezterm -name '*.lua' -print0 | xargs -0 luac5.4 -p
+      - name: nvim (LuaJIT)
+        run: |
+          status=0
+          while IFS= read -r file; do
+            luajit -b "$file" /dev/null || status=1
+          done < <(find nvim -name '*.lua')
+          exit "$status"
+
+  # links.conf のリンク元がすべて存在することを確認する (status はリンク元が無いと失敗する)
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: link / status
+        run: |
+          export HOME="${RUNNER_TEMP}/home"
+          mkdir -p "$HOME"
+          scripts/dot.sh link
+          scripts/dot.sh status
