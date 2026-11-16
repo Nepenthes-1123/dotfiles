@@ -10,7 +10,7 @@ macOS・Ubuntu・Windows (WSL2) で共通に使う設定ファイル一式。
 
 | ディレクトリ | 内容 | 詳細 |
 | --- | --- | --- |
-| `zsh/` | `.zshenv`・`.zprofile`・`.zshrc` と `.zsh.d/` (読み込み順は `.zsh.d/priorities.conf`) | |
+| `zsh/` | `.zshenv`・`.zprofile`・`.zshrc` と `.zsh.d/` (読み込み順は `.zsh.d/priorities.conf`) | [zsh/README.md](zsh/README.md) |
 | `nvim/` | Neovim (v0.12, `vim.pack` + Mason) | [nvim/README.md](nvim/README.md) |
 | `wezterm/` | WezTerm (Windows では WSL の zsh を開く) | [wezterm/README.md](wezterm/README.md) |
 | `vscode/` | VSCode の settings / keybindings / snippets | |
@@ -56,7 +56,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/Nepenthes-1123/dotfiles/
 - Ubuntu では apt で git を入れる
 - setup が対話で入力を受け付けるため、`curl ... | bash` ではなく上の形で実行する
 - Node を Volta で管理するマシン (会社の方針など) では、先頭に `MISE_DISABLE_TOOLS=node` を付けて実行すると、使わない node を mise が入れずに済む。
-  Volta の PATH の設定は `~/.zprofile.local` に書く ([scripts/README.md](scripts/README.md#zsh-の設定ファイルの使い分け))
+  Volta の PATH の設定は `~/.zprofile.local` に書く ([zsh/README.md](zsh/README.md#設定ファイルの使い分け))
 
 ### Windows
 
