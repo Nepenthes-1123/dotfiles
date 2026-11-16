@@ -3,6 +3,12 @@
 ZSH_CONFS_DIR="${HOME}/.zsh.d"
 ZSH_PRIORITIES_CONF="${ZSH_CONFS_DIR}/priorities.conf"
 
+## カラー設定
+# completion.zsh の補完候補の色 (list-colors) が LS_COLORS を使うため、.zsh.d より先に設定する
+export LSCOLORS=ExFxCxdxBxegedabagacad
+export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+export ZLS_COLORS=$LS_COLORS
+
 # Load ${ZSH_CONFS} in ${ZSH_PRIORITIES_CONF}
 source "${ZSH_PRIORITIES_CONF}"
 
@@ -22,11 +28,6 @@ _set_title_to_cwd() {
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd _set_title_to_cwd
 
-
-## カラー設定
-export LSCOLORS=ExFxCxdxBxegedabagacad
-export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-export ZLS_COLORS=$LS_COLORS
 
 ## 出力の文字列末尾に改行コードが無い場合でも表示
 unsetopt promptcr
