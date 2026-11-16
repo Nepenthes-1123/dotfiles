@@ -147,7 +147,7 @@ end
 local function spawn_session_tab(window, name)
 	local spawn_ok, new_tab, new_pane = pcall(function()
 		return window:mux_window():spawn_tab({
-			args = shell.spawn_args("herdr --session " .. name),
+			args = shell.spawn_args('herdr --session "$1"', name),
 			cwd = shell.spawn_cwd(),
 			set_environment_variables = { HERDR_ENV = "0" },
 		})

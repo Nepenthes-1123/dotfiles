@@ -49,9 +49,19 @@ function M.apply(config)
 end
 
 -- 既定のドメインでタブ・ウィンドウを開くときの引数 (spawn_tab / spawn_window 用)
--- WSL ドメインでも mac / Linux でも、そのドメインの zsh で実行される
-function M.spawn_args(command)
-	return { "zsh", "-l", "-c", command }
+-- WSL ドメインでも mac / Linux でも、そのドメインの zsh で実行される。
+-- 入力された文字列などは command に埋め込まず、続く引数で渡して command の中から "$1" などで参照する
+-- (埋め込むと空白で引数が分かれ、; などがシェルのコマンドとして実行される)
+function M.spawn_args(command, ...)
+	local args = { "zsh", "-l", "-c", command }
+	if select("#", ...) > 0 then
+		-- zsh -c の後の最初の引数は $0 になるため、$1 以降に渡すために名前を挟む
+		table.insert(args, "zsh")
+		for _, arg in ipairs({ ... }) do
+			table.insert(args, arg)
+		end
+	end
+	return args
 end
 
 -- タブを開くときのカレントディレクトリ。WSL ドメインでは default_cwd (~) に任せる
