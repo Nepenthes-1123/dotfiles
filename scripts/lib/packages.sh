@@ -27,6 +27,7 @@ packages_upgrade() {
     done
     ;;
   mac)
+    _brew_shellenv
     brew update
     for p in "${mac_packages[@]}"; do
       brew upgrade "$p" || warn "${p} の更新に失敗しました"
@@ -59,21 +60,27 @@ _win_install() {
   fi
 }
 
+# brew の PATH をこのプロセス内で通す。Homebrew のインストーラーは実行中のシェルの PATH を更新せず、
+# bootstrap.sh が入れた直後や、~/.zprofile.local に brew shellenv を書いていない環境では PATH に無いため
+_brew_shellenv() {
+  local b
+  for b in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+    if [[ -x "$b" ]]; then
+      eval "$("$b" shellenv)"
+      return
+    fi
+  done
+}
+
 _mac_install() {
+  _brew_shellenv
   if ! has brew; then
     # NONINTERACTIVE では sudo のパスワードを聞けずに失敗するため、先に認証しておく
     sudo -v || die "Homebrew のインストールには管理者のパスワードが必要です"
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" ||
       die "Homebrew のインストールに失敗しました"
+    _brew_shellenv
   fi
-  # インストーラーは現在のシェルの PATH を更新しないため、このプロセス内で通す
-  local b
-  for b in /opt/homebrew/bin/brew /usr/local/bin/brew; do
-    if [[ -x "$b" ]]; then
-      eval "$("$b" shellenv)"
-      break
-    fi
-  done
 
   local p
   for p in "${mac_packages[@]}"; do
