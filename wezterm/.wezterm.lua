@@ -65,5 +65,6 @@ local keybinds = require("keybindings")
 config.disable_default_key_bindings = true -- デフォルトのキーbindingsを無効化
 config.leader = keybinds.leader
 config.keys = keybinds.keys
+config.key_tables = keybinds.key_tables
 
 return config
