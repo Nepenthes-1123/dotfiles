@@ -48,7 +48,7 @@ collapse_path_vars() {
 load_links() {
   LINK_SRC=()
   LINK_DST=()
-  local line src rest dst scope
+  local line src rest dst scope expanded
   while IFS= read -r line || [[ -n "$line" ]]; do
     line="${line%%#*}"
     [[ -n "$(trim "$line")" ]] || continue
@@ -64,8 +64,11 @@ load_links() {
     all) ;;
     *) die "links.conf の 3 列目は gui・cli・all のどれかです: $line" ;;
     esac
+    # expand_path_vars の die はコマンド置換の中で動くため、それだけでは呼び出し元が止まらない。
+    # また links_status || warn のように || の左側で呼ばれると set -e も効かないので、明示的に終了する
+    expanded="$(expand_path_vars "$dst")" || exit 1
     LINK_SRC+=("${DOT_DIR}/${src}")
-    LINK_DST+=("$(expand_path_vars "$dst")")
+    LINK_DST+=("$expanded")
   done <"$LINKS_CONF"
 }
 
