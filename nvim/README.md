@@ -290,7 +290,6 @@ Octo のレビューバッファ内 (filetype=`octo`) のみで有効なキー:
 | `<Leader>Du` | コンテナをビルドして起動 |
 | `<Leader>Da` | コンテナにアタッチ |
 | `<Leader>Ds` | コンテナを停止 |
-| `<Leader>Dr` | コンテナを削除 |
 | `<Leader>De` | コンテナ内でコマンドを実行 |
 | `<Leader>Dk` | lazydocker をフローティングターミナルで起動 (lazydocker インストール時のみ) |
 

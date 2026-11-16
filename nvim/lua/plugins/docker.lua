@@ -64,7 +64,7 @@ setup("devcontainer", function(m)
 		log_level = "info",
 	})
 
-	-- ── キーマップ (<Leader>dc プレフィックス) ───────────────────────────────
+	-- ── キーマップ (<Leader>D プレフィックス) ────────────────────────────────
 	local map = vim.keymap.set
 	local opts = { noremap = true, silent = true }
 
@@ -72,8 +72,8 @@ setup("devcontainer", function(m)
 	map(
 		"n",
 		"<Leader>Du",
-		"<Cmd>DevcontainerUp<CR>",
-		vim.tbl_extend("force", opts, { desc = "DevContainer: Up (build & start)" })
+		"<Cmd>DevcontainerStart<CR>",
+		vim.tbl_extend("force", opts, { desc = "DevContainer: Start (build & start)" })
 	)
 
 	-- コンテナにアタッチ (VSCode: "Dev Containers: Attach to Running Container")
@@ -86,14 +86,6 @@ setup("devcontainer", function(m)
 
 	-- コンテナを停止
 	map("n", "<Leader>Ds", "<Cmd>DevcontainerStop<CR>", vim.tbl_extend("force", opts, { desc = "DevContainer: Stop" }))
-
-	-- コンテナを削除
-	map(
-		"n",
-		"<Leader>Dr",
-		"<Cmd>DevcontainerRemove<CR>",
-		vim.tbl_extend("force", opts, { desc = "DevContainer: Remove" })
-	)
 
 	-- コンテナ内でコマンドを実行
 	map(
@@ -120,7 +112,7 @@ end)
 --   macOS:   brew install lazydocker
 --   Linux:   curl -s https://api.github.com/repos/jesseduffield/lazydocker/releases/latest ...
 if vim.fn.executable("lazydocker") == 1 then
-	vim.keymap.set("n", "<Leader>dk", function()
+	vim.keymap.set("n", "<Leader>Dk", function()
 		-- フローティングターミナルで lazydocker を起動
 		local buf = vim.api.nvim_create_buf(false, true)
 		local width = math.floor(vim.o.columns * 0.9)
