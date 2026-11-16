@@ -45,20 +45,10 @@ setup("devcontainer", function(m)
 			return vim.uv.cwd()
 		end,
 
-		-- Neovim をコンテナ内にインストールするか
-		-- true にすると初回起動時に時間がかかる
-		always_pull = false,
-		nvim_installation = "static", -- 'static' | 'system' | 'skip'
-
-		-- ローカルの Neovim 設定をコンテナにマウントするか
-		-- (VSCode: "remoteUser" dotfiles 相当)
-		nvim_config_mounts = {
-			enabled = true,
-			dotfiles_path = vim.fn.stdpath("config"),
+		-- ローカルの Neovim 設定をコンテナにマウントする (VSCode: "remoteUser" dotfiles 相当)
+		attach_mounts = {
+			neovim_config = { enabled = true, options = { "readonly" } },
 		},
-
-		-- コンテナ起動後に自動 attach するか
-		autostart = false,
 
 		-- ログレベル
 		log_level = "info",
