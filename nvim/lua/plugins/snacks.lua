@@ -16,13 +16,7 @@
 --   ・カーソル下の単語ハイライト (words)  … vim-illuminate と選択的に使用
 -- =============================================================================
 
-local function setup(mod, fn)
-	local ok, m = pcall(require, mod)
-	if not ok then
-		return
-	end
-	fn(m)
-end
+local setup = require("plugins.utils").setup
 
 setup("snacks", function(Snacks)
 	Snacks.setup({

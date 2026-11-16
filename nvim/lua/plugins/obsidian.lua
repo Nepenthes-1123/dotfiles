@@ -33,13 +33,7 @@
 -- 一括置換スクリプトを本ファイル末尾に記載しています。
 -- =============================================================================
 
-local function setup(mod, fn)
-	local ok, m = pcall(require, mod)
-	if not ok then
-		return
-	end
-	fn(m)
-end
+local setup = require("plugins.utils").setup
 
 -- ── ノートタイプ別の保存先・テンプレート定義 ────────────────────────────────────
 -- Zettelkasten のノートタイプごとに「保存先フォルダ」と「テンプレートファイル名」を

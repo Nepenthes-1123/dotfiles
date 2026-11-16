@@ -19,13 +19,7 @@
 --   docker-compose-language-service  → docker-compose.yml LSP
 
 -- ── nvim-dev-container ────────────────────────────────────────────────────────
-local function setup(mod, fn)
-	local ok, m = pcall(require, mod)
-	if not ok then
-		return
-	end
-	fn(m)
-end
+local setup = require("plugins.utils").setup
 
 setup("devcontainer", function(m)
 	m.setup({
