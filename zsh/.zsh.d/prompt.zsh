@@ -15,7 +15,8 @@ zstyle ':completion:*' save-history $SAVEHIST
 
 
 ## プロンプト表示設定 (starship に委譲)
-# dumb (エスケープシーケンスを解釈しない端末) では starship がエラーを出すため、zsh 標準のプロンプトのままにする
-if [[ "${TERM}" != dumb ]]; then
+# dumb (エスケープシーケンスを解釈しない端末) では starship がエラーを出すため、zsh 標準のプロンプトのままにする。
+# starship は mise で入れるため、setup 前や mise が PATH に無いシェルでも zsh 標準のプロンプトにする
+if [[ "${TERM}" != dumb ]] && command -v starship >/dev/null 2>&1; then
   eval "$(starship init zsh)"
 fi
