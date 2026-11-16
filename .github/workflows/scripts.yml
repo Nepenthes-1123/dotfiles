@@ -6,12 +6,16 @@ on:
       - "scripts/**"
       - "bootstrap.sh"
       - "bootstrap.ps1"
+      - ".shellcheckrc"
+      - ".gitattributes"
       - ".github/workflows/scripts.yml"
   pull_request:
     paths:
       - "scripts/**"
       - "bootstrap.sh"
       - "bootstrap.ps1"
+      - ".shellcheckrc"
+      - ".gitattributes"
       - ".github/workflows/scripts.yml"
 
 jobs:
