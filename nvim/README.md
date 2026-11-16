@@ -37,7 +37,7 @@ Neovim v0.12 向け設定。プラグイン管理は外部プラグインマネ�
 │       ├── init.lua                          # vim.pack.add() によるプラグイン宣言 & 各設定の読込
 │       ├── utils.lua                         # setup(): プラグインを読み込めなければ警告を出して設定を飛ばす
 │       ├── ui.lua                            # カラースキーム / lualine / which-key / render-markdown / bufferline / dropbar / tiny-cmdline
-│       ├── editor.lua                        # telescope / gitsigns / rainbow-delimiters / nvim-autopairs
+│       ├── editor.lua                        # gitsigns / rainbow-delimiters / nvim-autopairs
 │       ├── lsp.lua                           # Mason / mason-lspconfig / conform / nvim-lint
 │       ├── treesitter.lua                    # nvim-treesitter / nvim-treesitter-context
 │       ├── blink.lua                         # blink.cmp (補完エンジン)
@@ -87,7 +87,7 @@ ruff, stylua, prettier, markdownlint, shfmt, shellcheck
 neovim, node (LTS), ripgrep, github-cli (gh), tree-sitter
 ```
 
-- ripgrep — snacks.picker の grep / Telescope の高速化、:grep のバックエンド
+- ripgrep — snacks.picker の grep、:grep のバックエンド
 - tree-sitter — nvim-treesitter がパーサーをビルドするのに使う
 - node — Mason が npm で LSP / フォーマッターを入れるのに使う。Volta を使うマシンでは mise の node は無効になり、Volta の node が使われる
 - GitHub CLI — octo.nvim (PR/Issue/Review) に必須。インストール後に `gh auth login` が必要。GitHub Projects (v2) を使う場合は追加スコープも必要: `gh auth refresh -s read:project`
@@ -128,7 +128,7 @@ sudo apt install jq / brew install jq
 | --- | --- |
 | カラースキーム | catppuccin/nvim |
 | アイコン | nvim-web-devicons |
-| ファジーファインダー基盤 | plenary.nvim, telescope.nvim (obsidian.nvim のpickerとして使用) |
+| ライブラリ | plenary.nvim (octo.nvim が依存) |
 | Git連携 | gitsigns.nvim |
 | 補完エンジン | blink.lib, blink.cmp |
 | シンタックスハイライト | nvim-treesitter, nvim-treesitter-context |

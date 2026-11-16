@@ -46,8 +46,8 @@ vim.pack.add({
 
 	-- ── ファジーファインダー ────────────────────────────────────────────────────
 	-- VSCode: Ctrl+P / Ctrl+Shift+F
+	-- snacks.picker を使う。plenary.nvim は octo.nvim が依存する
 	"https://github.com/nvim-lua/plenary.nvim",
-	"https://github.com/nvim-telescope/telescope.nvim",
 
 	-- ── Git 連携 ────────────────────────────────────────────────────────────────
 	-- VSCode: git.blame.editorDecoration.enabled + Gutter 差分表示

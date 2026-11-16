@@ -159,7 +159,7 @@ setup("snacks", function(Snacks)
 					},
 				},
 			},
-		}, -- telescope.nvim を使用
+		},
 		statuscolumn = { enabled = false }, -- lualine.nvim を使用
 		animate = { enabled = true },
 		dim = { enabled = false },

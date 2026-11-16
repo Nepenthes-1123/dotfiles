@@ -3,39 +3,6 @@ local setup = require("plugins.utils").setup
 local map = vim.keymap.set
 local opts = { noremap = true, silent = true }
 
--- ── telescope ─────────────────────────────────────────────────────────────────
-setup("telescope", function(m)
-	local actions = require("telescope.actions")
-	m.setup({
-		defaults = {
-			prompt_prefix = "  ",
-			selection_caret = " ",
-			path_display = { "truncate" },
-			sorting_strategy = "ascending",
-			layout_config = {
-				horizontal = { prompt_position = "top", preview_width = 0.55 },
-				width = 0.87,
-				height = 0.80,
-			},
-			mappings = {
-				i = {
-					["<C-j>"] = actions.move_selection_next,
-					["<C-k>"] = actions.move_selection_previous,
-					["<Esc>"] = actions.close,
-				},
-			},
-			file_ignore_patterns = {
-				"node_modules/",
-				".git/",
-				"__pycache__/",
-				"%.pyc",
-				"%.DS_Store",
-			},
-		},
-		pickers = { find_files = { hidden = true } },
-	})
-end)
-
 -- ── gitsigns ──────────────────────────────────────────────────────────────────
 setup("gitsigns", function(m)
 	m.setup({
@@ -95,7 +62,6 @@ setup("nvim-autopairs", function(m)
 		check_ts = true,
 		map_cr = true,
 		disable_filetype = {
-			"TelescopePrompt",
 			"snacks_picker_input",
 			"spectre_panel",
 			"octo",

@@ -3,10 +3,10 @@
 -- VSCode: GitHub.vscode-pull-request-github の代替
 -- =============================================================================
 -- VSCode 拡張の機能と Neovim での対応 (キーマップは <Leader>h プレフィックス):
---   PR/Issue 一覧パネル          → <Leader>hpl / <Leader>hil (Telescope)
+--   PR/Issue 一覧パネル          → <Leader>hpl / <Leader>hil (snacks.picker)
 --   PR レビュー (diff + コメント) → <Leader>hprs (review start)
 --   インラインコメント追加        → レビューバッファ上で <Leader>ca
---   PR のチェックアウト           → <Leader>hpc / Telescope ピッカー上で <C-o>
+--   PR のチェックアウト           → <Leader>hpc / ピッカー上で <C-o>
 --   PR のマージ                   → <Leader>hpm / ピッカー上で <C-r>
 --   通知一覧                       → <Leader>hn
 --

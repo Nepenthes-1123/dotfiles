@@ -157,9 +157,8 @@ setup("obsidian", function(m)
 		new_notes_location = "current_dir",
 
 		-- ── picker (検索UI) ────────────────────────────────────────────────────
-		-- telescope.nvim を使用 (plugins/init.lua で設定済み)
 		picker = {
-			name = "telescope.nvim",
+			name = "snacks.picker",
 			note_mappings = {
 				new = "<C-x>", -- 新規ノートを作成
 				insert_link = "<C-l>", -- リンクを挿入
