@@ -1,22 +1,6 @@
 local setup = require("plugins.utils").setup
 
--- ── カラースキーム: Rosé Pine Moon ───────────────────────────────────────────
-setup("rose-pine", function(m)
-	m.setup({
-		variant = "moon",
-		dark_variant = "moon",
-		styles = { bold = true, italic = false, transparency = true },
-		highlight_groups = {
-			DiagnosticVirtualTextError = { fg = "love", bg = "love", blend = 10 },
-			DiagnosticVirtualTextWarn = { fg = "gold", bg = "gold", blend = 10 },
-			DiagnosticVirtualTextInfo = { fg = "foam", bg = "foam", blend = 10 },
-			DiagnosticVirtualTextHint = { fg = "iris", bg = "iris", blend = 10 },
-		},
-	})
-	vim.cmd("colorscheme rose-pine-moon")
-end)
-
--- ── カラースキーム: catppucin ───────────────────────────────────────────
+-- ── カラースキーム: catppuccin ─────────────────────────────────────────────────
 setup("catppuccin", function(m)
 	m.setup({
 		flavour = "mocha", -- latte, frappe, macchiato, mocha から選択可能

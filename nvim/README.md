@@ -126,7 +126,7 @@ sudo apt install jq / brew install jq
 
 | カテゴリ | プラグイン |
 | --- | --- |
-| カラースキーム | rose-pine/neovim, catppuccin/nvim |
+| カラースキーム | catppuccin/nvim |
 | アイコン | nvim-web-devicons |
 | ファジーファインダー基盤 | plenary.nvim, telescope.nvim (obsidian.nvim のpickerとして使用) |
 | Git連携 | gitsigns.nvim |
