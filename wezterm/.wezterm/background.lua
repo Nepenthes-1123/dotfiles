@@ -62,16 +62,25 @@ function M.apply(config)
 		return layers
 	end
 
-	config.background = build_layers(true)
+	local show_anim_by_default = true
+	config.background = build_layers(show_anim_by_default)
 
 	-- 右下アニメーションのON/OFF切替用トグルイベント
-	local show_bg_image = true
+	-- 状態はウィンドウごとに wezterm.GLOBAL に置く。設定の再読み込みで Lua の変数は初期値に戻るが、
+	-- ウィンドウの config override は残るため、変数に持つと再読み込み後の最初のトグルが空振りする
+	wezterm.on("toggle-bg-image", function(window, _)
+		local states = wezterm.GLOBAL.bg_anim_shown or {}
+		local key = tostring(window:window_id())
+		local shown = states[key]
+		if shown == nil then
+			shown = show_anim_by_default
+		end
+		shown = not shown
+		states[key] = shown
+		wezterm.GLOBAL.bg_anim_shown = states
 
-	wezterm.on("toggle-bg-image", function(window, pane)
-		show_bg_image = not show_bg_image
 		local overrides = window:get_config_overrides() or {}
-
-		overrides.background = build_layers(show_bg_image)
+		overrides.background = build_layers(shown)
 		window:set_config_overrides(overrides)
 	end)
 end
