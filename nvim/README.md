@@ -9,7 +9,7 @@ Neovim v0.12 向け設定。プラグイン管理は外部プラグインマネ�
 ```
 ~/.config/nvim/
 ├── init.lua                                  # エントリポイント (読み込み順を制御)
-├── nvim-pack-lock.json                       # vim.pack のバージョン固定ファイル (自動生成)
+├── nvim-pack-lock.json                       # vim.pack のバージョン固定ファイル (自動生成。dotfiles では追跡しない)
 ├── lsp/                                      # LSP サーバー設定 (vim.lsp.enable() 用、mason-lspconfig が自動読込)
 │   ├── pyright.lua                           # Python 型チェック (Pylance 相当)
 │   ├── ruff.lua                              # Python フォーマット/リント (black+flake8+isort 統合)
@@ -17,9 +17,14 @@ Neovim v0.12 向け設定。プラグイン管理は外部プラグインマネ�
 │   ├── lua_ls.lua                            # Lua
 │   ├── vue_ls.lua                            # Vue 3 (Volar v2)
 │   ├── vtsls.lua                             # TypeScript / JavaScript (Vue プラグイン連携込み)
+│   ├── eslint.lua                            # ESLint (診断と整形)
+│   ├── html.lua                              # HTML
 │   ├── texlab.lua                            # LaTeX
 │   ├── marksman.lua                          # Markdown
 │   ├── jsonls.lua                            # JSON / JSONC
+│   ├── yamlls.lua                            # YAML (スキーマ検証)
+│   ├── taplo.lua                             # TOML
+│   ├── bashls.lua                            # Bash (整形は shfmt、lint は shellcheck)
 │   ├── dockerls.lua                          # Dockerfile
 │   └── docker_compose_language_service.lua   # docker-compose.yml
 ├── lua/
@@ -27,31 +32,28 @@ Neovim v0.12 向け設定。プラグイン管理は外部プラグインマネ�
 │   │   ├── options.lua                       # エディタ基本設定
 │   │   ├── keymaps.lua                       # グローバルキーマップ
 │   │   ├── autocmds.lua                      # 自動コマンド (formatOnSave, trimTrailingWhitespace 等)
-│   │   └── lsp.lua                           # 診断表示設定 & hover/signature のボーダー設定
-│   └── plugins/
+│   │   └── diagnostics.lua                   # 診断表示設定 & hover/signature のボーダー設定
+│   └── plugins/                              # 複数のプラグインをまとめるファイルと、設定が大きいプラグイン単独のファイル
 │       ├── init.lua                          # vim.pack.add() によるプラグイン宣言 & 各設定の読込
-│       └── config/
-│           ├── utils.lua                     # pcall ラッパー (未インストール時に無視する setup())
-│           ├── lsp.lua                       # Mason / mason-lspconfig / conform / nvim-lint
-│           ├── blink.lua                     # blink.cmp (補完エンジン)
-│           ├── treesitter.lua                # nvim-treesitter (パーサー & ハイライト)
-│           ├── editor.lua                    # telescope / gitsigns / rainbow-delimiters
-│           ├── ui.lua                        # カラースキーム / lualine / which-key / render-markdown
-│           ├── snacks.lua                    # snacks.nvim (explorer/picker/notifier/通知/Git・GitHub一覧)
-│           ├── obsidian.lua                  # obsidian.nvim (Foam Vault 互換ノート機能)
-│           ├── octo.lua                      # octo.nvim (GitHub Issue/PR/Review)
-│           ├── docker.lua                    # nvim-dev-container / lazydocker
-│           └── tiny-cmdline.lua              # コマンドラインのフローティング表示
-├── after/
-│   ├── ftplugin/                             # ファイルタイプ別設定 (LocalLeader キーマップ含む)
-│   │   ├── python.lua
-│   │   ├── tex.lua
-│   │   ├── markdown.lua
-│   │   ├── json.lua
-│   │   └── dockerfile.lua
-│   └── queries/
-│       └── vue/                              # Vue SFC 用 Tree-sitter クエリ上書き (作業中)
-└── pack/                                     # vim.pack が自動 clone する (手動操作不要)
+│       ├── utils.lua                         # setup(): プラグインを読み込めなければ警告を出して設定を飛ばす
+│       ├── ui.lua                            # カラースキーム / lualine / which-key / render-markdown / bufferline / dropbar / tiny-cmdline
+│       ├── editor.lua                        # telescope / gitsigns / rainbow-delimiters / nvim-autopairs
+│       ├── lsp.lua                           # Mason / mason-lspconfig / conform / nvim-lint
+│       ├── treesitter.lua                    # nvim-treesitter / nvim-treesitter-context
+│       ├── blink.lua                         # blink.cmp (補完エンジン)
+│       ├── snacks.lua                        # snacks.nvim (explorer/picker/notifier/通知/Git・GitHub一覧)
+│       ├── obsidian.lua                      # obsidian.nvim (Foam Vault 互換ノート機能)
+│       ├── octo.lua                          # octo.nvim (GitHub Issue/PR/Review)
+│       ├── docker.lua                        # nvim-dev-container / lazydocker
+│       ├── ai.lua                            # copilot.lua
+│       └── gtodo-md.lua                      # gtodo-md.nvim (GTD Todo 管理)
+└── after/
+    └── ftplugin/                             # ファイルタイプ別設定 (LocalLeader キーマップ含む)
+        ├── python.lua
+        ├── tex.lua
+        ├── markdown.lua
+        ├── json.lua
+        └── dockerfile.lua
 ```
 
 ---
@@ -65,17 +67,17 @@ Neovim v0.12 向け設定。プラグイン管理は外部プラグインマネ�
 LSPサーバー (`mason-lspconfig.ensure_installed`):
 
 ```
-pyright, ruff, clangd, lua_ls, vue_ls, vtsls, texlab, marksman,
-jsonls, dockerls, docker_compose_language_service
+pyright, ruff, clangd, lua_ls, eslint, vue_ls, vtsls, texlab, marksman,
+jsonls, dockerls, docker_compose_language_service, bashls, taplo, yamlls, html
 ```
 
 フォーマッター/リンター (`mason-tool-installer.ensure_installed`):
 
 ```
-ruff, stylua, prettier, eslint_d, clang-format, markdownlint
+ruff, stylua, prettier, markdownlint, shfmt, shellcheck
 ```
 
-これらの多くは Node.js 上で動作するため、事前に Node.js (npm) のインストールが必要 (下記の mise で導入される)。clangd / clang-format は別途 C/C++ ツールチェーンに依存する場合がある。
+これらの多くは Node.js 上で動作するため、事前に Node.js (npm) のインストールが必要 (下記の mise で導入される)。clangd は別途 C/C++ ツールチェーンに依存する場合がある。
 
 ### mise が自動インストールするもの
 
@@ -124,16 +126,18 @@ sudo apt install jq / brew install jq
 
 | カテゴリ | プラグイン |
 | --- | --- |
-| カラースキーム | rose-pine/neovim |
+| カラースキーム | rose-pine/neovim, catppuccin/nvim |
 | アイコン | nvim-web-devicons |
 | ファジーファインダー基盤 | plenary.nvim, telescope.nvim (obsidian.nvim のpickerとして使用) |
 | Git連携 | gitsigns.nvim |
 | 補完エンジン | blink.lib, blink.cmp |
-| シンタックスハイライト | nvim-treesitter |
+| シンタックスハイライト | nvim-treesitter, nvim-treesitter-context |
+| パンくずリスト | dropbar.nvim |
 | ブラケット色付け | rainbow-delimiters.nvim |
 | フォーマッター/リンター | conform.nvim, nvim-lint |
 | LSP/ツール管理 | mason.nvim, mason-lspconfig.nvim, mason-tool-installer.nvim |
 | ステータスライン | lualine.nvim |
+| バッファライン | bufferline.nvim |
 | 自動括弧補完 | nvim-autopairs |
 | キーバインドガイド | which-key.nvim |
 | ノート (Foam Vault互換) | obsidian.nvim |
@@ -143,6 +147,7 @@ sudo apt install jq / brew install jq
 | GitHub PR/Issue/Review | octo.nvim (要 `gh` CLI) |
 | コマンドラインのフローティング | tiny-cmdline.nvim |
 | AI 自動補完 | copilot.lua |
+| GTD Todo 管理 | gtodo-md.nvim |
 
 ファイルツリー・インデントガイド・カーソル下単語ハイライトは個別プラグインではなく snacks.nvim (`explorer`/`indent`/`words`) でまとめて提供している。コメントトグル (`gcc`/`gc`) は Neovim 組み込み機能を使用。
 
