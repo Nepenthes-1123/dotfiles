@@ -67,11 +67,9 @@ setup("octo", function(m)
 		mappings = {
 			issue = {
 				add_comment = { lhs = "<Leader>gprc", desc = "add comment" },
-				add_reaction = { lhs = "<Leader>gpra", desc = "add reaction" },
 			},
 			pull_request = {
 				add_comment = { lhs = "<Leader>gprc", desc = "add comment" },
-				add_reaction = { lhs = "<Leader>gpra", desc = "add reaction" },
 			},
 			review_diff = {
 				add_review_comment = { lhs = "<Leader>gprc", desc = "add a new review comment" },
@@ -201,7 +199,7 @@ setup("octo", function(m)
 			map(
 				{ "n", "v" },
 				"<Leader>gprs",
-				"<Cmd>Octo review comment suggest<CR>",
+				"<Cmd>Octo comment suggest<CR>",
 				vim.tbl_extend("force", o, { desc = "Octo: Add suggestion" })
 			)
 			-- コメント/レビューの送信
@@ -210,13 +208,6 @@ setup("octo", function(m)
 				"<Leader>gprx",
 				"<Cmd>Octo review submit<CR>",
 				vim.tbl_extend("force", o, { desc = "Octo: Submit review" })
-			)
-			-- リアクション追加
-			map(
-				"n",
-				"<Leader>gpra",
-				"<Cmd>Octo reaction add<CR>",
-				vim.tbl_extend("force", o, { desc = "Octo: Add reaction" })
 			)
 		end,
 	})

@@ -290,14 +290,15 @@ setup("snacks", function(Snacks)
 	map("n", "<Leader>gpl", function()
 		Snacks.picker.gh_pr()
 	end, vim.tbl_extend("force", opts, { desc = "GitHub PRs" }))
-	vim.keymap.set("n", "<leader>gpb", function()
-		Snacks.picker.gh_prs({
-			-- "current" を指定すると、現在のブランチに関連する PR に絞り込まれます
-			filter = {
-				branch = true,
-			},
-		})
-	end, { desc = "GitHub PRs for current branch" })
+	map("n", "<Leader>gpb", function()
+		local branch = vim.fn.systemlist({ "git", "branch", "--show-current" })[1]
+		if vim.v.shell_error ~= 0 or not branch or branch == "" then
+			vim.notify("現在のブランチが分かりません (git リポジトリの外か detached HEAD)", vim.log.levels.WARN)
+			return
+		end
+		-- snacks の gh_pr にブランチで絞るオプションは無いため、gh の検索構文で絞る
+		Snacks.picker.gh_pr({ search = "head:" .. branch })
+	end, vim.tbl_extend("force", opts, { desc = "GitHub PRs for current branch" }))
 
 	-- 通知履歴を表示 (noice: <Leader>snh 相当)
 	map("n", "<Leader>nh", function()
