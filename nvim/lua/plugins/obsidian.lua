@@ -169,15 +169,6 @@ setup("obsidian", function(m)
 			enable = false,
 		},
 
-		-- チェックボックスの表示 (Foam: GFM チェックボックスと同等)
-		checkboxes = {
-			[" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
-			["x"] = { char = "", hl_group = "ObsidianDone" },
-			[">"] = { char = "", hl_group = "ObsidianRightArrow" },
-			["~"] = { char = "󰰱", hl_group = "ObsidianTilde" },
-			["!"] = { char = "", hl_group = "ObsidianImportant" },
-		},
-
 		-- ── Obsidian アプリとの共存 ────────────────────────────────────────────
 		-- Foam リポジトリを Obsidian アプリとも共有する場合は true
 		-- (Obsidian の .obsidian/ フォルダが vault 内に存在していても問題なし)

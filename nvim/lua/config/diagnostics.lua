@@ -1,5 +1,5 @@
 -- =============================================================================
--- config/diagnostics.lua  –  診断の表示と、hover・signatureHelp のフロートの枠
+-- config/diagnostics.lua  –  診断の表示
 -- =============================================================================
 
 -- ── 診断表示設定 ─────────────────────────────────────────────────────────────
@@ -35,22 +35,6 @@ vim.diagnostic.config({
 		prefix = "",
 	},
 })
-
-local default_hover_handler = vim.lsp.handlers["textDocument/hover"]
-vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
-	config = vim.tbl_deep_extend("force", config or {}, { border = "rounded" })
-	if default_hover_handler then
-		default_hover_handler(err, result, ctx, config)
-	end
-end
-
-local default_sig_handler = vim.lsp.handlers["textDocument/signatureHelp"]
-vim.lsp.handlers["textDocument/signatureHelp"] = function(err, result, ctx, config)
-	config = vim.tbl_deep_extend("force", config or {}, { border = "rounded" })
-	if default_sig_handler then
-		default_sig_handler(err, result, ctx, config)
-	end
-end
 
 -- ── LSP サーバー有効化 ───────────────────────────────────────────────────────
 -- vim.pack.add() で Mason / mason-lspconfig が常にロードされるため、

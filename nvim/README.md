@@ -32,7 +32,7 @@ Neovim v0.12 向け設定。プラグイン管理は外部プラグインマネ�
 │   │   ├── options.lua                       # エディタ基本設定
 │   │   ├── keymaps.lua                       # グローバルキーマップ
 │   │   ├── autocmds.lua                      # 自動コマンド (formatOnSave, trimTrailingWhitespace 等)
-│   │   └── diagnostics.lua                   # 診断表示設定 & hover/signature のボーダー設定
+│   │   └── diagnostics.lua                   # 診断表示設定
 │   └── plugins/                              # 複数のプラグインをまとめるファイルと、設定が大きいプラグイン単独のファイル
 │       ├── init.lua                          # vim.pack.add() によるプラグイン宣言 & 各設定の読込
 │       ├── utils.lua                         # setup(): プラグインを読み込めなければ警告を出して設定を飛ばす

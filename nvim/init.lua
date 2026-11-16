@@ -5,7 +5,7 @@
 --   1. options   … エディタ基本オプション
 --   2. keymaps   … グローバルキーマップ
 --   3. autocmds  … 自動コマンド (formatOnSave, trimTrailingWhitespace など)
---   4. diagnostics … 診断の表示と LSP のフロートの枠
+--   4. diagnostics … 診断の表示
 --   5. plugins   … packpath 経由プラグイン設定
 -- =============================================================================
 
