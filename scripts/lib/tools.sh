@@ -58,8 +58,7 @@ zsh_plugins_sync() {
 
 nvim_plugins_update() {
   has nvim || return 0
-  # force = true で確認バッファを出さずに更新し、nvim-pack-lock.json を書き換える
-  nvim --headless "+lua vim.pack.update(nil, { force = true })" +qa ||
+  nvim --headless -S "${SCRIPTS_DIR}/lib/nvim_pack_update.lua" +qa ||
     warn "Neovim プラグインの更新に失敗しました"
 }
 
