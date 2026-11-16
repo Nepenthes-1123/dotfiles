@@ -13,9 +13,17 @@ PRUNE_KEEP=("${HOME}/.gitconfig.local")
 
 # ${VAR} 形式の変数を PATH_VARS の値に置換する
 expand_path_vars() {
-  local s="$1" v
+  local s="$1" v pat out
   for v in "${PATH_VARS[@]}"; do
-    s="${s//\$\{$v\}/${!v}}"
+    # ${s//pat/値} は、bash 5.2 (patsub_replacement) では値の中の & が一致した文字列に置き換わり、
+    # 値を引用して防ぐと bash 3.2 では引用符がそのまま残る。どちらでも同じに動くよう前後を切り出して繋ぐ
+    pat="\${${v}}"
+    out=""
+    while [[ "$s" == *"$pat"* ]]; do
+      out+="${s%%"$pat"*}${!v}"
+      s="${s#*"$pat"}"
+    done
+    s="${out}${s}"
   done
   # shellcheck disable=SC2016 # ${ という文字列そのものを探している
   [[ "$s" != *'${'* ]] || die "links.conf に未定義の変数があります: $1"
