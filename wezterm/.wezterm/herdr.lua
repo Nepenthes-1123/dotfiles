@@ -144,6 +144,24 @@ function M.conditional_resize_action(wezterm_action, resize_key)
 	end)
 end
 
+local function spawn_session_tab(window, name)
+	local spawn_ok, new_tab, new_pane = pcall(function()
+		return window:mux_window():spawn_tab({
+			args = shell.spawn_args("herdr --session " .. name),
+			cwd = shell.spawn_cwd(),
+			set_environment_variables = { HERDR_ENV = "0" },
+		})
+	end)
+	if spawn_ok and new_tab then
+		M.mark_herdr_pane(new_pane)
+		pcall(function()
+			new_tab:set_title(name)
+		end)
+	else
+		wezterm.log_error("Failed to spawn tab for session: " .. tostring(new_tab))
+	end
+end
+
 function M.session_selector_action()
 	return wezterm.action_callback(function(window, pane)
 		-- herdr連携が無効な場合は通常のタブ追加（フォールバック）
@@ -186,21 +204,7 @@ function M.session_selector_action()
 								description = "Enter new herdr session name:",
 								action = wezterm.action_callback(function(w, _, line)
 									if line and line ~= "" then
-										local spawn_ok, new_tab, new_pane = pcall(function()
-											return w:mux_window():spawn_tab({
-												args = shell.spawn_args("herdr --session " .. line),
-												cwd = shell.spawn_cwd(),
-												set_environment_variables = { HERDR_ENV = "0" },
-											})
-										end)
-										if spawn_ok and new_tab then
-											M.mark_herdr_pane(new_pane)
-											pcall(function()
-												new_tab:set_title(line)
-											end)
-										else
-											wezterm.log_error("Failed to spawn tab for session: " .. tostring(new_tab))
-										end
+										spawn_session_tab(w, line)
 									end
 								end),
 							}),
@@ -208,21 +212,7 @@ function M.session_selector_action()
 						)
 					else
 						-- 既存セッションにアタッチ
-						local spawn_ok, new_tab, new_pane = pcall(function()
-							return inner_window:mux_window():spawn_tab({
-								args = shell.spawn_args("herdr --session " .. id),
-								cwd = shell.spawn_cwd(),
-								set_environment_variables = { HERDR_ENV = "0" },
-							})
-						end)
-						if spawn_ok and new_tab then
-							M.mark_herdr_pane(new_pane)
-							pcall(function()
-								new_tab:set_title(id)
-							end)
-						else
-							wezterm.log_error("Failed to spawn tab for session: " .. tostring(new_tab))
-						end
+						spawn_session_tab(inner_window, id)
 					end
 				end),
 				title = "herdr Sessions",
