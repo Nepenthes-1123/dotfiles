@@ -36,8 +36,9 @@ return {
 				-- VSCode: "--disallow-untyped-defs" に対応
 				reportUnknownParameterType = "information",
 				reportUnknownVariableType = "information",
-				-- 未使用インポートの報告 (isort と連携)
-				reportUnusedImport = "information",
+				-- 未使用の import・変数は ruff (F401 / F841) が報告するので、二重に出さない
+				reportUnusedImport = "none",
+				reportUnusedVariable = "none",
 				-- 自動補完でスタブを参照
 				useLibraryCodeForTypes = true,
 				autoSearchPaths = true,
