@@ -1,3 +1,5 @@
+local wezterm = require("wezterm")
+
 local M = {}
 
 -- アニメーション素材は別リポジトリ (dotfiles-assets) で管理しているため、
@@ -11,7 +13,7 @@ local function file_exists(path)
 	return false
 end
 
-function M.setup(wezterm, config)
+function M.apply(config)
 	-- Sakuraカラースキームの背景色を自動取得
 	local scheme = wezterm.color.get_builtin_schemes()[config.color_scheme]
 	local bg_color = (scheme and scheme.background) or "#1e1e2e"

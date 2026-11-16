@@ -6,7 +6,7 @@ local shell = require("shell")
 local conditional_action = herdr.conditional_action
 local conditional_resize_action = herdr.conditional_resize_action
 
-return {
+local bindings = {
 	leader = { key = "Space", mods = "CTRL", timeout_milliseconds = 2000 },
 	keys = {
 		{ key = "Tab", mods = "CTRL", action = conditional_action(act.ActivateTabRelative(1), "n") },
@@ -379,3 +379,14 @@ return {
 		},
 	},
 }
+
+local M = {}
+
+function M.apply(config)
+	config.disable_default_key_bindings = true
+	config.leader = bindings.leader
+	config.keys = bindings.keys
+	config.key_tables = bindings.key_tables
+end
+
+return M

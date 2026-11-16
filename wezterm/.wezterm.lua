@@ -6,12 +6,11 @@ if wezterm.config_builder then
 end
 
 -- tabのフォーマットを読み込む
-local format = require("format")
-format.setup(wezterm, config)
+require("format").apply(config)
 
 -- zsh の起動先 (Windows では WSL の中の zsh) を設定する
 local shell = require("shell")
-shell.setup(config)
+shell.apply(config)
 
 -- 環境変数の設定
 config.set_environment_variables = config.set_environment_variables or {}
@@ -36,8 +35,7 @@ end)
 config.color_scheme = "Sakura"
 
 -- 背景透過・背景画像の設定を読み込む
-local background = require("background")
-background.setup(wezterm, config)
+require("background").apply(config)
 
 config.native_macos_fullscreen_mode = true
 
@@ -57,14 +55,9 @@ config.line_height = 0.9
 config.use_ime = true
 
 -- ステータスのカスタマイズ
-local status = require("status")
-status.setup(wezterm, config)
+require("status").apply(config)
 
 -- keybindings.lua からショートカットキーを読み込む
-local keybinds = require("keybindings")
-config.disable_default_key_bindings = true -- デフォルトのキーbindingsを無効化
-config.leader = keybinds.leader
-config.keys = keybinds.keys
-config.key_tables = keybinds.key_tables
+require("keybindings").apply(config)
 
 return config

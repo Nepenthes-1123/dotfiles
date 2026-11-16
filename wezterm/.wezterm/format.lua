@@ -1,10 +1,12 @@
+local wezterm = require("wezterm")
+
 local function BaseName(s)
 	return string.gsub(s, "(.*[/\\])(.*)", "%2")
 end
 
 local M = {}
 
-function M.setup(wezterm, config)
+function M.apply(config)
 	config.window_frame = {
 		active_titlebar_bg = "#442845",
 		inactive_titlebar_bg = "#221622",

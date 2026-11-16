@@ -41,7 +41,7 @@ if M.is_windows then
 end
 
 -- config に zsh の起動先を設定する
-function M.setup(config)
+function M.apply(config)
 	if M.wsl_domain then
 		config.wsl_domains = M.wsl_domains
 		config.default_domain = M.wsl_domain.name

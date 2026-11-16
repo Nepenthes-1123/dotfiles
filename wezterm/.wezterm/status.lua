@@ -1,3 +1,5 @@
+local wezterm = require("wezterm")
+
 -- Color palette for the backgrounds of each cell
 local COLORS = {
 	"#8a3375", -- 1 (Mode)
@@ -14,13 +16,13 @@ local TEXT_FG = "#fee6ee"
 
 local SOLID_LEFT_ARROW = utf8.char(0xe0d2)
 
-local function getTime(elems, _, wezterm)
+local function getTime(elems)
 	-- 時刻表示
 	local date = wezterm.strftime("%m/%-d %H:%M:%S %a")
 	table.insert(elems, "  " .. date)
 end
 
-local function getBattery(elems, wezterm)
+local function getBattery(elems)
 	local b = wezterm.battery_info()
 	-- バッテリーが存在しない場合（デスクトップPCなど）は枠ごと非表示
 	if not b or #b == 0 then
@@ -42,12 +44,12 @@ local function getBattery(elems, wezterm)
 	-- アイコンを使わず、純粋なテキストでミニマルに表現
 	table.insert(elems, string.format("%s%.0f%%", state_text, charge))
 end
-local function rightUpdate(window, _, wezterm)
+local function rightUpdate(window)
 	local cells = {}
 
 	-- 情報を追加（追加した順に左から右へ並びます）
-	getBattery(cells, wezterm)
-	getTime(cells, window, wezterm)
+	getBattery(cells)
+	getTime(cells)
 
 	local elements = {}
 
@@ -110,15 +112,15 @@ end
 
 local M = {}
 
-local function leftUpdate(window, _, _)
+local function leftUpdate(window)
 	-- 左側は空にしてタブだけを表示する
 	window:set_left_status("")
 end
 
-function M.setup(wezterm, _)
-	wezterm.on("update-status", function(window, pane)
-		leftUpdate(window, pane, wezterm)
-		rightUpdate(window, pane, wezterm)
+function M.apply(_)
+	wezterm.on("update-status", function(window)
+		leftUpdate(window)
+		rightUpdate(window)
 	end)
 end
 
