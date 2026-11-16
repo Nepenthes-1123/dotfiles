@@ -23,8 +23,10 @@ return {
 			lineLength = 88,
 			lint = {
 				select = { "E", "F", "W", "I", "N", "UP" },
-				-- VSCode: "flake8.args": ["--ignore=E203,W503,W504"]
-				ignore = { "E203", "W503", "W504" },
+				-- VSCode: "flake8.args": ["--ignore=E203,W503,W504"] のうち、ruff にある規則だけを残す。
+				-- W503 / W504 は ruff に実装が無く、未知の規則を 1 つでも渡すと ruff は
+				-- エディタ側の設定 (select・lineLength も含む) をまるごと捨てて既定値で動く
+				ignore = { "E203" },
 			},
 			format = {
 				-- black 互換フォーマット
