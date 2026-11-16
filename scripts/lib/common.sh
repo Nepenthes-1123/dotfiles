@@ -53,6 +53,12 @@ OS="$(detect_os)"
 want_gui() { [[ "$OS" != wsl ]]; }
 want_cli() { [[ "$OS" != windows ]]; }
 
+# prune は配置先と find の結果を文字列で比べるため、HOME の末尾の / を除いておく
+# (残すと配置先が //.zshrc になり、管理中のリンクまで links.conf に無いものとして消してしまう)
+while [[ "$HOME" == */ && "$HOME" != / ]]; do
+  HOME="${HOME%/}"
+done
+
 # links.conf で使える配置先の変数。OS ごとの違いはここだけで吸収する
 CONFIG_DIR="${HOME}/.config"
 NVIM_DIR="${CONFIG_DIR}/nvim"
