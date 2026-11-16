@@ -40,6 +40,9 @@ if M.is_windows then
 	end
 end
 
+-- zsh (と、zsh から起動する herdr) を使えるか。Windows では WSL の中にしか無い
+M.has_zsh = not M.is_windows or M.wsl_domain ~= nil
+
 -- config に zsh の起動先を設定する
 function M.apply(config)
 	if M.wsl_domain then

@@ -164,8 +164,8 @@ end
 
 function M.session_selector_action()
 	return wezterm.action_callback(function(window, pane)
-		-- herdr連携が無効な場合は通常のタブ追加（フォールバック）
-		if not M.ENABLE_HERDR_INTEGRATION then
+		-- herdr連携が無効な場合と、herdr を起動できない (zsh が無い) 場合は通常のタブ追加（フォールバック）
+		if not M.ENABLE_HERDR_INTEGRATION or not shell.has_zsh then
 			window:perform_action(shell.spawn_tab_action(), pane)
 			return
 		end
