@@ -164,30 +164,9 @@ setup("obsidian", function(m)
 		},
 
 		-- ── UI 設定 ────────────────────────────────────────────────────────────
+		-- 表示は Vault の内外で揃えるため render-markdown.nvim (plugins/ui.lua) に任せる
 		ui = {
 			enable = false,
-
-			-- [[wikilink]] のハイライト
-			hl_groups = {
-				ObsidianTodo = { bold = true, fg = "#f78c6c" },
-				ObsidianDone = { bold = true, fg = "#89ddff" },
-				ObsidianRightArrow = { bold = true, fg = "#f78c6c" },
-				ObsidianTilde = { bold = true, fg = "#ff5370" },
-				ObsidianImportant = { bold = true, fg = "#d73128" },
-				ObsidianBullet = { bold = true, fg = "#89ddff" },
-				ObsidianRefText = { underline = true, fg = "#c792ea" },
-				ObsidianExtLinkIcon = { fg = "#c792ea" },
-				ObsidianTag = { italic = true, fg = "#89ddff" },
-				ObsidianBlockID = { italic = true, fg = "#89ddff" },
-				ObsidianHighlightText = { bg = "#75662e" },
-			},
-
-			bullets = { char = "•", hl_group = "ObsidianBullet" },
-			external_link_icon = { char = "", hl_group = "ObsidianExtLinkIcon" },
-			reference_text = { hl_group = "ObsidianRefText" },
-			highlight_text = { hl_group = "ObsidianHighlightText" },
-			tags = { hl_group = "ObsidianTag" },
-			block_ids = { hl_group = "ObsidianBlockID" },
 		},
 
 		-- チェックボックスの表示 (Foam: GFM チェックボックスと同等)
