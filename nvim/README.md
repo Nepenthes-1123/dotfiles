@@ -265,23 +265,24 @@ gh auth login
 | `<Leader>gil` | Issue 一覧 | snacks picker (gh) |
 | `<Leader>gic` | Issue を新規作成 | octo |
 | `<Leader>gpl` | PR 一覧 | snacks picker (gh) |
+| `<Leader>gpo` | PR 一覧 (レビュー画面へ移りやすい) | octo |
 | `<Leader>gpb` | 現在ブランチの PR 一覧 | snacks picker (gh) |
 | `<Leader>gpc` | PR をチェックアウト | octo |
 | `<Leader>gpm` | PR をマージ (squash) | octo |
-| `<Leader>gprs` | PR レビュー開始 | octo |
+| `<Leader>gprb` | PR レビュー開始 | octo |
 | `<Leader>gprr` | PR レビュー再開 | octo |
 | `<Leader>gprx` | PR レビュー送信 | octo |
 | `<Leader>gn` | GitHub 通知一覧 | octo |
 | `<Leader>gR` | リポジトリ一覧 | octo |
 | `]q` / `[q` | 次 / 前の変更ファイルへ (quickfix) | octo |
 
-Octo のレビューバッファ内 (filetype=`octo`) のみで有効なキー:
+Octo のバッファ内 (filetype=`octo` とレビューの差分) のみで有効なキー:
 
 | キー | 動作 |
 | --- | --- |
-| `<Leader>ca` (n/v) | コメントを追加 (バッファローカルでグローバルのコードアクションを上書き) |
-| `<Leader>sa` (n/v) | 提案 (Suggestion) を追加 |
-| `<Leader>ra` | リアクションを追加 |
+| `<Leader>gprc` (n/v) | コメントを追加 |
+| `<Leader>gprs` (n/v) | 提案 (Suggestion) を追加 (レビュー中のみ) |
+| `<LocalLeader>r+` / `r-` / `rh` / `rr` など | リアクションを付ける / 外す (octo の既定のキー) |
 
 ### Docker / DevContainer — `<Leader>D`
 

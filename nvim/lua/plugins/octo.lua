@@ -2,19 +2,13 @@
 -- lua/plugins/octo.lua  –  octo.nvim 設定
 -- VSCode: GitHub.vscode-pull-request-github の代替
 -- =============================================================================
--- VSCode 拡張の機能と Neovim での対応 (キーマップは <Leader>h プレフィックス):
---   PR/Issue 一覧パネル          → <Leader>hpl / <Leader>hil (snacks.picker)
---   PR レビュー (diff + コメント) → <Leader>hprs (review start)
---   インラインコメント追加        → レビューバッファ上で <Leader>ca
---   PR のチェックアウト           → <Leader>hpc / ピッカー上で <C-o>
---   PR のマージ                   → <Leader>hpm / ピッカー上で <C-r>
---   通知一覧                       → <Leader>hn
---
--- 【プレフィックス設計】
--- <Leader>g は gitsigns (Git) が <Leader>gp = preview_hunk など
--- リーフキーとして既に使用しているため、<Leader>gp* をプレフィックスに
--- 持つキーを追加すると which-key 上でグループとして展開できない。
--- そのため octo (GitHub) は <Leader>h (Hub) を新設して衝突を回避する。
+-- VSCode 拡張の機能と Neovim での対応 (Git と同じ <Leader>g の下に置く):
+--   PR/Issue 一覧パネル          → <Leader>gpl / <Leader>gil (snacks.picker)
+--   PR レビュー (diff + コメント) → <Leader>gprb (review start)
+--   インラインコメント追加        → レビューバッファ上で <Leader>gprc
+--   PR のチェックアウト           → <Leader>gpc / ピッカー上で <C-o>
+--   PR のマージ                   → <Leader>gpm / ピッカー上で <C-r>
+--   通知一覧                       → <Leader>gn
 --
 -- 前提条件:
 --   - GitHub CLI (gh) のインストールが必須
@@ -96,12 +90,6 @@ setup("octo", function(m)
 	})
 
 	-- ── キーマップ ───────────────────────────────────────────────────────────
-	-- プレフィックスについて:
-	--   <Leader>o は obsidian.nvim が使用
-	--   <Leader>g は gitsigns (Git) が <Leader>gp = preview_hunk など
-	--              リーフキーとして既に使用しているため、
-	--              octo (GitHub) は <Leader>h (Hub) を新設して衝突を回避する
-	-- ─────────────────────────────────────────────────────────────────────────
 	local map = vim.keymap.set
 	local opts = { noremap = true, silent = true }
 
