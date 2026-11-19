@@ -153,6 +153,15 @@ key = "prefix+ctrl+h"
 type = "pane"
 command = "zsh -lc 'cd ${HERDR_ACTIVE_PANE_CWD:-.}; hunk diff --watch'"
 
+# gtodo の TUI でタスクを確認・追加する。データの場所は ~/.config/gtodo-md/config.json で
+# 決まっているため、lazygit・hunk と違って作業中のディレクトリに移る必要はない
+[[keys.command]]
+key = "prefix+ctrl+t"
+type = "popup"
+command = "zsh -lc gtodo"
+width = "95%"
+height = "95%"
+
 # Legacy indexed shortcut config is still parsed for compatibility.
 # Prefer switch_tab, switch_workspace, and focus_agent for new configs.
 # [keys.indexed]
