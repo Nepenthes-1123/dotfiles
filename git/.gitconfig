@@ -1,6 +1,5 @@
 [core]
 	editor = nvim
-	protectNTFS = false
 	autoCRLF = input
 	ignorecase = false
 	quotepath = false
