@@ -101,6 +101,8 @@ disabled = false
 format = "[$symbol$status]($style) "
 style = "bold red"
 sigint_symbol = "\n"
+# sigint_symbol などシグナル・127・126 用の記号は、これが無いと使われない
+map_symbol = true
 recognize_signal_code = true
 
 [character]
