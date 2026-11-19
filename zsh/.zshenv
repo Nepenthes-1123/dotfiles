@@ -4,6 +4,13 @@
 # macOS の /etc/zshrc は compinit を行わないため影響しない。
 skip_global_compinit=1
 
+## PATH と fpath の重複を除く (最初のものだけを残すので、優先順位は変わらない)
+# macOS の path_helper と brew shellenv の両方が /opt/homebrew/bin を足し、*.local が無条件に先頭へ足す
+# ディレクトリも入れ子のシェルのたびに増える。
+# -U が効くのは配列 (path・fpath) への代入だけで、PATH=... のような文字列での書き換えでは除かれないため、
+# .zprofile と .zshrc で *.local を読んだ後に path=($path) で代入し直す
+typeset -U path fpath
+
 ## ロケール
 # 環境変数なので、対話シェルだけでなく zsh -l -c (WezTerm や herdr から起動するコマンド) にも効くようここで設定する。
 # LC_ALL はほかの LC_* より優先されて個別の指定を打ち消すため使わない

@@ -42,3 +42,5 @@ setopt print_eight_bit
 
 ## .zshrc.local が存在する場合は読み込む
 [ -f "${HOME}/.zshrc.local" ] && source "${HOME}/.zshrc.local"
+# .zshrc.local は PATH を文字列で書き換えるため、配列として代入し直して typeset -U (.zshenv) で重複を除く
+path=($path)

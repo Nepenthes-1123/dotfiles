@@ -2,6 +2,9 @@
 # Homebrew の `brew shellenv` など、マシンごとに違う PATH の設定はこちらに書く。
 # mise の shims より先に読むことで、shims が常に前に来る (mise のツールが優先される)。
 [ -f "${HOME}/.zprofile.local" ] && source "${HOME}/.zprofile.local"
+# .zprofile.local (や /etc/zprofile の path_helper) は PATH を文字列で書き換えるため、
+# 配列として代入し直して typeset -U (.zshenv) で重複を除く
+path=($path)
 
 ## Volta があるマシンでは node を Volta に任せる
 # 会社の方針で Volta を使うマシン向け。mise の node を無効にすると、mise の shim と
