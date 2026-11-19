@@ -171,7 +171,7 @@ local bindings = {
 			mods = "CTRL",
 			action = conditional_action(shell.split_action("Horizontal"), "v"),
 		},
-		-- leader + q で Pane を閉じる
+		-- ctrl+shift+q・cmd+q で Pane を閉じる (herdr の中では herdr の x)
 		{
 			key = "Q",
 			mods = "CTRL|SHIFT",
