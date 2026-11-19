@@ -80,18 +80,22 @@ style = "bg:bright_pink fg:dark"
 format = "[$symbol($version) ]($style)"
 
 [python]
+symbol = "\ue73c " # dev-python
 style = "bg:bright_pink fg:dark"
 format = "[$symbol($version) ]($style)"
 
 [rust]
+symbol = "\ue7a8 " # dev-rust
 style = "bg:bright_pink fg:dark"
 format = "[$symbol($version) ]($style)"
 
 [golang]
+symbol = "\ue724 " # dev-go
 style = "bg:bright_pink fg:dark"
 format = "[$symbol($version) ]($style)"
 
 [lua]
+symbol = "\ue620 " # seti-lua
 style = "bg:bright_pink fg:dark"
 format = "[$symbol($version) ]($style)"
 
@@ -99,6 +103,11 @@ format = "[$symbol($version) ]($style)"
 disabled = false
 format = "[$symbol$status]($style) "
 style = "bold red"
+# 既定の絵文字ではなく Nerd Font の記号を使う。私用領域の文字なのでコードポイントで書く
+symbol = "\uf467" # oct-x
+not_found_symbol = "\uf422" # oct-search
+not_executable_symbol = "\uf468" # oct-circle_slash
+signal_symbol = "\uf0e7" # fa-bolt
 sigint_symbol = "\n"
 # sigint_symbol などシグナル・127・126 用の記号は、これが無いと使われない
 map_symbol = true
