@@ -50,7 +50,6 @@ truncation_symbol = "…/"
 truncate_to_repo = false
 use_os_path_sep = false
 read_only = " "
-read_only_style = "bright_red"
 
 [time]
 disabled = false
