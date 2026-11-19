@@ -1,8 +1,3 @@
-# zsh-completions がインストールされている場合は補完関数のパスに追加
-if [ -e /usr/local/share/zsh-completions ]; then
-  fpath=(/usr/local/share/zsh-completions $fpath)
-fi
-
 # Docker Desktop の補完 (Docker Desktop は .zshrc.local に compinit ごと追記するが、
 # compinit の後に読まれて 2 回目の compinit が走るため、ここで compinit より前に追加する)
 if [[ -d ~/.docker/completions ]]; then
