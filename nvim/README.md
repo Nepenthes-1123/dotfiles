@@ -88,7 +88,7 @@ neovim, node (LTS), ripgrep, github-cli (gh), tree-sitter
 ```
 
 - ripgrep — snacks.picker の grep、:grep のバックエンド
-- tree-sitter — nvim-treesitter がパーサーをビルドするのに使う
+- tree-sitter — nvim-treesitter がパーサーをビルドするのに使う。ビルドには C コンパイラも要る (macOS は Xcode Command Line Tools、Ubuntu は `dot.sh setup` が apt で入れる build-essential)
 - node — Mason が npm で LSP / フォーマッターを入れるのに使う。Volta を使うマシンでは mise の node は無効になり、Volta の node が使われる
 - GitHub CLI — octo.nvim (PR/Issue/Review) に必須。インストール後に `gh auth login` が必要。GitHub Projects (v2) を使う場合は追加スコープも必要: `gh auth refresh -s read:project`
 
@@ -167,7 +167,7 @@ nvim
 :Mason            " 進捗確認
 
 # 3. Treesitter パーサーのビルドを待つ (起動時に plugins/treesitter.lua の一覧を自動で入れる。
-#    初回のみ数分かかる場合あり。tree-sitter CLI が必要)
+#    初回のみ数分かかる場合あり。tree-sitter CLI と C コンパイラが必要)
 :checkhealth nvim-treesitter
 
 # 4. ヘルスチェックで不足ツールを確認
