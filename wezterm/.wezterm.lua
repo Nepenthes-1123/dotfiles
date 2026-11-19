@@ -46,7 +46,9 @@ config.native_macos_fullscreen_mode = true
 config.font = wezterm.font_with_fallback({
 	"JetBrains Mono",
 	"JetBrainsMono Nerd Font",
+	-- 游明朝のファミリー名は Windows では「游明朝」、macOS では「游明朝体」/「YuMincho」のため両方を書く
 	"游明朝",
+	"YuMincho",
 	"Hiragino Sans",
 })
 
