@@ -83,6 +83,43 @@ function M.apply(config)
 		overrides.background = build_layers(shown)
 		window:set_config_overrides(overrides)
 	end)
+
+	-- macOS は $TMPDIR の中で 3 日間アクセスの無いファイルを毎日消す。WezTerm は展開したアニメーションの
+	-- フレームを $TMPDIR/wezterm-blob-lease-*/ に書き出して読み直すが、読んでもアクセス日時が更新されず、
+	-- 起動したまま数日経つとフレームが消えて描画エラーが出続ける。フレームはファイルの中身のハッシュで
+	-- キャッシュされ、設定の再読み込みでは作り直されないため、消されないようにアクセス日時を更新する
+	if wezterm.target_triple:find("darwin") then
+		-- 再読み込みのたびに新しい世代のタイマーを始め、古い世代は次に動いたときに止まる
+		-- (古い Lua の状態のタイマーが再読み込み後も動き続けるかに頼らないため)
+		local gen = (wezterm.GLOBAL.frame_touch_gen or 0) + 1
+		wezterm.GLOBAL.frame_touch_gen = gen
+		-- 異常終了した WezTerm が残したフォルダまで延命しないよう、このプロセスの起動後に作られたものだけを対象にする
+		local started = wezterm.procinfo.get_info_for_pid(wezterm.procinfo.pid()).start_time
+		local function touch_frames()
+			if wezterm.GLOBAL.frame_touch_gen ~= gen then
+				return
+			end
+			local ok, _, stderr = wezterm.run_child_process({
+				"/bin/sh",
+				"-c",
+				[[
+status=0
+for d in "$TMPDIR"/wezterm-blob-lease-*; do
+  if [ -d "$d" ] && [ "$(stat -f %B "$d")" -ge "$1" ]; then
+    find "$d" -type f -exec touch -a {} + || status=1
+  fi
+done
+exit "$status"]],
+				"sh",
+				tostring(started),
+			})
+			if not ok then
+				wezterm.log_error("フレームのアクセス日時を更新できませんでした: " .. stderr)
+			end
+			wezterm.time.call_after(24 * 3600, touch_frames)
+		end
+		wezterm.time.call_after(60, touch_frames)
+	end
 end
 
 return M
