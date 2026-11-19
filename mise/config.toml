@@ -35,3 +35,6 @@ tree-sitter = "latest"
 # 実行されない (起動時に「Update available! Run: mise upgrade claude」の案内は出る)。
 # 更新は案内に従うか `dot.sh update` で行う。
 claude = "latest"
+# GTD 形式の Todo 管理 (コマンドは gtodo)。gtodo-md.nvim と同じデータを読む
+# mise のレジストリは個人のツールを受け付けないため、github バックエンドで直接指定する。
+"github:Nepenthes-1123/gtodo-md" = "latest"
