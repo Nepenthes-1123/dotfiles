@@ -129,7 +129,8 @@ setup("conform", function(m)
 		-- conform の merge 順 (呼び出し時 opts > filetype 設定) により
 		-- formatters_by_ft 側の lsp_format が上書きされて効かなくなるため。
 		default_format_opts = { lsp_format = "fallback" },
-		-- eslint_d はデーモン未起動時の初回のみ 3〜4 秒かかるため余裕を持たせる
+		-- ESLint LSP は開いて最初の整形で設定とプラグインを読み込むため 2 秒前後かかり
+		-- (@antfu/eslint-config で実測)、conform の既定の 1000ms では打ち切られる
 		format_on_save = { timeout_ms = 5000 },
 	})
 end)
