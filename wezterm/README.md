@@ -16,9 +16,32 @@
 | `.wezterm/shell.lua` | zsh を起動する場所 (Windows では WSL) と、タブ・ペインを開く処理 |
 | `.wezterm/herdr.lua` | herdr のペインでは WezTerm の操作を herdr のキーに置き換える処理と、セッションの選択 |
 
-## Windows では nightly を使う
+## nightly を使う
 
-Windows では nightly を使います。stable の最新版は 2024-02 のもので止まっています。
+stable の最新版は 2024-02 のもので止まっているため、すべての OS で nightly を使います。
+
+| OS | 入れ方 | 更新 |
+| --- | --- | --- |
+| macOS | brew の cask `wezterm@nightly` | `scripts/dot.sh update` で毎回入れ直す |
+| Windows | GitHub の nightly リリースから setup.exe を直接入れる | `scripts/dot.sh update` で新しいビルドがあれば入れる |
+| Ubuntu | apt の `wezterm-nightly` (WezTerm 公式の apt リポジトリ) | `scripts/dot.sh update` で新しいビルドがあれば入れる |
+
+`.wezterm.lua` は nightly にしか無い設定を使うため、stable では読み込めません (`config_builder` は知らない設定をエラーにする)。
+
+### macOS
+
+- `wezterm@nightly` は `version :latest` のため、普通の `brew upgrade` では更新されない。
+  `scripts/dot.sh update` は `brew upgrade --greedy-latest` を使い、実行のたびに最新の nightly を入れ直す
+- cask は `sha256 :no_check` のため、ダウンロードしたファイルのハッシュは検証されない
+
+### Ubuntu
+
+- `wezterm-nightly` は stable の `wezterm` と競合する (`Conflicts: wezterm`) ため、stable が入っていれば apt が入れ替える。
+  `scripts/dot.sh update` は入っていないパッケージを入れないので、stable から切り替えるときは `scripts/dot.sh setup` を実行する
+- WSL の中には入れない (Windows 側の WezTerm を使う)
+
+### Windows
+
 winget の nightly (`wez.wezterm.nightly`) は次の不具合で使えないため、`scripts/dot.sh` が GitHub の nightly リリースから
 `WezTerm-nightly-setup.exe` を直接入れます (`scripts/lib/packages.sh` の `_win_wezterm_nightly`)。
 
@@ -40,7 +63,7 @@ winget の nightly (`wez.wezterm.nightly`) は次の不具合で使えないた�
 - `winget list` では、入れた nightly が `wez.wezterm` (stable) のパッケージとして表示される。
   入れた版のほうが新しいため、winget が stable に戻すことはない
 
-### winget に戻す
+#### winget に戻す
 
 上の不具合が直ったら winget に戻す。戻す前に次の 3 つを満たすことを確認する。
 ハッシュの問題 (#7713) が直っても ProductCode の問題 (#7623) は残る可能性があり、そのまま戻すと更新されない状態に戻るため。
@@ -51,7 +74,7 @@ winget の nightly (`wez.wezterm.nightly`) は次の不具合で使えないた�
 
 戻す手順:
 
-1. setup.exe で入れる処理を導入したコミットを `git revert` する。
+1. setup.exe で入れる処理を導入したコミット (`ff9945b`) を `git revert` する。
    `scripts/packages.conf` の `win_packages` に `wez.wezterm.nightly` を書く
    (VC++ ランタイムは winget が依存関係として入れるため、`win_packages` から外してよい)
 2. Windows 側で `winget install --id wez.wezterm.nightly -e` を実行し、入っている nightly を winget の管理に入れる。
