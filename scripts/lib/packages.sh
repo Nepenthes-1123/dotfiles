@@ -30,8 +30,9 @@ packages_upgrade() {
   mac)
     _brew_shellenv
     brew update
+    # wezterm@nightly は version :latest のため、--greedy-latest を付けないと brew upgrade が対象にしない
     for p in "${mac_packages[@]}"; do
-      brew upgrade "$p" || warn "${p} の更新に失敗しました"
+      brew upgrade --greedy-latest "$p" || warn "${p} の更新に失敗しました"
     done
     ;;
   ubuntu | wsl)
