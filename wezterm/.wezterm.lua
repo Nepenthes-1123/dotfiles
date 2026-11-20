@@ -40,21 +40,25 @@ config.color_scheme = "Sakura"
 -- 背景透過・背景画像の設定を読み込む
 require("background").apply(config)
 
-config.native_macos_fullscreen_mode = true
+config.native_macos_fullscreen_mode = false
+config.macos_fullscreen_extend_behind_notch = true
 
 -- フォントの設定
 config.font = wezterm.font_with_fallback({
 	"JetBrains Mono",
 	"JetBrainsMono Nerd Font",
 	-- 游明朝のファミリー名は Windows では「游明朝」、macOS では「游明朝体」/「YuMincho」のため両方を書く
-	"游明朝",
-	"YuMincho",
+	{ family = "游明朝", weight = "Medium" },
+	{ family = "YuMincho", weight = "Medium" },
 	"Hiragino Sans",
 })
 
 -- フォントサイズの設定
 config.font_size = 13
 config.line_height = 0.9
+config.front_end = "WebGpu"
+config.freetype_load_flags = "NO_HINTING"
+config.max_fps = 120
 
 -- IMEの設定
 config.use_ime = true
