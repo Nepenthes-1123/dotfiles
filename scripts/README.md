@@ -78,7 +78,7 @@ dotfiles は Windows 側と WSL の中にそれぞれ clone し、両方で `dot
 
 | 環境 | 担当 | 入れるもの | リンクするもの (`links.conf`) |
 | --- | --- | --- | --- |
-| Windows 側 (Git Bash) | GUI アプリ | WezTerm / VSCode / フォント / Git / Neovim (winget) | 対象が `gui` と `all` の行 (WezTerm / VSCode / Neovim) |
+| Windows 側 (Git Bash) | GUI アプリ | VSCode / フォント / Git / Neovim (winget)、WezTerm の nightly (GitHub のリリースから直接。[wezterm/README.md](../wezterm/README.md#windows-では-nightly-を使う)) | 対象が `gui` と `all` の行 (WezTerm / VSCode / Neovim) |
 | WSL の中 (Ubuntu) | シェル・CLI ツール | zsh / git / mise (apt)、CLI ツール (mise) | 対象が `cli` と `all` の行 (zsh / git / Neovim など) |
 | mac / Ubuntu | 両方 | すべて | すべて |
 

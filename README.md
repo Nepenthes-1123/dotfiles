@@ -34,6 +34,7 @@ macOS・Ubuntu・Windows (WSL2) で共通に使う設定ファイル一式。
 | Neovim | プラグイン (`vim.pack`)・LSP / フォーマッター (Mason) | `nvim/` |
 
 Windows では GUI アプリだけを Windows 側に置き、シェルと CLI ツールは WSL2 の中 (Ubuntu) で使う。
+Windows の WezTerm は winget を使わず、nightly を GitHub のリリースから直接入れる ([wezterm/README.md](wezterm/README.md#windows-では-nightly-を使う))。
 `dot.sh` は実行した環境 (mac / ubuntu / Windows 側 / WSL の中) を判定し、その環境の担当分だけを処理する。
 
 ## セットアップ

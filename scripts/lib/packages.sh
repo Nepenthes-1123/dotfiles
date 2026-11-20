@@ -25,6 +25,7 @@ packages_upgrade() {
         info "up-to-date ${p}"
       fi
     done
+    _win_wezterm_nightly upgrade
     ;;
   mac)
     _brew_shellenv
@@ -55,9 +56,63 @@ _win_install() {
     winget install --id "$p" -e --source winget --accept-package-agreements --accept-source-agreements ${scope_args[@]+"${scope_args[@]}"} ||
       warn "${p} のインストールに失敗しました"
   done
+  _win_wezterm_nightly install
   if ! has wsl.exe || ! wsl.exe --list --quiet >/dev/null 2>&1; then
     warn "WSL が見つかりません。管理者の PowerShell で 'wsl --install -d Ubuntu' を実行し、再起動してください"
   fi
+}
+
+# WezTerm の nightly を setup.exe から入れる。install は未導入のときだけ、upgrade は新しいビルドがあれば入れる。
+# winget を通さないため、入れたビルドの SHA256 を記録して新しいビルドの有無を判定する
+_win_wezterm_nightly() {
+  local mode="$1"
+  local state="${HOME}/.local/state/dotfiles/wezterm-nightly.sha256"
+  local exe
+  exe="$(cygpath -u "$PROGRAMFILES")/WezTerm/wezterm-gui.exe"
+  if [[ "$mode" == install && -s "$state" && -x "$exe" ]]; then
+    info "installed WezTerm nightly"
+    return
+  fi
+
+  local expected
+  if ! expected="$(curl -fsSL "${win_wezterm_nightly_url}.sha256")"; then
+    warn "WezTerm nightly の SHA256 を取得できませんでした"
+    return
+  fi
+  expected="${expected%% *}"
+  if [[ -x "$exe" && -s "$state" && "$(<"$state")" == "$expected" ]]; then
+    info "up-to-date WezTerm nightly"
+    return
+  fi
+  # 起動中だとインストーラーがファイルを置き換えられず、/SUPPRESSMSGBOXES では WezTerm を強制終了しかねないため入れない
+  if MSYS2_ARG_CONV_EXCL='*' tasklist.exe /FO CSV /NH | grep -qi '^"wezterm-gui\.exe"'; then
+    warn "WezTerm が起動中のため nightly を入れられません。WezTerm を閉じてから再実行してください"
+    return
+  fi
+
+  local tmp actual
+  tmp="$(mktemp -d)"
+  if ! curl -fsSL -o "${tmp}/setup.exe" "$win_wezterm_nightly_url"; then
+    warn "WezTerm nightly のダウンロードに失敗しました"
+    rm -rf "$tmp"
+    return
+  fi
+  actual="$(sha256sum "${tmp}/setup.exe")"
+  actual="${actual%% *}"
+  # setup.exe と .sha256 は別々にアップロードされるため、アップロード中に取得すると一致しないことがある
+  if [[ "$actual" != "$expected" ]]; then
+    warn "WezTerm nightly の SHA256 が一致しません (期待値 ${expected}、実際 ${actual})。時間をおいて再実行してください"
+    rm -rf "$tmp"
+    return
+  fi
+  if MSYS2_ARG_CONV_EXCL='*' "${tmp}/setup.exe" /SP- /VERYSILENT /SUPPRESSMSGBOXES /NORESTART; then
+    mkdir -p "${state%/*}"
+    printf '%s\n' "$expected" >"$state"
+    info "installed WezTerm nightly"
+  else
+    warn "WezTerm nightly のインストールに失敗しました"
+  fi
+  rm -rf "$tmp"
 }
 
 # brew の PATH をこのプロセス内で通す。Homebrew のインストーラーは実行中のシェルの PATH を更新せず、

@@ -16,6 +16,48 @@
 | `.wezterm/shell.lua` | zsh を起動する場所 (Windows では WSL) と、タブ・ペインを開く処理 |
 | `.wezterm/herdr.lua` | herdr のペインでは WezTerm の操作を herdr のキーに置き換える処理と、セッションの選択 |
 
+## Windows では nightly を使う
+
+Windows では nightly を使います。stable の最新版は 2024-02 のもので止まっています。
+winget の nightly (`wez.wezterm.nightly`) は次の不具合で使えないため、`scripts/dot.sh` が GitHub の nightly リリースから
+`WezTerm-nightly-setup.exe` を直接入れます (`scripts/lib/packages.sh` の `_win_wezterm_nightly`)。
+
+- インストーラーがビルドのたびに同じ URL のまま置き換わり、winget の manifest のハッシュと合わずにインストールが失敗する
+  ([wezterm#7713](https://github.com/wezterm/wezterm/issues/7713))
+- stable と nightly の ProductCode が同じため、`winget list` / `winget upgrade` が nightly を stable の `wez.wezterm` と
+  取り違え、更新を検出しない ([wezterm#7623](https://github.com/wezterm/wezterm/issues/7623))
+- winget の manifest は bot が 1〜2 週間おきに更新するだけで、最新の nightly にならない
+
+| コマンド | 挙動 |
+| --- | --- |
+| `scripts/dot.sh setup` | 未導入なら入れる |
+| `scripts/dot.sh update` | 新しいビルドがあれば入れる |
+
+- 公開されている `.sha256` と照合してから、サイレントでインストールする。インストール先は stable と同じ `C:\Program Files\WezTerm`
+- 入れたビルドの SHA256 を `~/.local/state/dotfiles/wezterm-nightly.sha256` に記録し、公開中のものと比べて更新の有無を判定する
+- WezTerm の起動中は入れずに警告して終わる。WezTerm を閉じ、Git Bash から実行し直す
+- インストール時に UAC の確認が出る
+- `winget list` では、入れた nightly が `wez.wezterm` (stable) のパッケージとして表示される。
+  入れた版のほうが新しいため、winget が stable に戻すことはない
+
+### winget に戻す
+
+上の不具合が直ったら winget に戻す。戻す前に次の 3 つを満たすことを確認する。
+ハッシュの問題 (#7713) が直っても ProductCode の問題 (#7623) は残る可能性があり、そのまま戻すと更新されない状態に戻るため。
+
+1. ハッシュの検証を無効にせずに、`winget install wez.wezterm.nightly` が成功する
+2. `winget list --id wez.wezterm.nightly` が、`wezterm -V` と同じ版を表示する
+3. 新しい nightly の manifest が公開されたあと、`winget upgrade` にその版が表示される
+
+戻す手順:
+
+1. setup.exe で入れる処理を導入したコミットを `git revert` する。
+   `scripts/packages.conf` の `win_packages` に `wez.wezterm.nightly` を書く
+   (VC++ ランタイムは winget が依存関係として入れるため、`win_packages` から外してよい)
+2. Windows 側で `winget install --id wez.wezterm.nightly -e` を実行し、入っている nightly を winget の管理に入れる。
+   インストール先と ProductCode が同じなので、アンインストールは要らない
+3. `~/.local/state/dotfiles/wezterm-nightly.sha256` を削除する
+
 ## Windows での zsh 設定
 
 Windows では WezTerm を Windows 側で動かし、zsh は WSL2 の中 (Ubuntu) で使います。
