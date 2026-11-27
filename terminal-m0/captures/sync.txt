@@ -1,0 +1,16 @@
+nvim terminal t9
+A first attach: 4680 bytes, frames ['DATA']
+B re-attach: 37868 bytes in 7 frames; first frame after -0.0 ms
+  starts: ^X ESC[!p ESC[?2026l ESC[?9l ESC[?1000l ESC[?1001l ESC[?1002l ESC[?1003l ESC[?1004l ESC[?1005l ESC[?1006l ESC[?1015l ESC[?1016l ESC[?2004l ESC[?1l ESC[?66l ESC[?2031l ESC[?2048l ESC[=0;1u ESC[?1049l ESC[?1047l ESC[?47l ESC[H ESC[2J ESC[?1h ESC[?25l ESC[?66h ESC[?1002h ESC[?1004h ESC[?1006h ESC[?2004h ESC[3g ESC[9G ESCH ESC[17G ESCH ESC[25G ESCH ESC[33G ESCH
+  contains 'line 040': True  contains '?9001': True
+re-attach with history=50: 4676 bytes (alt screen, so history should not apply)
+after RESIZE 120x40: 7928 bytes back, terminal now 120x40
+A attached at 90x25 while B is 120x40 -> terminal 90x25
+  B got frames after A attached: ['DATA']
+B typed -> terminal 120x40; A saw B's input echo: True
+A typed -> B saw it: True
+observer attach: resize_notifications confirmed True, frames ['RESIZE', 'DATA']
+observer typed/resized -> terminal 90x25, B saw observer text: False
+hc server restart: 0 {"core":{"id":"955a615c9a7c09000a6c084bb054dd38","name":"vm"},"finished":8,"holder":{"current":true,"instance":"5c9413803217c11f161f59162bc6cffc","pid":3293,"terminals":1},"holders":[{"current":true,"instance":"5c9413803217c11f161f59162bc6cffc","pid":3293,"terminals":1}],"installed_by":null,"keeps_r
+after restart: state live, pid 4404 (same: True), screen exact
+re-attach after restart: 9195 bytes, has 'line 0': True

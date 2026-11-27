@@ -1,0 +1,5 @@
+attached, shell pid 3355
+connection killed; waiting 180s
+after wait: live pid 3355 same pid: True
+first paint mentions before-disconnect: True
+shell state survived (echo $X): True

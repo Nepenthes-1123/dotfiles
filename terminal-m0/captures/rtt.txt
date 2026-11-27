@@ -1,0 +1,1 @@
+key echo round trip over 300 keys (ms): median 0.242, p95 0.419, max 4.532, min 0.217

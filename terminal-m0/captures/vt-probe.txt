@@ -1,0 +1,31 @@
+== 1. restore nvim's screen from the re-attach bytes
+  alt screen active: true, rows identical to hc's own read: 29/29 (restored rows 30)
+  first rows:
+     33 line 033: 日本語の行と ascii と 絵文字 🎉 を混│  1 line 001: 日本語の行と ascii と 絵文字 🎉 を>
+        ぜる                                          │    混ぜる
+== 2. Kitty keyboard protocol through the key encoder
+  before the program asks: Enter "\\r"  Shift+Enter "ESC[27;2;13~"
+  after CSI > 1 u:         Enter "\\r"  Shift+Enter "ESC[13;2u"
+  distinguished: true
+  after CSI < u (pop):     Shift+Enter "ESC[27;2;13~"
+== 3. widths: libghostty-vt vs WezTerm defaults (termwiz, unicode 9, ambiguous narrow)
+  sample                             ghostty   ghostty   WezTerm   WezTerm
+                                     default     +2027     uni 9    uni 14
+  日本語 (CJK)                                6         6         6         6
+  ｱｲｳ (halfwidth kana)                     3         3         3         3
+  が (kana + combining voiced mark)        2         2         2         2
+  🎉 (emoji)                                2         2         2         2
+  👍🏽 (emoji + skin tone)                   2         2         2         2
+  👨‍👩‍👧 (ZWJ family)                       2         2         2         2
+  🇯🇵 (flag)                                2         2         2         2
+  ❤️ (heart + VS16)                        2         2         1         2  <- differs from WezTerm default
+  ✔️ (check + VS16)                        2         2         1         2  <- differs from WezTerm default
+  ✓ (U+2713 check)                         1         1         1         1
+  ◉ (U+25C9 (spec: blocked))               1         1         1         1
+  ● (U+25CF (spec: working))               1         1         1         1
+  ○ (U+25CB (spec: idle))                  1         1         1         1
+  ① (circled digit (ambiguous))            1         1         1         1
+  →… (arrow, ellipsis (ambiguous))         2         2         2         2
+  ─│ (box drawing (ambiguous))             2         2         2         2
+   (Powerline PUA (ambiguous))            1         1         1         1
+  samples where ghostty's default width differs from WezTerm's default: 2/17

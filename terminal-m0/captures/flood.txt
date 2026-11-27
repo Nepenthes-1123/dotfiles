@@ -1,0 +1,9 @@
+flood 100 MiB: 14.92s, 10.1 MiB/s on the wire
+  bytes received 157286462, frames 201658, largest frame 16384
+  'y' received 52428801 of 52428800 (100.00%)
+  CAN bytes 0, screen clears 0 (repaints instead of backlog)
+---slow---
+flood 20 MiB: 6.03s, 0.3 MiB/s on the wire
+  bytes received 2095291, frames 2791, largest frame 11355
+  'y' received 697835 of 10485760 (6.66%)
+  CAN bytes 7, screen clears 7 (repaints instead of backlog)

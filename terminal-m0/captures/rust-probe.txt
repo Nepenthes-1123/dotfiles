@@ -1,0 +1,5 @@
+hello: core "vm" version "0.1.22"
+attached t6 on channel 1
+first paint + prompt: 250 bytes
+flood 100 MiB: 16.98s, 8.8 MiB/s on the wire, 157286462 bytes in 273211 frames, 'y' 52428801/52428800 (100.00%)
+key echo over 200 keys (ms): median 0.213, p95 0.256, max 0.296

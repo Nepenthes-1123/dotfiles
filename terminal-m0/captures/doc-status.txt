@@ -1,0 +1,30 @@
+== 4. layout document (doc.get / doc.set)
+subscribe(docs=[herdr-app]) snapshot: {"channel": 1, "seq": 21} terminals in snapshot: 0
+doc.get on a core no Herdr app has used: {"value": null, "version": 3}
+doc.set -> {"version": 4}
+watcher heard: [{'data': {'name': 'herdr-app', 'version': 4}, 'seq': 22, 'type': 'doc'}]
+A writes on version 4 -> {"version": 5}
+B writes on version 4 -> refused: {"code": -32000, "data": {"hint": "read doc.get and retry with its version", "kind": "conflict"}, "message": "document \"herdr-app\" is at version 5, not 4"}
+document now holds: written-by-A version 5
+watcher heard: [{'data': {'name': 'herdr-app', 'version': 5}, 'seq': 23, 'type': 'doc'}]
+delete (value null) -> {"version": 6} then get: {"value": null, "version": 6}
+== 4. terminal labels herdr.space / herdr.tab
+run with labels -> t12 {'herdr.space': 'sp-m0', 'herdr.tab': 'tb-m0'}
+relabel -> {'herdr.space': 'sp-m0', 'herdr.tab': 'tb-other', 'mine.extra': '1'}
+list filtered by herdr.space=sp-m0 -> ['t12']
+label watcher heard: [('created', {'herdr.space': 'sp-m0', 'herdr.tab': 'tb-m0'}), ('labels', {'herdr.space': 'sp-m0', 'herdr.tab': 'tb-other', 'mine.extra': '1'}), ('foreground', None)]
+== 5. agent status (OSC 7501)
+  (a) printf at the prompt -> null
+  (b) foreground program, while it runs -> {"app": "test", "state": "blocked"}
+  (b) after it exits to the prompt -> {"app": "test", "state": "blocked"}
+  event 32 status {"records": {}, "reported": true, "status": {"app": "test", "state": "blocked"}}
+  event 33 status {"records": {}, "reported": true, "status": null}
+  event 34 status {"records": {}, "reported": true, "status": {"app": "test", "state": "blocked"}}
+  event 36 status {"records": {}, "reported": true, "status": {"app": "test", "state": "working"}}
+  event 37 status {"records": {}, "reported": true, "status": {"app": "test", "state": "done"}}
+  event 38 turn {"state": "done", "turn": 1}
+  event 39 status {"records": {}, "reported": true, "status": {"app": "test", "state": "idle"}}
+  event 40 status {"records": {}, "reported": true, "status": {"app": "test", "state": "blocked"}}
+  event 41 status {"records": {}, "reported": true, "status": null}
+terminal.get status: null turn 1 reported True
+terminal.list carries status: [('t13', None)]
