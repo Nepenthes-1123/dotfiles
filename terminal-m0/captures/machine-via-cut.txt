@@ -1,0 +1,2 @@
+after cut, same channel got: [('DATA', 40), ('DATA', 281)] CAN (repaint): 2
+typing on the same channel after the cut works: True

@@ -212,6 +212,43 @@ hc と同じ ghostty（`1e5cdb8`）を Zig 0.16 でビルドし、herdr-core の
 - libghostty-vt の C API は数か月で大きく変わっている。`a887df4` と `1e5cdb8` のヘッダの差分は 3,550 行で、関数の削除や構造体の変更を含む。1.0 では `setopt` が `set` に改名された。ghostty のコミットを1つに固定し、利用箇所を `vt/` に閉じ込める方針（仕様書のリスク表）は必須
 - hc の Windows 版は、Windows 標準の ConPTY がプログラムへの応答を飲み込むため、Microsoft の ConPTY を同梱している（herdr-core の CI のコメント）
 
+## WSL へのもう1つのつなぎ方（hc machine add --via）
+
+Windows 側の hc に WSL を「マシン」として足すと、アプリは Windows の hc にだけつなげばよくなる。WSL への接続は Windows の hc が張りっぱなしにして中継する。
+
+```text
+仕様書の案:  アプリ ──wsl.exe── WSL の hc ── 端末
+別案:        アプリ ──名前付きパイプ── Windows の hc ──wsl.exe（張りっぱなし）── WSL の hc ── 端末
+```
+
+- 1回だけ `hc machine add --via 'wsl.exe -d Ubuntu -e sh -c' --name wsl` を実行する。Windows の hc は `wsl.exe -d Ubuntu -e sh -c "sh -c '… exec herdr-core connect'"` を起動し、その標準入出力で WSL の hc と話し続ける（`machines.rs` の `pipe`）。WSL 側に hc が無ければ、`--install` で公式リリースを入れる
+- WSL の端末は `wsl/t7` のようにマシン名付きで、Windows の hc の `terminal.list`・`events.subscribe`・`terminal.attach` にそのまま出る。`terminal.run` は `on: "wsl"` で WSL に起動する
+- 配置文書はマシンごと。`doc.get` / `doc.set` に `on: "wsl"` を付けると WSL の hc の文書を読み書きする。Windows の hc にも別の文書がある
+- アプリの `core_connect` は `hc connect`（Windows の hc）のままでよく、仕様書の接続の仕組みは変えずに済む
+
+Linux で、`wsl.exe` の代わりに `sh -c`、WSL の hc の代わりに別セッションの hc を使って同じ構成を作り、確かめた（`probes/probe_machine.py`）。
+
+| 確かめたこと | 結果 |
+| --- | --- |
+| 100 MiB の大量出力 | 14.5 秒、欠け無し（直結は 14.9 秒） |
+| キーのエコー往復 | 中央値 0.32 ms、p95 0.41 ms（直結は 0.21〜0.24 ms）。中継で約 0.1 ms 増える |
+| パイプを強制的に切る | 0.3 秒以内に hc が自動で再接続。開いていたアタッチは閉じずに描き直しが届き、同じチャネルで入力を続けられた |
+| 向こうに届かない間 | マシンの状態が `unreachable`、`terminal.get` は `unavailable`、`terminal.list` から WSL の端末が消える |
+| 届くようになった後 | hc が自分で再接続し、端末は同じものが生きていた。イベントでは `missed` と、変わった端末の `created` が届く |
+| 配置文書 | `on: "wsl"` で書いても、Windows 側（このコア）の文書は変わらない |
+
+| | 仕様書の案（`wsl.exe -- hc connect`） | 別案（`hc machine add --via`） |
+| --- | --- | --- |
+| Windows 側の hc | 要らない | 要る（常駐） |
+| アプリを閉じたときの WSL | `wsl.exe` が無くなるので、アイドルで止まりうる。止まると端末も消える | Windows の hc が `wsl.exe` を張り続けるので、止まらない見込み（Windows 実機で要確認） |
+| 切断からの復帰 | アプリが自分で再接続・再アタッチする | hc が再接続し、アタッチも続く |
+| 端末のアドレス | `t7` | `wsl/t7` |
+| Windows の端末も混ぜる | 接続を2本持つ | 1本で両方 |
+| 遅延 | 直結 | 1段増える。`wsl.exe` 越しの実際の値は要測定 |
+| アプリ側で増える作業 | 無し | `terminal.run` と `doc.*` に `on`、マシン名付きアドレス、マシンの状態の表示 |
+
+MVP の完成条件「アプリを閉じても再起動で元に戻れる」には別案の方が合う可能性が高い。決め手は Windows 実機での2点：Windows の hc が動いている間はアプリを閉じても WSL が止まらないか、`wsl.exe` 越しの往復時間。
+
 ## 仕様書に戻すこと
 
 1. **配置文書は後勝ちではない。** `doc.set` は版番号つきの条件付き書き込みで、古い版への書き込みは `conflict` で拒否される。黙って消えることは無い。拒否されたら読み直し、自分の変更を当て直して書くか、公式アプリのように相手の配置を採って知らせるかを決める

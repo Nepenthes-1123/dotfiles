@@ -1,0 +1,12 @@
+machine wsl state: connected
+terminal on the machine: wsl/t1
+terminal.list on this core shows: ['wsl/t1']
+  flood 100 MiB through the relay: 14.47s, 'y' 52428801/52428800 (100.00%)
+  key echo through the relay (200): median 0.321 ms, p95 0.408 ms, max 0.850 ms
+doc.set on wsl -> version 1; this core's own herdr-app stays version 6
+killing the far end of the pipe: [7825]
+  attach stream after the cut: ['DATA', 'DATA']
+  machine state over time: [(0.0, 'connected')]
+  events after the cut: [('event', 'created', 'wsl/t1'), ('missed', None, None), ('event', 'size', 'wsl/t1'), ('event', 'foreground', 'wsl/t1'), ('heartbeat', None, None)]
+  wsl/t1 after reconnect: state live, pid 7851 (same: True)
+  re-attach after reconnect: 326 bytes of first paint, '__END__' on screen: True

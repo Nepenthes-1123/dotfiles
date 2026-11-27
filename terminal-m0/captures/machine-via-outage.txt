@@ -1,0 +1,17 @@
+during a 12 s outage, machine state: [(0.0, ('connected', None)), (0.3, ('unreachable', 'hc is not installed on sh -c'))]
+attach stream during the outage: [('DATA', 40)]
+terminal.get during the outage -> wsl is unreachable: hc is not installed on sh -c (unavailable)
+terminal.list during the outage: []
+Traceback (most recent call last):
+  File "<stdin>", line 28, in <module>
+  File "/home/user/dotfiles/terminal-m0/probes/hcproto.py", line 74, in call
+    return self._unwrap(self.replies.pop(mid))
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/dotfiles/terminal-m0/probes/hcproto.py", line 79, in _unwrap
+    raise RpcError(msg["error"])
+hcproto.RpcError: missing field `machine` (invalid_params)
+before machine.connect: ('connected', None)
+machine.connect -> {'host': 'vm', 'id': '014aed1ba890e807d161333f213d3b2a', 'keeps_running_after_logout': None, 'logout_linger_user': None, 'name': 'wsl', 'session': 'wslsim', 'st
+after the far side is back: ('connected', None) (0.0s)
+terminal.list after recovery: ['wsl/t3']
+re-attach wsl/t3: 250 bytes
